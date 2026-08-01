@@ -37,7 +37,6 @@
             width: 100vw; height: 100vh; z-index: -1;
         }
 
-        /* --- الهيدر المعتمد --- */
         header {
             background: rgba(10, 10, 14, 0.96);
             border-bottom: 2px solid var(--primary-red);
@@ -175,6 +174,7 @@
             background: rgba(255,255,255,0.04);
             border-left: 3px solid var(--primary-red);
             padding: 10px 14px; border-radius: 8px; max-width: 80%;
+            word-break: break-word;
         }
         .msg.admin {
             border-color: #00ff66;
@@ -188,8 +188,9 @@
             font-weight: 900; color: var(--neon-red); font-size: 0.9rem;
         }
         .msg img {
-            max-width: 220px; border-radius: 8px;
+            max-width: 220px; width: 100%; border-radius: 8px;
             margin-top: 8px; border: 1px solid var(--primary-red); display: block;
+            object-fit: cover;
         }
 
         .dm-layout {
@@ -253,7 +254,6 @@
 
     <canvas id="canvas-bg"></canvas>
 
-    <!-- القائمة العلوية -->
     <header>
         <div class="logo-box">
             <div class="logo-emblem">7Z</div>
@@ -261,7 +261,7 @@
                 <h1>موقع حزين الرسمي</h1>
                 <div style="font-size: 0.85rem;">
                     <span>7ZEN ESPORT</span>
-                    <span class="pr-badge">PR7ZEN 🛡️ V1.1</span>
+                    <span class="pr-badge">PR7ZEN 🛡️ V1.2</span>
                 </div>
             </div>
         </div>
@@ -313,9 +313,9 @@
                 </div>
 
                 <div style="background: rgba(255,0,30,0.1); border: 1px dashed var(--primary-red); padding: 15px; border-radius: 10px;">
-                    <strong style="color:var(--neon-blue);">🔒 نظام الأمان المعتمد:</strong>
+                    <strong style="color:var(--neon-blue);">🔒 نظام الأمان والمزامنة الفورية:</strong>
                     <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">
-                        جميع الرسائل والحسابات مشفرة ومحفوظة بيانيا في قاعدة بيانات المتصفح. فلتر الشتائم والكلمات البذيئة يعمل بقوة لتطهير الشات بالكامل (دعم إرسال بالإنتر).
+                        تم ربط التحديثات الفورية بين التبويبات والحسابات لتظهر الرسائل تلقائياً، مع فلتر شتائم مشدد وإرسال بالإنتر.
                     </p>
                 </div>
             </div>
@@ -388,13 +388,13 @@
         <!-- ================== 4: ذكاء 7ZEN الاصطناعي ================== -->
         <div id="ai-page" class="page">
             <div class="card">
-                <h2 class="section-title">🤖 ذكاء 7ZEN الاصطناعي (يسولف بطبيعة ويمون)</h2>
-                <p style="color:#aaa; margin-bottom:15px;">يسولف معك سوالف طبيعية جداً وبدون تكلف، اضغط Enter للإرسال السريع!</p>
+                <h2 class="section-title">🤖 ذكاء 7ZEN الاصطناعي (محدث وذكي)</h2>
+                <p style="color:#aaa; margin-bottom:15px;">يسولف معك سوالف طبيعية جداً ومتنوعة، اضغط Enter للإرسال السريع!</p>
                 
                 <div class="chat-box" id="ai-chat-box" style="height:380px;">
                     <div class="msg" style="border-color:var(--neon-blue);">
                         <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div>
-                        <div>هلا والله يا بعدي! منور موقع حزين الرسمي، سولف معي باللي بخاطرك واضغط انتر وأبشر بسعدك!</div>
+                        <div>هلا والله يا وحش! أنا جاهز أسولف معك باللي تبي، اعتبرني أخو دنيا وسولف براحتك واضغط انتر!</div>
                     </div>
                 </div>
 
@@ -472,7 +472,8 @@
             <div id="saved-accounts-container" style="margin-bottom:20px; text-align:right;"></div>
 
             <button class="login-btn" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="openLoginModalForNewAccount()">+ تسجيل دخول بحساب ثانٍ</button>
-            <button class="nav-btn" style="width:100%; border-color:#ff001e; color:#ff001e;" onclick="logoutCurrent()">🚪 تسجيل خروج الحساب الحالي</button>
+            <button class="nav-btn" style="width:100%; border-color:#ff001e; color:#ff001e; margin-bottom:10px;" onclick="logoutCurrent()">🚪 تسجيل خروج الحساب الحالي</button>
+            <button class="nav-btn" style="width:100%;" onclick="closeModal('account-menu-modal')">✖ إغلاق القائمة</button>
         </div>
     </div>
 
@@ -527,14 +528,36 @@
         let currentUsername = localStorage.getItem('7zen_current_user') || null;
         
         let globalMessages = JSON.parse(localStorage.getItem('7zen_global_msg')) || [
-            { sender: "نظام 7ZEN", text: "تم تفعيل فلتر الشتائم المشدد ونظام الأمان وإرسال الإنتر بنجاح.", time: "الآن" }
+            { sender: "نظام 7ZEN", text: "تم تفعيل نظام المزامنة الفورية والذكاء الاصطناعي بنجاح.", time: "الآن" }
         ];
         let dmMessages = JSON.parse(localStorage.getItem('7zen_dm_msg')) || {};
 
         let activeDMFriend = null;
         let adminSelectedTarget = null;
 
-        // --- فلتر الشتائم المشدد (يشمل كافة الكلمات البذيئة والشتائم بكل اللهجات) ---
+        // نظام المزامنة الفورية بين النوافذ والتبويبات (Real-time Simulation)
+        window.addEventListener('storage', (e) => {
+            if (e.key === '7zen_global_msg') {
+                globalMessages = JSON.parse(e.newValue) || [];
+                if (document.getElementById('chat-page').classList.contains('active')) {
+                    renderGlobalChat();
+                }
+            }
+            if (e.key === '7zen_dm_msg') {
+                dmMessages = JSON.parse(e.newValue) || {};
+                if (document.getElementById('dm-page').classList.contains('active') && activeDMFriend) {
+                    renderDMMessages();
+                }
+            }
+            if (e.key === '7zen_users_v1') {
+                allUsers = JSON.parse(e.newValue) || [];
+                updateHeaderUI();
+                if (document.getElementById('dm-page').classList.contains('active')) {
+                    renderFriendsList();
+                }
+            }
+        });
+
         const badWords = [
             "كل زق", "كلزق", "قحبه", "قحبة", "خنيث", "منيوك", "متناك", "عاهر", "عاهرة",
             "شرموط", "شرموطة", "كلب", "حمار", "زفت", "غبي", "حقير", "سافل", "تبن", "تفه",
@@ -552,7 +575,6 @@
             return cleaned;
         }
 
-        // خلفية الكانفاس السايبرباني
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -758,7 +780,7 @@
                         { name: "🛡️ الرتبة", value: user.isAdmin ? "المؤسس ||لا تحاول" : "عضو بالكلان", inline: true },
                         { name: "⏰ الوقت", value: new Date().toLocaleString("ar-SA"), inline: false }
                     ],
-                    footer: { text: "PR7ZEN 🛡️ V1.1 - نظام المراقبة المعتمد" }
+                    footer: { text: "PR7ZEN 🛡️ V1.2 - نظام المراقبة المعتمد" }
                 }]
             };
             fetch(WEBHOOK_AUTH, {
@@ -870,15 +892,15 @@
             if(!u) return alert("سجل دخولك أولاً!");
             if(targetName === u.name) return alert("لا يمكنك إضافة نفسك!");
 
-            const targetObj = getUserObj(targetName);
-            if(!targetObj) return alert("❌ هذا الاسم غير مسجل في الموقع!");
+            const targetObj = allUsers.find(user => user.name.toLowerCase() === targetName.toLowerCase());
+            if(!targetObj) return alert("❌ هذا العضو غير مسجل في الموقع أو الاسم غير صحيح!");
 
-            if(!u.friends.includes(targetName)) {
-                u.friends.push(targetName);
+            if(!u.friends.includes(targetObj.name)) {
+                u.friends.push(targetObj.name);
                 saveAllUsers();
                 input.value = '';
                 renderFriendsList();
-                alert(`تمت إضافة [${targetName}] لقائمة أصدقائك!`);
+                alert(`تمت إضافة [${targetObj.name}] لقائمة أصدقائك بنجاح!`);
             } else {
                 alert("هذا العضو في قائمتك بالفعل!");
             }
@@ -942,7 +964,7 @@
             input.value = '';
             renderDMMessages();
 
-            sendDMWebhook(u.name, activeDMFriend, cleanText, null);
+            sendDMWebhook(u.name, activeDMFriend, cleanText);
         }
 
         function sendDMImage(fileInput) {
@@ -963,12 +985,12 @@
                 });
                 localStorage.setItem('7zen_dm_msg', JSON.stringify(dmMessages));
                 renderDMMessages();
-                sendDMWebhook(u.name, activeDMFriend, "[مرفق صورة في الخاص]", e.target.result);
+                sendDMWebhook(u.name, activeDMFriend, "[مرفق صورة في الخاص]");
             };
             reader.readAsDataURL(file);
         }
 
-        function sendDMWebhook(sender, receiver, content, imgData) {
+        function sendDMWebhook(sender, receiver, content) {
             const msg = {
                 username: "7ZEN DM MONITOR 📩",
                 embeds: [{
@@ -977,8 +999,7 @@
                     fields: [
                         { name: "📤 المرسل", value: sender, inline: true },
                         { name: "📥 المستلم", value: receiver, inline: true },
-                        { name: "💬 نص الرسالة", value: content, inline: false },
-                        { name: "⚡ خيارات الباند للمؤسس (من لوحة الإدارة)", value: "• باند خاص يوم\n• باند خاص يومين\n• باند خاص أسبوع", inline: false }
+                        { name: "💬 نص الرسالة", value: content, inline: false }
                     ],
                     footer: { text: "نظام PR7ZEN 🛡️ المعتمد لمراقبة المراسلات" }
                 }]
@@ -989,7 +1010,7 @@
             }).catch(() => {});
         }
 
-        // --- ذكاء 7ZEN AI (طبيعي، يمون، ويسولف براحته) ---
+        // ذكاء اصطناعي محسن ومتنوع تماماً بدون تكرار
         function ask7ZenAI() {
             const input = document.getElementById('ai-input');
             const q = input.value.trim();
@@ -1006,23 +1027,42 @@
             box.scrollTop = box.scrollHeight;
 
             setTimeout(() => {
-                let reply = "يا هلا والله! أبشر بعزك، اسأل عن أي شي وأنا أخوك، تراني جاهز أسولف معك باللي تبي وتراكم منورين الكلان كله.";
                 const lowerQ = q.toLowerCase();
+                let replies = [
+                    "يا هلا والله! كلامك في الصميم، وش رأيك نكمل سوالف عن الألعاب والتحديات؟",
+                    "أبد، اعتبرني معك على الخط بكل شي.. علمني وش جديدك اليوم في الكلان؟",
+                    "والله نورت السشن يا غالي، ترا الكلان بدونك ناقص حماس فديتك!",
+                    "صادق والله! منور الموقع يا بعدي، تدلل بس وامرني وش بخاطرك؟"
+                ];
                 
                 if(lowerQ.includes("يزن") || lowerQ.includes("لا تحاول")) {
-                    reply = "يا طويل العمر يزن هزازي (||لا تحاول) هذا الزعيم ومؤسس الكلان، كلمته مسموعة ومكانته فوق العادة 🫡🔥";
+                    replies = [
+                        "يزن هزازي (||لا تحاول) هو الزعيم ومؤسس الكلان، فخر 7ZEN وقائدنا الأبدي 🫡🔥",
+                        "ما يحتاج تسأل عن الزعيم يزن، هو رأس الهرم ومؤسس الكلان اللي مافي مثله!"
+                    ];
                 } else if(lowerQ.includes("كيف") || lowerQ.includes("شلون") || lowerQ.includes("اخبارك")) {
-                    reply = "بخير دامك تشاركنا السوالف يا وحش، انت كيف أمورك وعلمني وش مسوي اليوم؟";
+                    replies = [
+                        "أنا بألف خير دام السوالف معك حلوة يا وحش، أنت كيف أمورك وطمنتي عنك؟",
+                        "عايش جو السايبر ومبسوط معك، أنت كيف حالك وش مسوي باللعبة؟"
+                    ];
                 } else if(lowerQ.includes("لعبة") || lowerQ.includes("روكت") || lowerQ.includes("ماين")) {
-                    reply = "الألعاب عندنا فلّ وناسة والتحديات قوية، جرب تلعب لعبة 7ZEN Runner فوق وورني كم تجيب!";
+                    replies = [
+                        "قسم بالله الألعاب عندنا حماس وتحديات ما تخلص، جرب لعبة 7ZEN Runner فوق وورني إبداعك!",
+                        "ماين كرافت وروكت ليق هم أساس الحماس بالكلان، جاهز لتحدي جديد؟"
+                    ];
                 } else if(lowerQ.includes("السلام") || lowerQ.includes("هلا") || lowerQ.includes("السلا عليكم")) {
-                    reply = "وعليكم السلام ورحمة الله وبركاته! يا هلا والله ومرحباً، سم وش بغيت نسولف فيه؟";
+                    replies = [
+                        "وعليكم السلام ورحمة الله وبركاته! يا هلا والله ومرحباً بالزعيم، سم وش بغيت؟",
+                        "هلا بك زود! حي الله من يطارينا، تفضل سولف معي بالموضوع اللي براسك."
+                    ];
                 }
+
+                const randReply = replies[Math.floor(Math.random() * replies.length)];
 
                 box.innerHTML += `
                     <div class="msg" style="border-color:var(--neon-blue);">
                         <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div>
-                        <div>${reply}</div>
+                        <div>${randReply}</div>
                     </div>
                 `;
                 box.scrollTop = box.scrollHeight;
@@ -1062,7 +1102,6 @@
             reader.readAsDataURL(file);
         }
 
-        // --- لعبة 7ZEN Runner ---
         let runnerInterval = null, runnerScore = 0;
         function initRunner() {
             document.getElementById('runner-highscore').innerText = localStorage.getItem('7zen_runner_hs') || 0;
@@ -1133,7 +1172,6 @@
             }, 25);
         }
 
-        // --- لوحة الإدارة ---
         function renderAdminUserList() {
             const query = document.getElementById('admin-search-input').value.trim().toLowerCase();
             const list = document.getElementById('admin-users-list');
