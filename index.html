@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7ZEN CLAN</title>
+    <title>7ZEN CLAN - الموقع الرسمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-red: #ff001e;
-            --dark-red: #80000e;
-            --bg-black: #080808;
-            --card-bg: rgba(18, 18, 18, 0.85);
+            --neon-red: #ff1a35;
+            --dark-red: #66000c;
+            --bg-black: #070707;
+            --card-bg: rgba(18, 18, 22, 0.85);
         }
 
+        /* مؤشر ماوس رقم 7 حاد كرتوني ومضيء */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text x="2" y="26" font-size="28" font-weight="900" fill="%23ff001e" stroke="%23000" stroke-width="2">7</text></svg>'), auto !important;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpolygon points='2,2 32,2 32,9 15,34 8,34 19,9 2,9' fill='%23ff001e' stroke='%23ff6677' stroke-width='1.5'/%3E%3C/svg%3E"), auto !important;
         }
 
         body {
@@ -29,7 +31,19 @@
             position: relative;
         }
 
-        /* خلفية جزيئات متحركة */
+        /* إضاءة حمراء متوهجة تتبع الماوس */
+        #cursor-glow {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 0, 30, 0.35) 0%, rgba(0,0,0,0) 70%);
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+
+        /* خلفية الجزيئات */
         #canvas-bg {
             position: fixed;
             top: 0;
@@ -39,308 +53,435 @@
             z-index: -1;
         }
 
-        /* الهيدر والشعار */
+        /* الشريط العلوي وأزرار التنقل (نظام صفحات) */
         header {
+            background: rgba(10, 10, 12, 0.9);
+            border-bottom: 2px solid var(--primary-red);
+            padding: 15px 40px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: linear-gradient(180deg, rgba(255, 0, 30, 0.15) 0%, rgba(0,0,0,0) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 25px rgba(255, 0, 30, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        .logo-container {
-            width: 180px;
-            height: 180px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(255, 0, 30, 0.4);
-            border: 2px solid var(--primary-red);
-            transition: transform 0.3s ease;
-        }
-
-        .logo-container:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* الحاوية الرئيسية */
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-        }
-
-        /* الشريط الجانبي الأزرار */
-        .sidebar {
+        .logo-box {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-box img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--primary-red));
+        }
+
+        .logo-box h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-red);
+        }
+
+        /* أزرار التنقل العلوية */
+        .nav-links {
+            display: flex;
             gap: 15px;
         }
 
         .nav-btn {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 0, 30, 0.3);
+            background: transparent;
+            border: 2px solid rgba(255, 0, 30, 0.4);
             color: #fff;
-            padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 700;
-            text-align: center;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .nav-btn:hover {
+        .nav-btn:hover, .nav-btn.active {
             background: var(--primary-red);
-            box-shadow: 0 0 15px var(--primary-red);
-            transform: translateX(-5px);
+            border-color: var(--neon-red);
+            box-shadow: 0 0 20px var(--primary-red);
+            transform: translateY(-2px);
         }
 
-        /* محتوى الصفحة */
-        .content-area {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid rgba(255, 0, 30, 0.2);
-            backdrop-filter: blur(10px);
-            min-height: 450px;
+        /* حاوية الصفحات */
+        .page-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: calc(100vh - 180px);
         }
 
-        .section {
+        .page {
             display: none;
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeInPage 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .section.active {
+        .page.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 {
-            color: var(--primary-red);
+        /* تصميم صفحة التعريف */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .clan-logo-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-red);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 30, 0.25);
+        }
+
+        .clan-logo-card img {
+            width: 100%;
+            max-width: 240px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 30, 0.6));
+        }
+
+        .clan-info-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 0, 30, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .section-title {
+            color: var(--neon-red);
+            font-size: 2rem;
+            font-weight: 900;
             border-bottom: 2px solid var(--primary-red);
             padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 0, 30, 0.5);
         }
 
-        .info-group {
-            margin-bottom: 20px;
+        .info-row {
+            margin-bottom: 25px;
         }
 
-        .info-title {
-            font-weight: 700;
+        .info-label {
             color: #aaa;
-            margin-bottom: 5px;
+            font-size: 1rem;
+            margin-bottom: 8px;
         }
 
         .info-value {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
+            color: #fff;
         }
 
-        .list-items {
-            list-style: none;
+        .members-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
             margin-top: 10px;
         }
 
-        .badge {
-            background: rgba(255, 0, 30, 0.15);
+        .member-badge {
+            background: linear-gradient(135deg, rgba(255,0,30,0.25) 0%, rgba(0,0,0,0.6) 100%);
             border: 1px solid var(--primary-red);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 0 10px rgba(255,0,30,0.2);
         }
 
         .discord-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: #5865F2;
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 10px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin-top: 15px;
             transition: 0.3s ease;
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
         }
 
         .discord-btn:hover {
-            box-shadow: 0 0 15px #5865F2;
-            transform: scale(1.05);
+            background: #4752c4;
+            box-shadow: 0 0 25px #5865F2;
+            transform: scale(1.03);
         }
 
-        /* الألعاب المصغرة */
-        .game-box {
+        /* زر طلب الانضمام (يتحكم فيه الرئيس) */
+        #apply-btn-box {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .apply-btn {
+            width: 100%;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            box-shadow: 0 0 20px var(--primary-red);
+            transition: 0.3s;
+        }
+
+        .apply-btn:hover {
+            background: var(--neon-red);
+            box-shadow: 0 0 30px var(--neon-red);
+            transform: scale(1.02);
+        }
+
+        /* حاويات الألعاب (صفحات مستقلة) */
+        .game-page-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-red);
+            border-radius: 20px;
+            padding: 40px;
             text-align: center;
+            box-shadow: 0 0 40px rgba(255, 0, 30, 0.2);
         }
 
         .game-canvas {
             background: #000;
             border: 2px solid var(--primary-red);
-            border-radius: 10px;
-            margin-top: 15px;
+            border-radius: 15px;
+            margin: 25px auto;
+            display: block;
+            box-shadow: 0 0 20px rgba(255, 0, 30, 0.3);
+            max-width: 100%;
         }
 
-        /* توقيع المطور أسفل اليمين */
+        /* توقيع المطورين أسفل اليمين متوهج */
         .dev-footer {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 0, 30, 0.3);
-            font-size: 0.9rem;
-            z-index: 100;
+            background: rgba(10, 10, 12, 0.9);
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 30, 0.4);
+            font-size: 1rem;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
 
-        /* توهج وانميشن اسم المطور من أحمر لأسود */
         .glow-dev {
             font-weight: 900;
-            font-size: 1.1rem;
-            animation: devGlow 2.5s infinite alternate ease-in-out;
+            font-size: 1.2rem;
+            display: inline-block;
+            animation: devGlow 2.2s infinite alternate ease-in-out;
         }
 
         @keyframes devGlow {
             0% {
                 color: #ff001e;
-                text-shadow: 0 0 15px #ff001e, 0 0 30px #ff001e;
+                text-shadow: 0 0 10px #ff001e, 0 0 25px #ff001e, 0 0 40px #ff001e;
             }
             50% {
-                color: #2b0005;
+                color: #0d0002;
                 text-shadow: 0 0 2px #000;
             }
             100% {
-                color: #ff001e;
-                text-shadow: 0 0 15px #ff001e, 0 0 30px #ff001e;
+                color: #ff1a35;
+                text-shadow: 0 0 10px #ff1a35, 0 0 25px #ff1a35, 0 0 40px #ff1a35;
             }
         }
 
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
+            .about-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- إضاءة حمراء تتبع الماوس -->
+    <div id="cursor-glow"></div>
+
+    <!-- خلفية الجزيئات المتحركة -->
     <canvas id="canvas-bg"></canvas>
 
+    <!-- الهيدر العلوي ونظام الأزرار (كل زر يفتح صفحة) -->
     <header>
-        <div class="logo-container">
-            <!-- الشعار المرفق -->
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczO4B1R3-vK4H3Bq7_sKqL8e0xO-N5E2pP5u-4qY1vH5zL0j_M8xV8R4y0K0q5F4E4a7G0H3j5K0l1M2N3P4Q5R6S7T8U9V0W1X2Y3Z" alt="7ZEN Logo" id="clan-logo">
+        <div class="logo-box">
+            <!-- ضع ملف الشعار 7zen.png بنفس المجلد -->
+            <img src="7zen.png" alt="7ZEN Logo" onerror="this.src='https://via.placeholder.com/150/ff001e/ffffff?text=7ZEN'">
+            <h1>7ZEN CLAN</h1>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="openPage('about-page', this)">📄 تعريف الكلان</button>
+            <button class="nav-btn" onclick="openPage('clicker-page', this)">🎯 لعبة النقر السريع</button>
+            <button class="nav-btn" onclick="openPage('dodge-page', this)">🚀 لعبة تفادي العقبات</button>
         </div>
     </header>
 
-    <div class="container">
-        <!-- القائمة الجانبية -->
-        <div class="sidebar">
-            <button class="nav-btn" onclick="showSection('about')">📄 تعريف الكلان</button>
-            <button class="nav-btn" onclick="showSection('game-clicker')">🎯 لعبة النقر السريع</button>
-            <button class="nav-btn" onclick="showSection('game-dodge')">🚀 لعبة تفادي العقبات</button>
-        </div>
-
-        <!-- المنطقة المتبدلة -->
-        <div class="content-area">
-            
-            <!-- قسم التعريف -->
-            <div id="about" class="section active">
-                <h2>عن كلان 7ZEN</h2>
+    <!-- حاوية الصفحات -->
+    <div class="page-container">
+        
+        <!-- ================== الصفحة 1: تعريف الكلان ================== -->
+        <div id="about-page" class="page active">
+            <div class="about-grid">
                 
-                <div class="info-group">
-                    <div class="info-title">تاريخ التأسيس:</div>
-                    <div class="info-value">Jul 2026</div>
+                <div class="clan-logo-card">
+                    <img src="7zen.png" alt="7ZEN Clan Logo" onerror="this.src='https://via.placeholder.com/250/ff001e/ffffff?text=7ZEN+CLAN'">
+                    <h2 style="color: var(--neon-red); font-weight: 900;">7ZEN ESPORTS</h2>
+                    <p style="color: #bbb; margin-top: 8px;">القوة، الاحترافية، والاحترام</p>
                 </div>
 
-                <div class="info-group">
-                    <div class="info-title">مؤسس الكلان:</div>
-                    <div class="info-value" style="color: var(--primary-red);">يزن هزازي</div>
-                </div>
-
-                <div class="info-group">
-                    <div class="info-title">أعضاء الكلان:</div>
-                    <div class="list-items">
-                        <span class="badge">مهند هزازي</span>
-                        <span class="badge">خالد قحطاني</span>
-                        <span class="badge">خالد مطيري</span>
-                        <span class="badge">الوليد هزازي</span>
+                <div class="clan-info-card">
+                    <h2 class="section-title">معلومات الكلان الرسمية</h2>
+                    
+                    <div class="info-row">
+                        <div class="info-label">تاريخ التأسيس</div>
+                        <div class="info-value" style="color: var(--primary-red);">Jul 2026</div>
                     </div>
-                </div>
 
-                <div class="info-group">
-                    <div class="info-title">المجالات والألعاب:</div>
-                    <div class="list-items">
-                        <span class="badge">روكت ليق</span>
-                        <span class="badge">ماين كرافت</span>
+                    <div class="info-row">
+                        <div class="info-label">مؤسس الكلان</div>
+                        <div class="info-value">يزن هزازي</div>
                     </div>
-                    <br>
-                    <a href="https://discord.gg/MceTtAHZYh" target="_blank" class="discord-btn">انضم لسيرفر الديسكورد</a>
+
+                    <div class="info-row">
+                        <div class="info-label">أعضاء الكلان</div>
+                        <div class="members-grid">
+                            <span class="member-badge">مهند هزازي</span>
+                            <span class="member-badge">خالد قحطاني</span>
+                            <span class="member-badge">خالد مطيري</span>
+                            <span class="member-badge">الوليد هزازي</span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">المجالات والألعاب التي ننافس فيها</div>
+                        <div class="members-grid">
+                            <span class="member-badge" style="border-color: #00e5ff;">🚀 روكت ليق</span>
+                            <span class="member-badge" style="border-color: #00ff66;">⛏️ ماين كرافت</span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">شروط الانضمام الأساسية</div>
+                        <p style="color: #eee; font-size: 1.1rem; line-height: 1.6;">
+                            كل من أعضاء الكلان يستوفون شروطاً محددة، وأهمها: <span style="color: var(--primary-red); font-weight: bold;">العمر المناسب</span> و<span style="color: var(--primary-red); font-weight: bold;">احترام الآخرين</span>.
+                        </p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">سيرفر الديسكورد الرسمي</div>
+                        <a href="https://discord.gg/MceTtAHZYh" target="_blank" class="discord-btn">
+                            انضم إلى سيرفر الديسكورد الآن
+                        </a>
+                    </div>
+
+                    <!-- زر التقديم (يتحكم فيه الرئيس من الكود أدناه) -->
+                    <div id="apply-btn-box" style="display: none;">
+                        <button class="apply-btn" onclick="alert('تم فتح التقديم! يرجى فتح تذكرة (Ticket) في الديسكورد.')">
+                            🔥 التقديم مفتوح الآن - اضغط للانضمام!
+                        </button>
+                    </div>
+
                 </div>
 
-                <div class="info-group">
-                    <div class="info-title">شروط الانضمام:</div>
-                    <p style="color: #ccc; margin-top: 5px;">يستوفي جميع الأعضاء شروطاً محدّدة، وأهمها: **العمر المناسب** و**احترام الآخرين**.</p>
-                </div>
-
-                <!-- زر التقديم (يظهر عندما يقرر الرئيس فقط) -->
-                <div id="apply-btn-container" style="display: none; margin-top: 25px;">
-                    <button class="nav-btn" style="width: 100%; background: var(--primary-red);" onclick="alert('تم فتح باب التقديم! تواصل معنا عبر الديسكورد.')">طلب انضمام للكلان (مفتوح الان)</button>
-                </div>
             </div>
-
-            <!-- لعبة النقر -->
-            <div id="game-clicker" class="section game-box">
-                <h2>لعبة النقر السريع</h2>
-                <p>اجمع أكبر عدد من النقاط قبل انتهاء الوقت!</p>
-                <h3 id="click-score" style="margin: 15px 0; font-size: 2rem;">0</h3>
-                <button class="nav-btn" style="background: var(--primary-red);" onclick="addPoint()">اضغط هنا!</button>
-            </div>
-
-            <!-- لعبة التفادي -->
-            <div id="game-dodge" class="section game-box">
-                <h2>تفادي الكرات الحمراء</h2>
-                <p>حرك الماوس يميناً ويساراً لتفادي الكرات الساقطة</p>
-                <canvas id="dodgeCanvas" width="400" height="300" class="game-canvas"></canvas>
-            </div>
-
         </div>
+
+        <!-- ================== الصفحة 2: لعبة النقر السريع ================== -->
+        <div id="clicker-page" class="page">
+            <div class="game-page-card">
+                <h2 class="section-title">لعبة النقر السريع (7ZEN CLICKER)</h2>
+                <p style="font-size: 1.2rem; color: #ccc;">اختبر سرعتك! كم مرة تقدر تضغط خلال 10 ثوانٍ؟</p>
+                
+                <h3 id="score-display" style="font-size: 4rem; color: var(--primary-red); margin: 20px 0; font-weight: 900;">0</h3>
+                <p id="timer-display" style="font-size: 1.2rem; margin-bottom: 25px;">الوقت المتبقي: 10 ثوانٍ</p>
+
+                <button id="clicker-btn" class="apply-btn" style="max-width: 350px; margin: 0 auto;" onclick="registerClick()">
+                    اضغط هنا بأسرع ما عندك!
+                </button>
+                
+                <button onclick="resetClicker()" style="margin-top: 15px; background: transparent; color: #aaa; border: 1px solid #555; padding: 8px 20px; border-radius: 8px;">
+                    إعادة المحاولة
+                </button>
+            </div>
+        </div>
+
+        <!-- ================== الصفحة 3: لعبة تفادي العقبات ================== -->
+        <div id="dodge-page" class="page">
+            <div class="game-page-card">
+                <h2 class="section-title">لعبة تفادي الكرات (7ZEN DODGE)</h2>
+                <p style="font-size: 1.1rem; color: #ccc;">حرك الماوس يميناً ويساراً داخل المربع لتفادي الهجمات الحمراء!</p>
+                
+                <canvas id="dodgeCanvas" width="600" height="400" class="game-canvas"></canvas>
+                
+                <p id="dodge-score" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-red);">النقاط: 0</p>
+            </div>
+        </div>
+
     </div>
 
-    <!-- توقيع المطورين أسفل اليمين -->
+    <!-- توقيع المطورين المتوهج أسفل اليمين -->
     <div class="dev-footer">
         تطوير: <span class="glow-dev">||لا تحاول</span>
     </div>
 
     <script>
-        // إظهار وإخفاء الأقسام
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'game-dodge') initDodgeGame();
+        // --- 1. نظام التنقل بين الصفحات (كل زر يفتح صفحته الخاصة) ---
+        function openPage(pageId, btnElement) {
+            // إخفاء كل الصفحات
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            // إزالة التفعيل من كل الأزرار
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // إظهار الصفحة المطلوبة وتفعيل الزر
+            document.getElementById(pageId).classList.add('active');
+            btnElement.classList.add('active');
+
+            // تشغيل لعبة التفادي إذا تم فتح صفحتها
+            if(pageId === 'dodge-page') {
+                startDodgeGame();
+            }
         }
 
-        // خلفية جزيئات تفاعلية مع الماوس
+        // --- 2. إضاءة الماوس الحمراء ---
+        const cursorGlow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
+
+        // --- 3. خلفية الجزيئات التفاعلية ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let mouse = { x: null, y: null };
+        let mouse = { x: -1000, y: -1000 };
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -350,17 +491,17 @@
         resizeCanvas();
 
         window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         });
 
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
+                this.size = Math.random() * 2.5 + 1;
+                this.speedX = Math.random() * 1.5 - 0.75;
+                this.speedY = Math.random() * 1.5 - 0.75;
             }
             update() {
                 this.x += this.speedX;
@@ -371,51 +512,81 @@
                 if (this.y > canvas.height) this.y = 0;
                 if (this.y < 0) this.y = canvas.height;
 
-                // تفاعل مع حركة الماوس
+                // التفاعل مع الماوس
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 100) {
-                    this.x -= dx / 10;
-                    this.y -= dy / 10;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    this.x -= dx * 0.03;
+                    this.y -= dy * 0.03;
                 }
             }
             draw() {
                 ctx.fillStyle = '#ff001e';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ff001e';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.shadowBlur = 0;
             }
         }
 
-        for (let i = 0; i < 70; i++) particles.push(new Particle());
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
 
-        function animateParticles() {
+        function animateBg() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animateParticles);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateBg);
         }
-        animateParticles();
+        animateBg();
 
-        // لعبة 1: النقر
-        let score = 0;
-        function addPoint() {
-            score++;
-            document.getElementById('click-score').innerText = score;
+        // --- 4. لعبة النقر السريع ---
+        let clickScore = 0;
+        let timeLeft = 10;
+        let timerId = null;
+        let gameActive = false;
+
+        function registerClick() {
+            if (!gameActive && timeLeft === 10) {
+                gameActive = true;
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('timer-display').innerText = `الوقت المتبقي: ${timeLeft} ثوانٍ`;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerId);
+                        gameActive = false;
+                        document.getElementById('clicker-btn').disabled = true;
+                        document.getElementById('timer-display').innerText = `انتهى الوقت! نتيجتك هي: ${clickScore}`;
+                    }
+                }, 1000);
+            }
+            if (gameActive) {
+                clickScore++;
+                document.getElementById('score-display').innerText = clickScore;
+            }
         }
 
-        // لعبة 2: تفادي الكرات
-        let dodgeGameRunning = false;
-        function initDodgeGame() {
-            if(dodgeGameRunning) return;
-            dodgeGameRunning = true;
+        function resetClicker() {
+            clearInterval(timerId);
+            clickScore = 0;
+            timeLeft = 10;
+            gameActive = false;
+            document.getElementById('score-display').innerText = 0;
+            document.getElementById('timer-display').innerText = "الوقت المتبقي: 10 ثوانٍ";
+            document.getElementById('clicker-btn').disabled = false;
+        }
+
+        // --- 5. لعبة تفادي العقبات ---
+        let dodgeRunning = false;
+        function startDodgeGame() {
+            if (dodgeRunning) return;
+            dodgeRunning = true;
             const dCanvas = document.getElementById('dodgeCanvas');
             const dCtx = dCanvas.getContext('2d');
             let playerX = dCanvas.width / 2;
             let enemies = [];
+            let score = 0;
             let frame = 0;
 
             dCanvas.addEventListener('mousemove', (e) => {
@@ -424,30 +595,45 @@
             });
 
             function loop() {
-                dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-                
-                // اللاعب
-                dCtx.fillStyle = '#fff';
-                dCtx.fillRect(playerX - 10, dCanvas.height - 20, 20, 10);
-
-                // صنع عقبات
-                frame++;
-                if (frame % 20 === 0) {
-                    enemies.push({ x: Math.random() * dCanvas.width, y: 0 });
+                if (!document.getElementById('dodge-page').classList.contains('active')) {
+                    dodgeRunning = false;
+                    return;
                 }
 
-                // تحريك العقبات
-                for (let i = 0; i < enemies.length; i++) {
-                    enemies[i].y += 3;
-                    dCtx.fillStyle = '#ff001e';
-                    dCtx.beginPath();
-                    dCtx.arc(enemies[i].x, enemies[i].y, 7, 0, Math.PI * 2);
-                    dCtx.fill();
+                dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+                
+                // رسم اللاعب
+                dCtx.fillStyle = '#ffffff';
+                dCtx.shadowBlur = 15;
+                dCtx.shadowColor = '#ffffff';
+                dCtx.fillRect(playerX - 20, dCanvas.height - 25, 40, 12);
+                dCtx.shadowBlur = 0;
 
-                    // اصطدام
-                    if (enemies[i].y > dCanvas.height - 20 && Math.abs(enemies[i].x - playerX) < 15) {
-                        alert('خسرت! حاول مرة أخرى.');
+                // توليد كرات حمراء
+                frame++;
+                if (frame % 25 === 0) {
+                    enemies.push({ x: Math.random() * (dCanvas.width - 20) + 10, y: 0 });
+                    score++;
+                    document.getElementById('dodge-score').innerText = `النقاط: ${score}`;
+                }
+
+                // تحريك الكرات ورسمها
+                for (let i = 0; i < enemies.length; i++) {
+                    enemies[i].y += 4;
+                    dCtx.fillStyle = '#ff001e';
+                    dCtx.shadowBlur = 10;
+                    dCtx.shadowColor = '#ff001e';
+                    dCtx.beginPath();
+                    dCtx.arc(enemies[i].x, enemies[i].y, 8, 0, Math.PI * 2);
+                    dCtx.fill();
+                    dCtx.shadowBlur = 0;
+
+                    // التحقق من الاصطدام
+                    if (enemies[i].y > dCanvas.height - 30 && Math.abs(enemies[i].x - playerX) < 25) {
+                        alert(`خسرت! نتيجتك: ${score}`);
                         enemies = [];
+                        score = 0;
+                        document.getElementById('dodge-score').innerText = `النقاط: 0`;
                         break;
                     }
                 }
@@ -458,11 +644,11 @@
             loop();
         }
 
-        // إمكانية إظهار زر التقديم لاحقاً (تحكم رئيس الكلان)
-        // قم بتعديل القيمة إلى true عند رغبة الرئيس بفتح التقديم
-        const isRecruitmentOpen = false; 
-        if(isRecruitmentOpen) {
-            document.getElementById('apply-btn-container').style.display = 'block';
+        // --- 6. تحكم رئيس الكلان في فتح/إغلاق التقديم ---
+        // غير قيمة false إلى true إذا أراد الرئيس فتح باب التقديم للأعضاء
+        const isRecruitmentOpen = false;
+        if (isRecruitmentOpen) {
+            document.getElementById('apply-btn-box').style.display = 'block';
         }
     </script>
 </body>
