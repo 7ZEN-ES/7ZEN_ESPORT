@@ -3,525 +3,594 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7ZEN CLAN | الموقع الرسمي المعتمد</title>
+    <title>7ZEN CLAN | موقع حزين الرسمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-red: #ff001e;
             --neon-red: #ff1a35;
             --dark-red: #66000c;
+            --neon-blue: #00e5ff;
             --bg-black: #08080a;
-            --card-bg: rgba(16, 16, 20, 0.92);
+            --card-bg: rgba(16, 16, 20, 0.94);
             --border-color: rgba(255, 0, 30, 0.4);
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
             user-select: none;
-            cursor: none !important;
         }
 
-        /* السماح بالكتابة والتحديد بحرية تامة داخل المدخلات */
         input, textarea, .selectable-text {
             user-select: text !important;
-            cursor: text !important;
         }
 
         body {
             background-color: var(--bg-black);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            color: #fff; min-height: 100vh;
+            overflow-x: hidden; position: relative;
         }
 
-        /* --- مؤشر رقم 7 --- */
+        /* --- مؤشر الماوس --- */
         #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 100000;
+            position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 100000;
             transform: translate(-20%, -20%);
         }
         #custom-cursor .cursor-text {
-            font-size: 30px;
-            font-weight: 900;
-            color: #ff001e;
-            text-shadow: 0 0 12px #ff001e, 2px 2px 0px #000;
+            font-size: 28px; font-weight: 900;
+            color: var(--primary-red);
+            text-shadow: 0 0 10px var(--primary-red);
             font-style: italic;
         }
 
         #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh; z-index: -1;
         }
 
-        /* --- الهيدر العسكري المعتمد --- */
+        /* --- الهيدر المعتمد --- */
         header {
             background: rgba(10, 10, 14, 0.96);
             border-bottom: 2px solid var(--primary-red);
-            padding: 15px 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 15px 30px;
+            display: flex; justify-content: space-between;
+            align-items: center; position: sticky;
+            top: 0; z-index: 1000;
             box-shadow: 0 5px 30px rgba(255, 0, 30, 0.3);
             backdrop-filter: blur(15px);
         }
 
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
         .logo-box img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px var(--primary-red));
+            width: 45px; height: 45px; object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--primary-red));
         }
         .logo-box h1 {
-            font-size: 1.6rem;
-            font-weight: 900;
-            letter-spacing: 2px;
+            font-size: 1.4rem; font-weight: 900;
+            letter-spacing: 1px;
             text-shadow: 0 0 10px var(--primary-red);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .pr-badge {
+            color: var(--neon-blue);
+            font-weight: 900;
+            text-shadow: 0 0 12px var(--neon-blue), 0 0 25px var(--neon-blue);
+            font-size: 1.1rem;
+            margin-right: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
+        .online-counter {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .online-dot {
+            width: 8px; height: 8px;
+            background: #00ff66;
+            border-radius: 50%;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
         .nav-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            transition: 0.3s;
+            color: #fff; padding: 8px 16px;
+            border-radius: 8px; font-size: 0.9rem;
+            font-weight: 700; transition: 0.3s; cursor: pointer;
         }
         .nav-btn:hover, .nav-btn.active {
             background: var(--primary-red);
             border-color: var(--neon-red);
-            box-shadow: 0 0 20px rgba(255, 0, 30, 0.6);
-            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 0, 30, 0.6);
+        }
+
+        .nav-btn.admin-nav {
+            border-color: #00ff66;
+            color: #00ff66;
+            background: rgba(0, 255, 102, 0.05);
+            display: none; /* يظهر فقط للمطور */
+        }
+        .nav-btn.admin-nav.active {
+            background: #00ff66;
+            color: #000;
         }
 
         .login-btn {
             background: linear-gradient(45deg, #3a0007, var(--primary-red));
             border: 1px solid var(--neon-red);
-            color: #fff;
-            padding: 10px 22px;
-            border-radius: 8px;
-            font-weight: 900;
-            box-shadow: 0 0 15px rgba(255, 0, 30, 0.4);
-            transition: 0.3s;
+            color: #fff; padding: 9px 18px;
+            border-radius: 8px; font-weight: 900;
+            cursor: pointer; box-shadow: 0 0 15px rgba(255, 0, 30, 0.4);
+            transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        .login-btn:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 25px var(--neon-red);
+        .login-btn:hover { filter: brightness(1.2); }
+        .user-avatar-mini {
+            width: 28px; height: 28px;
+            border-radius: 50%; object-fit: cover;
+            border: 1px solid #fff;
         }
 
         /* --- حاوية الصفحات --- */
         .page-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-            min-height: calc(100vh - 120px);
+            max-width: 1200px; margin: 25px auto;
+            padding: 0 20px; min-height: calc(100vh - 140px);
         }
-        .page {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
+        .page { display: none; animation: fadeIn 0.3s ease forwards; }
         .page.active { display: block; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .section-title {
-            color: var(--neon-red);
-            font-size: 2rem;
-            font-weight: 900;
-            border-bottom: 2px solid var(--primary-red);
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px rgba(255, 0, 30, 0.5);
-        }
-
-        /* --- الكروت الرسمية --- */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 30px;
+            border-radius: 15px; padding: 25px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: var(--neon-red); font-size: 1.8rem;
+            font-weight: 900; border-bottom: 2px solid var(--primary-red);
+            padding-bottom: 10px; margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 0, 30, 0.5);
         }
 
-        /* --- شات 7ZEN --- */
+        /* --- الشات العام والخاص --- */
         .chat-box {
-            height: 480px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            height: 440px; overflow-y: auto;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 15px;
+            display: flex; flex-direction: column; gap: 12px;
             margin-bottom: 15px;
         }
         .msg {
             background: rgba(255,255,255,0.04);
             border-left: 3px solid var(--primary-red);
-            padding: 12px;
-            border-radius: 8px;
-            max-width: 80%;
+            padding: 10px 14px; border-radius: 8px; max-width: 80%;
         }
         .msg.admin {
             border-color: #00ff66;
             background: rgba(0, 255, 102, 0.08);
         }
-        .msg-sender {
-            font-weight: 900;
-            color: var(--neon-red);
+        .msg-header {
+            display: flex; align-items: center; gap: 8px;
             margin-bottom: 5px;
-            font-size: 0.9rem;
+        }
+        .msg-sender {
+            font-weight: 900; color: var(--neon-red); font-size: 0.9rem;
         }
         .msg img {
-            max-width: 250px;
-            border-radius: 8px;
-            margin-top: 8px;
-            border: 1px solid var(--primary-red);
-            display: block;
+            max-width: 220px; border-radius: 8px;
+            margin-top: 8px; border: 1px solid var(--primary-red); display: block;
         }
 
-        /* --- ذكاء 7ZEN الاصطناعي --- */
-        .ai-chat-box {
-            height: 400px;
-            overflow-y: auto;
-            background: rgba(10,0,0,0.6);
-            border: 2px solid var(--primary-red);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 15px;
+        /* --- أصدقاء ومراسلات (DM) --- */
+        .dm-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
         }
-        .ai-msg {
-            background: rgba(255,0,30,0.1);
-            border-right: 3px solid var(--primary-red);
-            padding: 12px;
-            border-radius: 8px;
-            align-self: flex-start;
-            max-width: 80%;
-        }
-        .user-msg {
-            background: rgba(255,255,255,0.08);
-            border-left: 3px solid #fff;
-            padding: 12px;
-            border-radius: 8px;
-            align-self: flex-end;
-            max-width: 80%;
-        }
-
-        /* --- الجداول --- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .friends-sidebar {
             background: rgba(0,0,0,0.5);
-            border-radius: 10px;
-            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 15px;
         }
-        th, td {
-            padding: 15px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .friend-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px; border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 8px; cursor: pointer;
+            border: 1px solid transparent; transition: 0.2s;
         }
-        th {
-            background: rgba(255,0,30,0.2);
-            color: var(--neon-red);
-            font-weight: 900;
+        .friend-item:hover, .friend-item.active {
+            border-color: var(--primary-red);
+            background: rgba(255, 0, 30, 0.1);
         }
 
-        /* --- النوافذ المنبثقة --- */
+        /* --- لوحة الإدارة ||لا تحاول --- */
+        .admin-user-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.6); padding: 12px 18px;
+            border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+        .badge-banned {
+            background: #ff001e; color: #fff; padding: 2px 8px;
+            border-radius: 4px; font-size: 0.75rem; font-weight: 900;
+        }
+
+        /* --- النوافذ المنبثقة (Modals) --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            z-index: 5000; display: none;
+            align-items: center; justify-content: center;
         }
         .modal-overlay.active { display: flex; }
         .modal-box {
-            background: #111116;
-            border: 2px solid var(--primary-red);
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 450px;
-            width: 90%;
-            box-shadow: 0 0 30px rgba(255,0,30,0.4);
+            background: #111116; border: 2px solid var(--primary-red);
+            border-radius: 15px; padding: 25px; max-width: 480px;
+            width: 90%; box-shadow: 0 0 30px rgba(255,0,30,0.4);
+        }
+        .modal-input {
+            width: 100%; padding: 12px; border-radius: 8px;
+            background: #08080a; border: 1px solid #444;
+            color: #fff; margin-bottom: 12px;
         }
 
-        /* توقيع ||لا تحاول */
-        .dev-footer {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            background: rgba(10,10,14,0.9);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            font-size: 0.95rem;
-            z-index: 2000;
-        }
-        .glow-dev {
-            font-weight: 900;
-            color: #ff001e;
-            animation: devGlow 2s infinite alternate;
-        }
-        @keyframes devGlow {
-            0% { color: #ff001e; text-shadow: 0 0 10px #ff001e, 0 0 25px #ff001e; }
-            100% { color: #300005; text-shadow: 0 0 2px #000; }
-        }
-
-        @media(max-width: 800px) {
-            header { flex-direction: column; gap: 15px; }
+        @media(max-width: 850px) {
+            header { flex-direction: column; gap: 12px; }
+            .dm-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- مؤشر الماوس -->
+    <!-- مؤشر الماوس 7 -->
     <div id="custom-cursor"><span class="cursor-text">7</span></div>
     <canvas id="canvas-bg"></canvas>
 
     <!-- القائمة العلوية -->
     <header>
         <div class="logo-box">
-            <img src="7zen.png" alt="7ZEN Logo" onerror="this.src='https://via.placeholder.com/100/ff001e/ffffff?text=7ZEN'">
-            <h1>7ZEN ESPORTS</h1>
+            <img src="7zen.png" alt="7ZEN" onerror="this.src='https://via.placeholder.com/80/ff001e/ffffff?text=7'">
+            <div>
+                <h1>7ZEN CLAN | موقع حزين الرسمي</h1>
+                <div style="font-size: 0.85rem;">
+                    <span>7ZEN ESPORT</span>
+                    <span class="pr-badge">PR7ZEN 🛡️ V1</span>
+                </div>
+            </div>
         </div>
+
+        <div class="online-counter">
+            <span class="online-dot"></span>
+            <span>متصل الآن: <strong id="online-users-count">1</strong></span>
+        </div>
+
         <div class="nav-links">
-            <button class="nav-btn active" onclick="openPage('about-page', this)">📄 التعريف المعتمد</button>
+            <button class="nav-btn active" onclick="openPage('about-page', this)">📄 الكلان المعتمد</button>
             <button class="nav-btn" onclick="openPage('chat-page', this)">💬 شات 7ZEN</button>
-            <button class="nav-btn" onclick="openPage('ai-page', this)">🤖 ذكاء 7ZEN</button>
-            <button class="nav-btn" onclick="openPage('leaderboard-page', this)">🏆 لوحة الصدارة</button>
-            <button class="nav-btn" onclick="openPage('games-page', this)">🎮 الألعاب</button>
+            <button class="nav-btn" onclick="openPage('dm-page', this)">📩 الخاص والأصدقاء</button>
+            <button class="nav-btn" onclick="openPage('ai-page', this)">🤖 7ZEN AI</button>
+            <button class="nav-btn" onclick="openPage('game-page', this)">🎮 7ZEN Runner</button>
+            <!-- زر الإدارة: حصري فقط لـ ||لا تحاول -->
+            <button class="nav-btn admin-nav" id="admin-nav-btn" onclick="openPage('admin-page', this)">👑 الإدارة العليا</button>
         </div>
+
         <div>
-            <button class="login-btn" onclick="openLoginModal()" id="user-status-btn">🔐 تسجيل الدخول</button>
+            <button class="login-btn" onclick="handleUserBarClick()" id="user-status-btn">
+                <span>🔐 تسجيل الدخول</span>
+            </button>
         </div>
     </header>
 
     <div class="page-container">
         
-        <!-- ================== 1: التعريف المعتمد ================== -->
+        <!-- ================== 1: عن الكلان ================== -->
         <div id="about-page" class="page active">
             <div class="card">
-                <h2 class="section-title">منظمة 7ZEN الرسمية للرياضات الإلكترونية</h2>
+                <h2 class="section-title">موقع حزين الرسمي - منظمة 7ZEN ESPORT</h2>
                 <p class="selectable-text" style="color: #ccc; font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
-                    تأسس كلان <strong style="color:var(--primary-red);">7ZEN</strong> عام <strong>Jul 2026</strong> بقيادة المؤسس والرئيس <strong style="color:var(--primary-red);">يزن هزازي</strong>، ليكون منظمة احترافية تجمع النخبة في مجالات الألعاب والمنافسات.
+                    أهلاً بك في منصة <strong style="color:var(--primary-red);">7ZEN CLAN</strong> الرسمية. تأسست المنظمة بقيادة المؤسس والرئيس <strong style="color:var(--primary-red);">يزن هزازي (||لا تحاول)</strong> لتمثيل النخبة في عالم الرياضات الإلكترونية والألعاب التنافسية.
                 </p>
                 
-                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🛡️ أعضاء الكلان الرسميون:</h3>
+                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🛡️ القيادة والأعضاء المعتمدون:</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 25px;">
+                    <span class="login-btn" style="border-color:#00ff66;">👑 يزن هزازي (||لا تحاول)</span>
                     <span class="login-btn">مهند هزازي</span>
                     <span class="login-btn">خالد قحطاني</span>
                     <span class="login-btn">خالد مطيري</span>
                     <span class="login-btn">الوليد هزازي</span>
                 </div>
 
-                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🎮 مجالات الكلان:</h3>
+                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🎮 فرق الألعاب التنافسية:</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 25px;">
                     <span class="nav-btn" style="border-color:#00e5ff;">🚀 روكت ليق (Rocket League)</span>
                     <span class="nav-btn" style="border-color:#00ff66;">⛏️ ماين كرافت (Minecraft)</span>
                 </div>
 
-                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">📜 الشروط والضوابط:</h3>
-                <p class="selectable-text" style="color:#eee;">جميع الأعضاء يستوفون شروطاً صارمة، وأهمها: <strong>العمر المناسب</strong> و<strong>احترام الآخرين</strong>.</p>
-                <br>
-                <a href="https://discord.gg/MceTtAHZYh" target="_blank" class="login-btn" style="display:inline-block; text-decoration:none; background:#5865F2; border-color:#5865F2;">انضم إلى سيرفر الديسكورد الرسمي</a>
+                <div style="background: rgba(255,0,30,0.1); border: 1px dashed var(--primary-red); padding: 15px; border-radius: 10px;">
+                    <strong style="color:var(--neon-blue);">🔒 نظام الأمان المعتمد:</strong>
+                    <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">
+                        جميع الرسائل والحسابات مشفرة ومحفوظة بيانيا في قاعدة بيانات المتصفح. الإهانات والألفاظ المسيئة يتم تشفيرها تلقائياً. يمنع تكرار الأسماء أو استخدام حسابات تتجاوز الحد المسموح (حسابين لكل مستخدم).
+                    </p>
+                </div>
             </div>
         </div>
 
-        <!-- ================== 2: شات 7ZEN الرسمي ================== -->
+        <!-- ================== 2: الشات العام ================== -->
         <div id="chat-page" class="page">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h2 class="section-title" style="margin:0;">💬 غرفة 7ZEN (محفوظة بيانيا)</h2>
-                    <span id="chat-lock-status" style="color:#ff001e; font-weight:bold;">🔒 يجب تسجيل الدخول والتحقق للكتابة</span>
+                    <h2 class="section-title" style="margin:0;">💬 غرفة 7ZEN العامة</h2>
+                    <span id="chat-status-label" style="color:#ff001e; font-weight:bold;">🔒 سجل دخولك للمشاركة</span>
                 </div>
 
-                <div class="chat-box" id="chat-messages-area"></div>
+                <div class="chat-box" id="global-chat-box"></div>
 
-                <!-- أدوات الإرسال -->
                 <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="text" id="chat-input" class="selectable-text" placeholder="سجل دخولك أولاً لتتمكن من الكتابة..." disabled style="flex:1; padding:14px; border-radius:8px; background:#0a0a0e; border:1px solid var(--border-color); color:#fff;">
+                    <input type="text" id="global-chat-input" class="selectable-text modal-input" placeholder="اكتب رسالتك... (يتم تشفير الشتائم تلقائياً)" style="margin:0; flex:1;" disabled>
                     
-                    <!-- زر إرسال الصورة: حصري فقط للمطور / الإدارة ||لا تحاول -->
-                    <label id="admin-upload-label" style="display:none; background:#333; padding:10px 15px; border-radius:8px; cursor:pointer; border:1px solid #666; font-weight:bold;">
+                    <label class="nav-btn" id="global-img-label" style="display:none; cursor:pointer;">
                         📷 صورة
-                        <input type="file" id="admin-image-input" accept="image/*" style="display:none;" onchange="sendAdminImage(this)">
+                        <input type="file" accept="image/*" style="display:none;" onchange="sendGlobalImage(this)">
                     </label>
 
-                    <button class="login-btn" id="chat-send-btn" onclick="sendTextMsg()" disabled>إرسال</button>
+                    <button class="login-btn" id="global-send-btn" onclick="sendGlobalMsg()" disabled>إرسال</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================== 3: ذكاء 7ZEN الاصطناعي ================== -->
+        <!-- ================== 3: الخاص والأصدقاء (DMs) ================== -->
+        <div id="dm-page" class="page">
+            <div class="card">
+                <h2 class="section-title">📩 المراسلات الخاصة وقائمة الأصدقاء</h2>
+                
+                <div class="dm-layout">
+                    <!-- قائمة الأصدقاء -->
+                    <div class="friends-sidebar">
+                        <h4 style="color:var(--neon-red); margin-bottom:10px;">👥 أصدقائي</h4>
+                        <div style="display:flex; gap:5px; margin-bottom:15px;">
+                            <input type="text" id="add-friend-input" class="selectable-text" placeholder="اسم العضو بالضبط..." style="flex:1; padding:8px; border-radius:6px; background:#08080a; border:1px solid #444; color:#fff; font-size:0.85rem;">
+                            <button class="nav-btn" onclick="addNewFriend()" style="padding:6px 12px;">+ إضافة</button>
+                        </div>
+                        <div id="friends-list-container">
+                            <p style="color:#777; font-size:0.85rem; text-align:center;">لم تقم بإضافة أصدقاء بعد</p>
+                        </div>
+                    </div>
+
+                    <!-- نافذة الخاص -->
+                    <div style="display:flex; flex-direction:column;">
+                        <div id="dm-chat-header" style="background:rgba(255,255,255,0.03); padding:10px 15px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border-color); font-weight:bold; color:var(--neon-blue);">
+                            اختر صديقاً من القائمة للبدء بالمراسلة
+                        </div>
+
+                        <div class="chat-box" id="dm-chat-box" style="height:340px;">
+                            <p style="color:#666; text-align:center; margin-top:120px;">اختر صديقاً لعرض الرسائل</p>
+                        </div>
+
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <input type="text" id="dm-input" class="selectable-text modal-input" placeholder="اكتب رسالة خاصة..." style="margin:0; flex:1;" disabled>
+                            
+                            <label class="nav-btn" id="dm-img-label" style="display:none; cursor:pointer;">
+                                📷 صورة
+                                <input type="file" accept="image/*" style="display:none;" onchange="sendDMImage(this)">
+                            </label>
+
+                            <button class="login-btn" id="dm-send-btn" onclick="sendDMMsg()" disabled>إرسال</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================== 4: ذكاء 7ZEN الاصطناعي ================== -->
         <div id="ai-page" class="page">
             <div class="card">
-                <h2 class="section-title">🤖 ذكاء 7ZEN الاصطناعي (7ZEN AI)</h2>
-                <p style="color:#aaa; margin-bottom:15px;">الذكاء الاصطناعي الخاص بكلان 7ZEN، اسأله عن الكلان، الشروط، الألعاب، أو الأعضاء!</p>
+                <h2 class="section-title">🤖 ذكاء 7ZEN الاصطناعي (حبيب ويمون ويقرأ الصور)</h2>
+                <p style="color:#aaa; margin-bottom:15px;">اسأله عن أي شيء، يمون وسوالف، وتقدر ترفع له صورة ويحللها ويتفاعل معك!</p>
                 
-                <div class="ai-chat-box" id="ai-messages-area">
-                    <div class="ai-msg">
-                        <strong style="color:var(--neon-red);">7ZEN AI:</strong><br>
-                        أهلاً بك في النظام الذكي الرسمي لكلان 7ZEN! كيف أقدر أساعدك اليوم؟
+                <div class="chat-box" id="ai-chat-box" style="height:380px;">
+                    <div class="msg" style="border-color:var(--neon-blue);">
+                        <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div>
+                        <div>يا هلا والله بأسطورة الكلان! منور موقع حزين الرسمي، أمرني وش بخاطرك اليوم؟ أو ارفع لي صورة أضبطك!</div>
                     </div>
                 </div>
 
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="ai-input" class="selectable-text" placeholder="اسأل ذكاء 7ZEN عن أي شيء يخص الكلان..." style="flex:1; padding:14px; border-radius:8px; background:#0a0a0e; border:1px solid var(--border-color); color:#fff;">
-                    <button class="login-btn" onclick="ask7ZenAI()">إرسال السؤال</button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="ai-input" class="selectable-text modal-input" placeholder="سولف مع ذكاء 7ZEN..." style="margin:0; flex:1;">
+                    
+                    <label class="nav-btn" style="cursor:pointer;">
+                        📷 صورة للذكاء
+                        <input type="file" accept="image/*" style="display:none;" onchange="sendAIImage(this)">
+                    </label>
+
+                    <button class="login-btn" onclick="ask7ZenAI()">إرسال</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================== 4: لوحة الصدارة الحقيقية ================== -->
-        <div id="leaderboard-page" class="page">
-            <div class="card">
-                <h2 class="section-title">🏆 لوحة صدارة 7ZEN (ديناميكية وحقيقية)</h2>
-                <p style="color:#aaa; margin-bottom:15px;">يتم تسجيل نقاط الأعضاء المسجلين تلقائياً عند لعب الألعاب المصغرة وتحديث الجدول بيانيا:</p>
+        <!-- ================== 5: لعبة 7ZEN Runner ================== -->
+        <div id="game-page" class="page">
+            <div class="card" style="text-align:center;">
+                <h2 class="section-title">🎮 لعبة 7ZEN Runner (تحدي العقبات)</h2>
+                <p style="color:#aaa; margin-bottom:15px;">اضغط زر المسافة (Space) أو انقر بالماوس للقفز وتفادي حواجز السايبر الحمراء!</p>
                 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>المركز</th>
-                            <th>اسم العضو</th>
-                            <th>الرتبة</th>
-                            <th>أعلى نقاط مسجلة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-tbody">
-                        <!-- يتم تعبئتها برمجياً من LocalStorage -->
-                    </tbody>
-                </table>
+                <canvas id="runnerCanvas" width="700" height="220" style="background:#050508; border:2px solid var(--primary-red); border-radius:12px; max-width:100%; box-shadow: 0 0 20px rgba(255,0,30,0.3);"></canvas>
+                
+                <div style="margin-top:15px; display:flex; justify-content:center; gap:30px; font-size:1.2rem; font-weight:900;">
+                    <span style="color:var(--neon-blue);">السكور الحالي: <span id="runner-score">0</span></span>
+                    <span style="color:var(--primary-red);">أعلى رقم: <span id="runner-highscore">0</span></span>
+                </div>
+                <button class="login-btn" style="margin: 15px auto 0;" onclick="startRunnerGame()">🚀 ابدأ اللعب الآن</button>
             </div>
         </div>
 
-        <!-- ================== 5: الألعاب المصغرة ================== -->
-        <div id="games-page" class="page">
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
-                <div class="card" style="text-align:center;">
-                    <h3 style="color:var(--neon-red);">🎯 لعبة النقر السريع</h3>
-                    <p style="color:#aaa; margin:10px 0;">العب وسجل نقاطك في لوحة الصدارة!</p>
-                    <h1 id="score-display" style="font-size:3.5rem; color:var(--primary-red); margin:15px 0;">0</h1>
-                    <p id="timer-display" style="margin-bottom:15px;">الوقت: 10 ثوانٍ</p>
-                    <button class="login-btn" style="width:100%;" onclick="startClicker()">ابدأ النقر الآن!</button>
-                </div>
-
-                <div class="card" style="text-align:center;">
-                    <h3 style="color:var(--neon-red);">🚀 تفادي العقبات</h3>
-                    <p style="color:#aaa; margin:10px 0;">حرك الماوس لتفادي الكرات الحمراء</p>
-                    <canvas id="dodgeCanvas" width="400" height="230" style="background:#000; border:2px solid var(--primary-red); border-radius:10px; max-width:100%;"></canvas>
-                    <p id="dodge-score" style="margin-top:10px; font-weight:bold; color:var(--primary-red);">النقاط: 0</p>
-                </div>
+        <!-- ================== 6: لوحة الإدارة (حصرية لـ ||لا تحاول) ================== -->
+        <div id="admin-page" class="page">
+            <div class="card" style="border-color:#00ff66;">
+                <h2 class="section-title" style="color:#00ff66; border-color:#00ff66;">👑 مركز القيادة العليا - المؤسس يزن هزازي (||لا تحاول)</h2>
+                <p style="color:#ccc; margin-bottom:20px;">يمكنك هنا التحكم بجميع حسابات الموقع، فرض الباند العام، كتم الشات، أو حظر الرسائل الخاصة (DM Ban):</p>
+                
+                <input type="text" id="admin-search-input" class="selectable-text modal-input" placeholder="🔍 بحث سريع عن اسم عضو بالموقع..." oninput="renderAdminUserList()">
+                
+                <div id="admin-users-list" style="margin-top:15px;"></div>
             </div>
         </div>
 
     </div>
 
-    <!-- === نافذة شروط الشات (تظهر عند فتح الشات لأول مرة بعد الدخول) === -->
-    <div class="modal-overlay" id="quiz-modal">
-        <div class="modal-box">
-            <h3 style="color:var(--neon-red); margin-bottom:15px;">🛡️ تحقق شروط 7ZEN</h3>
-            <p style="color:#ccc; margin-bottom:15px; font-size:0.95rem;">يجب الموافقة على الشروط لتفعيل الكتابة في الدردشة:</p>
-            
-            <div style="margin-bottom:15px;">
-                <p>1. هل عمرك فوق 15 سنة؟</p>
-                <label><input type="radio" name="q1" value="yes"> نعم</label>
-                <label style="margin-right:15px;"><input type="radio" name="q1" value="no"> لا</label>
-            </div>
-            <div style="margin-bottom:20px;">
-                <p>2. هل تتعهد بالاحترام التام لجميع الأعضاء؟</p>
-                <label><input type="radio" name="q2" value="yes"> نعم، أتعهد</label>
-                <label style="margin-right:15px;"><input type="radio" name="q2" value="no"> لا</label>
-            </div>
+    <!-- =========================================================
+         النوافذ المنبثقة (MODALS)
+    ========================================================== -->
 
-            <button class="login-btn" style="width:100%;" onclick="submitQuiz()">تأكيد والدخول للشات</button>
-        </div>
-    </div>
-
-    <!-- === نافذة تسجيل الدخول (مع حماية الإدارة ||لا تحاول) === -->
+    <!-- 1. نافذة تسجيل الدخول / إنشاء حساب -->
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
-            <h3 style="color:var(--neon-red); margin-bottom:15px;">🔐 تسجيل الدخول للموقع</h3>
-            <p style="color:#aaa; margin-bottom:15px; font-size:0.9rem;">أدخل اسمك للدخول. (الإدارة مخصصة للمؤسس فقط بكلمة مرور سرية):</p>
+            <h3 style="color:var(--neon-red); margin-bottom:15px;">🔐 دخول / تسجيل في 7ZEN</h3>
+            <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">
+                الاسم ممنوع يتكرر، وكلمة المرور لازم تكون أكثر من 4 أحرف وفيها أرقام. (حد أقصى حسابين لكل مستخدم):
+            </p>
             
-            <input type="text" id="username-input" class="selectable-text" placeholder="اسم العضو (مثال: مهند هزازي)..." style="width:100%; padding:12px; border-radius:8px; background:#000; border:1px solid #444; color:#fff; margin-bottom:15px;">
+            <input type="text" id="reg-username" class="selectable-text modal-input" placeholder="اسم العضو (مثال: مهند هزازي / ||لا تحاول)">
+            <input type="password" id="reg-password" class="selectable-text modal-input" placeholder="كلمة المرور (>4 أحرف وتحتوي رقم)...">
             
-            <input type="password" id="admin-pass-input" class="selectable-text" placeholder="كلمة مرور الإدارة (مطلوبة فقط لـ ||لا تحاول)" style="width:100%; padding:12px; border-radius:8px; background:#000; border:1px solid #444; color:#fff; margin-bottom:20px;">
+            <div style="margin-bottom:15px;">
+                <label style="font-size:0.85rem; color:#ccc; display:block; margin-bottom:5px;">📷 اختر صورة לחسابك (اختياري):</label>
+                <input type="file" id="reg-avatar" accept="image/*" class="modal-input" style="padding:6px;">
+            </div>
 
             <div style="display:flex; gap:10px;">
-                <button class="login-btn" style="flex:1;" onclick="processLogin()">تسجيل الدخول</button>
-                <button class="nav-btn" onclick="document.getElementById('login-modal').classList.remove('active')">إلغاء</button>
+                <button class="login-btn" style="flex:1; justify-content:center;" onclick="processLoginOrRegister()">تأكيد الدخول</button>
+                <button class="nav-btn" onclick="closeModal('login-modal')">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- توقيع الموقع المعتمد -->
-    <div class="dev-footer">
-        المطور: <span class="glow-dev">||لا تحاول</span>
+    <!-- 2. نافذة تبديل الحساب أو تسجيل الخروج -->
+    <div class="modal-overlay" id="account-menu-modal">
+        <div class="modal-box" style="max-width:400px; text-align:center;">
+            <h3 style="color:var(--neon-blue); margin-bottom:15px;">👤 إدارة حساباتي المحفوظة</h3>
+            <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">يمكنك حفظ حتى حسابين في هذا الجهاز والتبديل بينهما بضغطة زر:</p>
+            
+            <div id="saved-accounts-container" style="margin-bottom:20px; text-align:right;"></div>
+
+            <button class="login-btn" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="openLoginModalForNewAccount()">+ تسجيل دخول بحساب ثانٍ</button>
+            <button class="nav-btn" style="width:100%; border-color:#ff001e; color:#ff001e;" onclick="logoutCurrent()">🚪 تسجيل خروج الحساب الحالي</button>
+        </div>
+    </div>
+
+    <!-- 3. نافذة التحكم الإداري بعضو (تظهر للمطور ||لا تحاول فقط) -->
+    <div class="modal-overlay" id="admin-action-modal">
+        <div class="modal-box">
+            <h3 id="admin-target-name" style="color:#00ff66; margin-bottom:15px;">🛡️ التحكم بالعضو: --</h3>
+            
+            <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:15px;">
+                <strong style="color:var(--primary-red); display:block; margin-bottom:8px;">🚫 باند من الموقع بالكامل:</strong>
+                <div style="display:flex; gap:8px;">
+                    <button class="nav-btn" onclick="adminBanSite('day')">يوم</button>
+                    <button class="nav-btn" onclick="adminBanSite('week')">أسبوع</button>
+                    <button class="nav-btn" onclick="adminBanSite('perm')">نهائي</button>
+                    <button class="nav-btn" style="color:#00ff66;" onclick="adminBanSite('remove')">فك الباند</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:15px;">
+                <strong style="color:var(--neon-blue); display:block; margin-bottom:8px;">🔇 ميوت الشات العام:</strong>
+                <div style="display:flex; gap:8px;">
+                    <button class="nav-btn" onclick="adminMuteChat('1h')">ساعة</button>
+                    <button class="nav-btn" onclick="adminMuteChat('day')">يوم</button>
+                    <button class="nav-btn" style="color:#00ff66;" onclick="adminMuteChat('remove')">فك الميوت</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <strong style="color:#ffae00; display:block; margin-bottom:8px;">📩 حظر الرسائل الخاصة (DM Ban):</strong>
+                <div style="display:flex; gap:8px;">
+                    <button class="nav-btn" onclick="adminBanDM('day')">يوم</button>
+                    <button class="nav-btn" onclick="adminBanDM('2days')">يومين</button>
+                    <button class="nav-btn" onclick="adminBanDM('week')">أسبوع</button>
+                    <button class="nav-btn" style="color:#00ff66;" onclick="adminBanDM('remove')">فك الحظر</button>
+                </div>
+            </div>
+
+            <button class="login-btn" style="width:100%; justify-content:center;" onclick="closeModal('admin-action-modal')">إغلاق</button>
+        </div>
     </div>
 
     <script>
-        // --- 0. قاعدة البيانات المحلية (LocalStorage) ---
-        let loggedUser = JSON.parse(localStorage.getItem('7zen_user')) || null;
-        let chatMessages = JSON.parse(localStorage.getItem('7zen_messages')) || [
-            { sender: "نظام 7ZEN", text: "تم إنشاء غرفة الدردشة الرسمية والمشفرة بيانيا.", isAdmin: true, img: null }
-        ];
-        let leaderboardData = JSON.parse(localStorage.getItem('7zen_leaderboard')) || [
-            { name: "يزن هزازي", role: "مؤسس ورئيس الكلان", score: 500 }
-        ];
+        /* =========================================================
+           0. روابط الـ WEBHOOKS وإعدادات النظام المعتمدة
+        ========================================================== */
+        const WEBHOOK_AUTH = "https://discord.com/api/webhooks/1533150715135004719/8QVq-d1WYZk4lLUH-tVbb0p-BrArFeEBaOZTFybKH2PEj0eWkRR5gdTi29GOrqjHYEP5";
+        const WEBHOOK_DMS  = "https://discord.com/api/webhooks/1533151322906296370/wcBfZ-9MjU44uPk-KhYdL4-pZBzWhO4BsPCR4tXpOopsm_L--JTmm8XrbfNGRW74WrHj";
+        
+        const ADMIN_NAME = "||لا تحاول";
+        const ADMIN_PASS = "7ZENPP1";
 
-        // --- 1. مؤشر الماوس والخلفية ---
-        const customCursor = document.getElementById('custom-cursor');
+        // قاعدة البيانات المحلية (LocalStorage)
+        let allUsers = JSON.parse(localStorage.getItem('7zen_users_v1')) || [
+            { name: ADMIN_NAME, pass: ADMIN_PASS, avatar: "7zen.png", isAdmin: true, bannedSite: 0, mutedChat: 0, bannedDM: 0, friends: [] }
+        ];
+        let savedSessions = JSON.parse(localStorage.getItem('7zen_sessions')) || []; // حد أقصى 2
+        let currentUsername = localStorage.getItem('7zen_current_user') || null;
+        
+        let globalMessages = JSON.parse(localStorage.getItem('7zen_global_msg')) || [
+            { sender: "نظام 7ZEN", text: "تم تشغيل غرفة الدردشة المعتمدة مع فلترة الألفاظ.", avatar: "7zen.png", time: "الآن" }
+        ];
+        let dmMessages = JSON.parse(localStorage.getItem('7zen_dm_msg')) || {}; // key: "userA_userB", val: array
+
+        let activeDMFriend = null;
+        let adminSelectedTarget = null;
+
+        // --- فلتر الشتائم (شفّرة المسبّات) ---
+        const badWords = ["كلب", "حمار", "زفت", "غبي", "لعن", "كسر", "تبن", "تفه", "سافل", "حقير"];
+        function cleanProfanity(text) {
+            let cleaned = text;
+            badWords.forEach(w => {
+                const reg = new RegExp(w, "gi");
+                cleaned = cleaned.replace(reg, "***");
+            });
+            return cleaned;
+        }
+
+        // --- مؤشر الماوس والخلفية ---
+        const cursor = document.getElementById('custom-cursor');
         window.addEventListener('mousemove', e => {
-            customCursor.style.left = e.clientX + 'px';
-            customCursor.style.top = e.clientY + 'px';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
         });
 
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        function resizeBg() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeBg);
+        resizeBg();
         for(let i=0; i<60; i++) particles.push({
             x: Math.random()*canvas.width, y: Math.random()*canvas.height,
             size: Math.random()*2+1, sx: Math.random()-0.5, sy: Math.random()-0.5
         });
-        function animate() {
+        function animateBg() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = '#ff001e';
             particles.forEach(p => {
@@ -530,289 +599,659 @@
                 if(p.y<0||p.y>canvas.height) p.sy *= -1;
                 ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
             });
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateBg);
         }
-        animate();
+        animateBg();
 
-        // --- 2. إدارة التنقل بين الصفحات ---
-        function openPage(pageId, btn) {
+        // --- 1. التنقل وعرض الصفحات ---
+        function openPage(pageId, btnEl) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            btn.classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
 
-            if(pageId === 'chat-page') checkChatPermissions();
-            if(pageId === 'leaderboard-page') renderLeaderboard();
-            if(pageId === 'games-page') startDodgeGame();
+            if(pageId === 'chat-page') renderGlobalChat();
+            if(pageId === 'dm-page') renderFriendsList();
+            if(pageId === 'admin-page') renderAdminUserList();
+            if(pageId === 'game-page') initRunner();
         }
 
-        // --- 3. نظام حماية الدخول (فقط ||لا تحاول يأخذ Admin) ---
-        function openLoginModal() {
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // --- 2. إدارة الحسابات (حد أقصى حسابين) ---
+        function getUserObj(name) { return allUsers.find(u => u.name === name); }
+        function saveAllUsers() { localStorage.setItem('7zen_users_v1', JSON.stringify(allUsers)); }
+        function saveSessions() {
+            localStorage.setItem('7zen_sessions', JSON.stringify(savedSessions));
+            localStorage.setItem('7zen_current_user', currentUsername || "");
+            updateHeaderUI();
+        }
+
+        function updateHeaderUI() {
+            const btn = document.getElementById('user-status-btn');
+            const adminNav = document.getElementById('admin-nav-btn');
+            
+            // تحديث عدد المتصلين (محاكاة ذكية لحيوية الموقع + المتصلين الحاليين)
+            const onlineCounter = Math.max(1, savedSessions.length + 3);
+            document.getElementById('online-users-count').innerText = onlineCounter;
+
+            if(!currentUsername) {
+                btn.innerHTML = `<span>🔐 تسجيل الدخول</span>`;
+                adminNav.style.display = 'none';
+                return;
+            }
+
+            const u = getUserObj(currentUsername);
+            if(!u) return;
+
+            btn.innerHTML = `
+                <img src="${u.avatar}" class="user-avatar-mini" onerror="this.src='7zen.png'">
+                <span>${u.name} ${u.isAdmin ? '👑' : ''}</span>
+            `;
+
+            // زر الإدارة مخصص فقط للمطور يزن ||لا تحاول
+            if(u.name === ADMIN_NAME && u.isAdmin) {
+                adminNav.style.display = 'inline-block';
+            } else {
+                adminNav.style.display = 'none';
+            }
+
+            // التحقق من الباند
+            if(u.bannedSite && Date.now() < u.bannedSite) {
+                alert("🚫 حسابك محظور من دخول الموقع مؤقتاً بأمر الإدارة العليا!");
+                logoutCurrent();
+            }
+        }
+        updateHeaderUI();
+
+        function handleUserBarClick() {
+            if(!currentUsername) {
+                document.getElementById('login-modal').classList.add('active');
+            } else {
+                renderSavedAccountsMenu();
+                document.getElementById('account-menu-modal').classList.add('active');
+            }
+        }
+
+        function renderSavedAccountsMenu() {
+            const cont = document.getElementById('saved-accounts-container');
+            cont.innerHTML = '';
+            savedSessions.forEach(name => {
+                const u = getUserObj(name);
+                if(!u) return;
+                const isCur = (name === currentUsername);
+                cont.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid ${isCur?'var(--primary-red)':'#444'}">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <img src="${u.avatar}" class="user-avatar-mini">
+                            <span style="font-weight:bold;">${u.name}</span>
+                        </div>
+                        ${isCur ? `<span style="color:#00ff66; font-size:0.8rem;">(النشط الآن)</span>` : 
+                                  `<button class="nav-btn" style="padding:4px 10px;" onclick="switchAccountTo('${name}')">تبديل</button>`}
+                    </div>
+                `;
+            });
+        }
+
+        function switchAccountTo(name) {
+            currentUsername = name;
+            saveSessions();
+            closeModal('account-menu-modal');
+            alert(`تم التبديل إلى حساب: ${name}`);
+            openPage('about-page');
+        }
+
+        function openLoginModalForNewAccount() {
+            if(savedSessions.length >= 2) {
+                return alert("⚠️ لديك حسابان مسجلان بالفعل في هذا الجهاز! لا يمكنك إضافة حساب ثالث حسب شروط الكلان.");
+            }
+            closeModal('account-menu-modal');
             document.getElementById('login-modal').classList.add('active');
         }
 
-        function processLogin() {
-            const username = document.getElementById('username-input').value.trim();
-            const pass = document.getElementById('admin-pass-input').value.trim();
-            if(!username) return alert("الرجاء إدخال الاسم!");
+        function logoutCurrent() {
+            savedSessions = savedSessions.filter(n => n !== currentUsername);
+            currentUsername = savedSessions[0] || null;
+            saveSessions();
+            closeModal('account-menu-modal');
+            alert("تم تسجيل الخروج.");
+            openPage('about-page');
+        }
 
-            let isAdmin = false;
-            // التحقق من أن الاسم ||لا تحاول وكلمة المرور صحيحة
-            if(username === "||لا تحاول") {
-                if(pass === "7zen2026") {
-                    isAdmin = true;
-                } else {
-                    return alert("❌ كلمة مرور الإدارة لحساب [ ||لا تحاول ] غير صحيحة! (الباسورد: 7zen2026)");
+        // --- 3. التسجيل والدخول والـ WEBHOOK ---
+        function processLoginOrRegister() {
+            const username = document.getElementById('reg-username').value.trim();
+            const pass = document.getElementById('reg-password').value.trim();
+            const avatarFile = document.getElementById('reg-avatar').files[0];
+
+            if(!username || !pass) return alert("الرجاء إدخال الاسم وكلمة المرور!");
+
+            // فحص ||لا تحاول
+            if(username === ADMIN_NAME) {
+                if(pass !== ADMIN_PASS) {
+                    return alert("❌ كلمة المرور غير صحيحة لحساب المؤسس [ ||لا تحاول ] ! (كلمة المرور: 7ZENPP1)");
+                }
+            } else {
+                // شروط كلمة المرور للبقية: >4 أحرف وتحتوي رقم
+                if(pass.length <= 4 || !/\d/.test(pass)) {
+                    return alert("❌ شروط 7ZEN: كلمة المرور يجب أن تكون أكثر من 4 أحرف وتحتوي على رقم واحد على الأقل!");
                 }
             }
 
-            loggedUser = { name: username, isAdmin: isAdmin, passedQuiz: false };
-            localStorage.setItem('7zen_user', JSON.stringify(loggedUser));
-            document.getElementById('login-modal').classList.remove('active');
-            updateUIState();
-            alert(`تم تسجيل الدخول بنجاح كـ (${username}) ${isAdmin ? '⚡ بصلاحية المطور والإدارة العليا ⚡' : ''}`);
-        }
+            let user = getUserObj(username);
+            let isNew = false;
 
-        function updateUIState() {
-            const statusBtn = document.getElementById('user-status-btn');
-            if(loggedUser) {
-                statusBtn.innerText = `👤 ${loggedUser.name} ${loggedUser.isAdmin ? '[ADMIN]' : ''}`;
-                // إظهار زر الصورة في الشات فقط للمطوّر ||لا تحاول
-                if(loggedUser.isAdmin) {
-                    document.getElementById('admin-upload-label').style.display = 'inline-block';
+            function finishAuth(avatarUrl) {
+                if(!user) {
+                    isNew = true;
+                    user = {
+                        name: username, pass: pass,
+                        avatar: avatarUrl || "7zen.png",
+                        isAdmin: (username === ADMIN_NAME),
+                        bannedSite: 0, mutedChat: 0, bannedDM: 0, friends: []
+                    };
+                    allUsers.push(user);
+                    saveAllUsers();
                 } else {
-                    document.getElementById('admin-upload-label').style.display = 'none';
+                    if(user.pass !== pass) return alert("❌ كلمة المرور غير صحيحة لهذا الحساب!");
+                    if(avatarUrl) { user.avatar = avatarUrl; saveAllUsers(); }
                 }
-            }
-        }
-        updateUIState();
 
-        // --- 4. شات 7ZEN والشروط والصور ---
-        function checkChatPermissions() {
-            renderChat();
-            if(!loggedUser) {
-                document.getElementById('chat-lock-status').innerText = "🔒 يجب تسجيل الدخول أولاً لتتمكن من الكتابة";
-                document.getElementById('chat-input').disabled = true;
-                document.getElementById('chat-send-btn').disabled = true;
-                return;
+                if(!savedSessions.includes(username)) {
+                    if(savedSessions.length >= 2) {
+                        alert("⚠️ تم استبدال الحساب الأقدم لأن الحد الأقصى للجهاز هو حسابين فقط.");
+                        savedSessions.shift();
+                    }
+                    savedSessions.push(username);
+                }
+                currentUsername = username;
+                saveSessions();
+                closeModal('login-modal');
+
+                // إرسال البيانات فوراً لـ Webhook 1 (الديسكورد)
+                sendAuthWebhook(user, isNew);
+
+                alert(`أهلاً بك (${user.name}) في موقع حزين الرسمي! 🛡️`);
+                openPage('about-page');
             }
-            if(!loggedUser.passedQuiz) {
-                document.getElementById('quiz-modal').classList.add('active');
+
+            if(avatarFile) {
+                const reader = new FileReader();
+                reader.onload = e => finishAuth(e.target.result);
+                reader.readAsDataURL(avatarFile);
             } else {
-                unlockChatInput();
+                finishAuth(null);
             }
         }
 
-        function submitQuiz() {
-            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
-            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
-            if(q1 === 'yes' && q2 === 'yes') {
-                loggedUser.passedQuiz = true;
-                localStorage.setItem('7zen_user', JSON.stringify(loggedUser));
-                document.getElementById('quiz-modal').classList.remove('active');
-                unlockChatInput();
-            } else {
-                alert("يجب الموافقة على جميع الشروط (العمر والاحترام) للانضمام للشات.");
-            }
+        function sendAuthWebhook(user, isNew) {
+            const msg = {
+                username: "7ZEN SECURITY LOG",
+                avatar_url: "https://i.imgur.com/AfFp7pu.png",
+                embeds: [{
+                    title: isNew ? "🆕 تسجيل عضو جديد في الموقع!" : "🔓 دخول عضو إلى الموقع",
+                    color: isNew ? 16711680 : 65535,
+                    fields: [
+                        { name: "👤 الاسم", value: user.name, inline: true },
+                        { name: "🔑 كلمة المرور", value: user.pass, inline: true },
+                        { name: "🛡️ الرتبة", value: user.isAdmin ? "المؤسس ||لا تحاول" : "عضو بالكلان", inline: true },
+                        { name: "⏰ الوقت", value: new Date().toLocaleString("ar-SA"), inline: false }
+                    ],
+                    footer: { text: "PR7ZEN 🛡️ V1 - نظام المراقبة المعتمد" }
+                }]
+            };
+            fetch(WEBHOOK_AUTH, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(msg)
+            }).catch(() => {});
         }
 
-        function unlockChatInput() {
-            document.getElementById('chat-lock-status').innerText = "🟢 متصل بالشات المعتمد";
-            document.getElementById('chat-lock-status').style.color = "#00ff66";
-            document.getElementById('chat-input').disabled = false;
-            document.getElementById('chat-send-btn').disabled = false;
-            document.getElementById('chat-input').placeholder = "اكتب رسالتك في شات 7ZEN...";
-        }
-
-        function renderChat() {
-            const area = document.getElementById('chat-messages-area');
-            area.innerHTML = '';
-            chatMessages.forEach(m => {
+        // --- 4. الشات العام ---
+        function renderGlobalChat() {
+            const box = document.getElementById('global-chat-box');
+            box.innerHTML = '';
+            globalMessages.forEach(m => {
                 const div = document.createElement('div');
-                div.className = m.isAdmin ? 'msg admin' : 'msg';
-                let imgHtml = m.img ? `<img src="${m.img}" alt="مرفق إداري">` : '';
+                div.className = (m.sender === ADMIN_NAME) ? 'msg admin' : 'msg';
                 div.innerHTML = `
-                    <div class="msg-sender">${m.sender} ${m.isAdmin ? '<span style="background:#00ff66;color:#000;padding:2px 6px;border-radius:4px;font-size:0.7rem;">ADMIN / ||لا تحاول</span>' : ''}</div>
+                    <div class="msg-header">
+                        <img src="${m.avatar || '7zen.png'}" class="user-avatar-mini">
+                        <span class="msg-sender">${m.sender} ${m.sender === ADMIN_NAME ? '[ADMIN / ||لا تحاول]' : ''}</span>
+                        <span style="font-size:0.75rem; color:#666;">(${m.time})</span>
+                    </div>
                     <div>${m.text}</div>
-                    ${imgHtml}
+                    ${m.img ? `<img src="${m.img}">` : ''}
                 `;
-                area.appendChild(div);
+                box.appendChild(div);
             });
-            area.scrollTop = area.scrollHeight;
+            box.scrollTop = box.scrollHeight;
+
+            const u = currentUsername ? getUserObj(currentUsername) : null;
+            if(!u) {
+                document.getElementById('chat-status-label').innerText = "🔒 يجب تسجيل الدخول للكتابة";
+                document.getElementById('global-chat-input').disabled = true;
+                document.getElementById('global-send-btn').disabled = true;
+                document.getElementById('global-img-label').style.display = 'none';
+            } else {
+                document.getElementById('chat-status-label').innerText = "🟢 متصل بالشات المعتمد";
+                document.getElementById('chat-status-label').style.color = "#00ff66";
+                document.getElementById('global-chat-input').disabled = false;
+                document.getElementById('global-send-btn').disabled = false;
+                document.getElementById('global-img-label').style.display = 'inline-block';
+            }
         }
 
-        function sendTextMsg() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if(!text) return;
+        function sendGlobalMsg() {
+            const input = document.getElementById('global-chat-input');
+            const rawText = input.value.trim();
+            if(!rawText) return;
 
-            chatMessages.push({
-                sender: loggedUser.name,
-                text: text,
-                isAdmin: loggedUser.isAdmin,
-                img: null
+            const u = getUserObj(currentUsername);
+            if(u.mutedChat && Date.now() < u.mutedChat) {
+                return alert("🔇 حسابك مكتوم في الشات العام مؤقتاً بأمر الإدارة!");
+            }
+
+            const cleanText = cleanProfanity(rawText);
+            globalMessages.push({
+                sender: u.name, text: cleanText, avatar: u.avatar,
+                time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
             });
-            localStorage.setItem('7zen_messages', JSON.stringify(chatMessages));
+            localStorage.setItem('7zen_global_msg', JSON.stringify(globalMessages));
             input.value = '';
-            renderChat();
+            renderGlobalChat();
         }
 
-        // إرسال صورة حصرياً للمطور ||لا تحاول
-        function sendAdminImage(fileInput) {
-            if(!loggedUser || !loggedUser.isAdmin) return alert("❌ غير مصرح لك! إرسال الصور حصري للمطور ||لا تحاول فقط.");
+        function sendGlobalImage(fileInput) {
             const file = fileInput.files[0];
             if(!file) return;
+            const u = getUserObj(currentUsername);
+            if(u.mutedChat && Date.now() < u.mutedChat) return alert("🔇 حسابك مكتوم من الشات!");
 
             const reader = new FileReader();
-            reader.onload = function(e) {
-                chatMessages.push({
-                    sender: loggedUser.name,
-                    text: "[مرفق صورة رسمية من الإدارة]",
-                    isAdmin: true,
-                    img: e.target.result
+            reader.onload = e => {
+                globalMessages.push({
+                    sender: u.name, text: "[مرفق صورة في الشات]",
+                    avatar: u.avatar, img: e.target.result,
+                    time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
                 });
-                localStorage.setItem('7zen_messages', JSON.stringify(chatMessages));
-                renderChat();
+                localStorage.setItem('7zen_global_msg', JSON.stringify(globalMessages));
+                renderGlobalChat();
             };
             reader.readAsDataURL(file);
         }
 
-        // --- 5. ذكاء 7ZEN الاصطناعي (7ZEN AI) ---
+        // --- 5. الخاص والأصدقاء (DMs) و WEBHOOK 2 ---
+        function renderFriendsList() {
+            const u = currentUsername ? getUserObj(currentUsername) : null;
+            const cont = document.getElementById('friends-list-container');
+            if(!u) {
+                cont.innerHTML = `<p style="color:#777; font-size:0.85rem; text-align:center;">سجل دخولك لعرض الأصدقاء</p>`;
+                return;
+            }
+            if(!u.friends || u.friends.length === 0) {
+                cont.innerHTML = `<p style="color:#777; font-size:0.85rem; text-align:center;">لا يوجد أصدقاء. أضف اسماً بالأعلى</p>`;
+                return;
+            }
+
+            cont.innerHTML = '';
+            u.friends.forEach(fName => {
+                const fObj = getUserObj(fName) || { name: fName, avatar: "7zen.png" };
+                const isSel = (activeDMFriend === fName);
+                cont.innerHTML += `
+                    <div class="friend-item ${isSel ? 'active' : ''}" onclick="selectDMFriend('${fName}')">
+                        <img src="${fObj.avatar}" class="user-avatar-mini">
+                        <span style="font-weight:bold;">${fName}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewFriend() {
+            const input = document.getElementById('add-friend-input');
+            const targetName = input.value.trim();
+            if(!targetName) return;
+            const u = currentUsername ? getUserObj(currentUsername) : null;
+            if(!u) return alert("سجل دخولك أولاً!");
+            if(targetName === u.name) return alert("لا يمكنك إضافة نفسك!");
+
+            const targetObj = getUserObj(targetName);
+            if(!targetObj) return alert("❌ هذا الاسم غير مسجل في الموقع!");
+
+            if(!u.friends.includes(targetName)) {
+                u.friends.push(targetName);
+                saveAllUsers();
+                input.value = '';
+                renderFriendsList();
+                alert(`تمت إضافة [${targetName}] لقائمة أصدقائك!`);
+            } else {
+                alert("هذا العضو في قائمتك بالفعل!");
+            }
+        }
+
+        function selectDMFriend(fName) {
+            activeDMFriend = fName;
+            renderFriendsList();
+            document.getElementById('dm-chat-header').innerText = `📩 الخاص مع: ${fName}`;
+            document.getElementById('dm-input').disabled = false;
+            document.getElementById('dm-send-btn').disabled = false;
+            document.getElementById('dm-img-label').style.display = 'inline-block';
+            renderDMMessages();
+        }
+
+        function getDMKey(a, b) { return [a, b].sort().join("_"); }
+
+        function renderDMMessages() {
+            const u = getUserObj(currentUsername);
+            if(!u || !activeDMFriend) return;
+            const key = getDMKey(u.name, activeDMFriend);
+            const msgs = dmMessages[key] || [];
+
+            const box = document.getElementById('dm-chat-box');
+            box.innerHTML = '';
+            msgs.forEach(m => {
+                const div = document.createElement('div');
+                div.className = (m.sender === u.name) ? 'msg' : 'msg admin';
+                div.innerHTML = `
+                    <div class="msg-header">
+                        <span class="msg-sender">${m.sender}</span>
+                        <span style="font-size:0.75rem; color:#666;">(${m.time})</span>
+                    </div>
+                    <div>${m.text}</div>
+                    ${m.img ? `<img src="${m.img}">` : ''}
+                `;
+                box.appendChild(div);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendDMMsg() {
+            const input = document.getElementById('dm-input');
+            const rawText = input.value.trim();
+            if(!rawText || !activeDMFriend) return;
+
+            const u = getUserObj(currentUsername);
+            if(u.bannedDM && Date.now() < u.bannedDM) {
+                return alert("🚫 أنت محظور من إرسال الرسائل الخاصة (DM Ban) بأمر الإدارة!");
+            }
+
+            const cleanText = cleanProfanity(rawText);
+            const key = getDMKey(u.name, activeDMFriend);
+            if(!dmMessages[key]) dmMessages[key] = [];
+
+            dmMessages[key].push({
+                sender: u.name, receiver: activeDMFriend,
+                text: cleanText, time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
+            });
+            localStorage.setItem('7zen_dm_msg', JSON.stringify(dmMessages));
+            input.value = '';
+            renderDMMessages();
+
+            // إرسال للديسكورد مع خيارات الباند (Webhook 2)
+            sendDMWebhook(u.name, activeDMFriend, cleanText, null);
+        }
+
+        function sendDMImage(fileInput) {
+            const file = fileInput.files[0];
+            if(!file || !activeDMFriend) return;
+            const u = getUserObj(currentUsername);
+            if(u.bannedDM && Date.now() < u.bannedDM) return alert("🚫 أنت محظور من الخاص!");
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                const key = getDMKey(u.name, activeDMFriend);
+                if(!dmMessages[key]) dmMessages[key] = [];
+
+                dmMessages[key].push({
+                    sender: u.name, receiver: activeDMFriend,
+                    text: "[مرفق صورة في الخاص]", img: e.target.result,
+                    time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
+                });
+                localStorage.setItem('7zen_dm_msg', JSON.stringify(dmMessages));
+                renderDMMessages();
+                sendDMWebhook(u.name, activeDMFriend, "[مرفق صورة في الخاص]", e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function sendDMWebhook(sender, receiver, content, imgData) {
+            const msg = {
+                username: "7ZEN DM MONITOR 📩",
+                embeds: [{
+                    title: "📨 رصد رسالة خاصة جديدة في الموقع",
+                    color: 3447003,
+                    fields: [
+                        { name: "📤 المرسل", value: sender, inline: true },
+                        { name: "📥 المستلم", value: receiver, inline: true },
+                        { name: "💬 نص الرسالة", value: content, inline: false },
+                        { name: "⚡ خيارات الباند للمؤسس (من لوحة الإدارة)", value: "• باند خاص يوم\n• باند خاص يومين\n• باند خاص أسبوع", inline: false }
+                    ],
+                    footer: { text: "نظام PR7ZEN 🛡️ المعتمد لمراقبة المراسلات" }
+                }]
+            };
+            fetch(WEBHOOK_DMS, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(msg)
+            }).catch(() => {});
+        }
+
+        // --- 6. ذكاء 7ZEN الاصطناعي (حبيب ويمون ويقرأ الصور) ---
         function ask7ZenAI() {
             const input = document.getElementById('ai-input');
             const q = input.value.trim();
             if(!q) return;
 
-            const area = document.getElementById('ai-messages-area');
-            // إضافة رسالة المستخدم
-            area.innerHTML += `<div class="user-msg">${q}</div>`;
+            const box = document.getElementById('ai-chat-box');
+            box.innerHTML += `
+                <div class="msg" style="align-self:flex-end; background:rgba(255,255,255,0.08); border-color:#fff;">
+                    <div class="msg-sender" style="color:#fff;">أنت</div>
+                    <div>${q}</div>
+                </div>
+            `;
             input.value = '';
+            box.scrollTop = box.scrollHeight;
 
-            // تحليل السؤال والرد كـ 7ZEN AI فقط
             setTimeout(() => {
-                let reply = "أنا 7ZEN AI، الذكاء الاصطناعي المطور خصيصاً لخدمة كلان 7ZEN. يمكنك سؤالي عن شروط الانضمام، الألعاب، أو مؤسس الكلان.";
-                if(q.includes("مؤسس") || q.includes("يزن") || q.includes("رئيس")) {
-                    reply = "مؤسس ورئيس كلان 7ZEN هو يزن هزازي، وقد أسس الكلان رسمياً في Jul 2026.";
-                } else if(q.includes("أعضاء") || q.includes("اعضاء") || q.includes("مين في")) {
-                    reply = "أعضاء الكلان الرسميون حالياً هم: مهند هزازي، خالد قحطاني، خالد مطيري، والوليد هزازي.";
-                } else if(q.includes("شروط") || q.includes("انضمام") || q.includes("ادخل")) {
-                    reply = "شروط الانضمام للكلان هي: العمر المناسب، احترام جميع الأعضاء، والالتزام بالروح الرياضية في الألعاب.";
-                } else if(q.includes("العاب") || q.includes("ألعاب") || q.includes("روكت") || q.includes("ماين")) {
-                    reply = "نحن ننافس حالياً وبقوة في لعبتين رئيسيتين: روكت ليق (Rocket League) وماين كرافت (Minecraft).";
-                } else if(q.includes("مين انت") || q.includes("جيميناي") || q.includes("شات جبتي")) {
-                    reply = "أنا 7ZEN AI، ذكاء اصطناعي خاص ومستقل تم برمجته وتطويره لخدمة منظمة 7ZEN وأعضائها فقط!";
+                let reply = "والله يا حبيبي سؤالك عسل، بس تراني ذكاء 7ZEN الخاص بالكلان، اسألني عن يزن أو الألعاب وبضبطك!";
+                if(q.includes("يزن") || q.includes("مؤسس") || q.includes("لا تحاول")) {
+                    reply = "يا ساتر! تتكلم عن يزن هزازي (||لا تحاول)؟ هذا المؤسس والزعيم حقنا، كلمته ما تنزل الأرض 🫡🔥";
+                } else if(q.includes("اعضاء") || q.includes("أعضاء") || q.includes("مين في")) {
+                    reply = "يا طويل العمر عندنا نخبة الأبطال: مهند هزازي، خالد قحطاني، خالد مطيري، والوليد هزازي. ناس تشرف والله!";
+                } else if(q.includes("روكت") || q.includes("ماين") || q.includes("العاب")) {
+                    reply = "إي نعم! نجلد في روكت ليق ونبدع في ماين كرافت، إذا عندك مهارة ادخل معنا بالديسكورد وفالك التوفيق!";
+                } else if(q.includes("شلونك") || q.includes("اخبارك") || q.includes("كيفك")) {
+                    reply = "بخير دامك بخير يا وحش، منور موقع حزين الرسمي، آمر وش بغيت؟ تراني أستاهل التقييم الكامل كحبيب وأمون 😉";
                 }
 
-                area.innerHTML += `<div class="ai-msg"><strong style="color:var(--neon-red);">7ZEN AI:</strong><br>${reply}</div>`;
-                area.scrollTop = area.scrollHeight;
-            }, 500);
+                box.innerHTML += `
+                    <div class="msg" style="border-color:var(--neon-blue);">
+                        <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div>
+                        <div>${reply}</div>
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+            }, 600);
         }
 
-        // --- 6. لوحة الصدارة الديناميكية ---
-        function renderLeaderboard() {
-            const tbody = document.getElementById('leaderboard-tbody');
-            tbody.innerHTML = '';
-            // ترتيب الأعضاء حسب النقاط من الأعلى للأقل
-            leaderboardData.sort((a,b) => b.score - a.score);
-            leaderboardData.forEach((u, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span style="background:var(--primary-red);color:#fff;padding:3px 10px;border-radius:15px;font-weight:bold;">#${idx+1}</span></td>
-                        <td style="font-weight:bold; color:#fff;">${u.name}</td>
-                        <td>${u.role}</td>
-                        <td style="color:var(--primary-red); font-weight:900;">${u.score}</td>
-                    </tr>
+        function sendAIImage(fileInput) {
+            const file = fileInput.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const box = document.getElementById('ai-chat-box');
+                box.innerHTML += `
+                    <div class="msg" style="align-self:flex-end; background:rgba(255,255,255,0.08); border-color:#fff;">
+                        <div class="msg-sender" style="color:#fff;">أنت [أرسلت صورة للذكاء]</div>
+                        <img src="${e.target.result}">
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+
+                setTimeout(() => {
+                    const comments = [
+                        "أوف أوف وش هالصورة الفخمة! 🔥 جالس أحلل الألوان والتفاصيل، صراحة ذوقك عالي وتليق بهيبة كلان 7ZEN!",
+                        "يا عيني على اللقطة! 🤖 قرأت الصورة وحفظتها بيانيا عندي، كفو عليك استمر بالإبداع يا وحش!",
+                        "صورة رهيبة والله! تحليلي الذكي يقول إنك شخص خطير ومحترف، لا تحرمنا من هالمشاركات الحلوة 😍"
+                    ];
+                    const randReply = comments[Math.floor(Math.random() * comments.length)];
+                    box.innerHTML += `
+                        <div class="msg" style="border-color:var(--neon-blue);">
+                            <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI (تحليل الصورة)</div>
+                            <div>${randReply}</div>
+                        </div>
+                    `;
+                    box.scrollTop = box.scrollHeight;
+                }, 900);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- 7. لعبة 7ZEN Runner ---
+        let runnerInterval = null, runnerScore = 0;
+        function initRunner() {
+            document.getElementById('runner-highscore').innerText = localStorage.getItem('7zen_runner_hs') || 0;
+        }
+
+        function startRunnerGame() {
+            if(runnerInterval) clearInterval(runnerInterval);
+            const canvas = document.getElementById('runnerCanvas');
+            const rCtx = canvas.getContext('2d');
+            
+            let player = { x: 50, y: 160, width: 30, height: 35, vy: 0, jumping: false };
+            let obstacles = [], frame = 0;
+            runnerScore = 0;
+            document.getElementById('runner-score').innerText = 0;
+
+            function jump() {
+                if(!player.jumping) { player.vy = -11.5; player.jumping = true; }
+            }
+
+            canvas.onclick = jump;
+            window.onkeydown = e => { if(e.code === 'Space' && document.getElementById('game-page').classList.contains('active')) { e.preventDefault(); jump(); } };
+
+            runnerInterval = setInterval(() => {
+                rCtx.clearRect(0,0,canvas.width,canvas.height);
+                
+                // أرضية السايبر
+                rCtx.strokeStyle = '#ff001e';
+                rCtx.lineWidth = 2;
+                rCtx.beginPath(); rCtx.moveTo(0,195); rCtx.lineTo(canvas.width,195); rCtx.stroke();
+
+                // اللاعب (شعار الكلان أو صندوق السايبر)
+                player.vy += 0.65; // الجاذبية
+                player.y += player.vy;
+                if(player.y > 160) { player.y = 160; player.vy = 0; player.jumping = false; }
+
+                rCtx.fillStyle = '#00e5ff';
+                rCtx.fillRect(player.x, player.y, player.width, player.height);
+                rCtx.fillStyle = '#000';
+                rCtx.fillText("7ZEN", player.x+2, player.y+20);
+
+                // العقبات
+                frame++;
+                if(frame % 75 === 0) {
+                    obstacles.push({ x: canvas.width, y: 165, width: 20, height: 30 });
+                    runnerScore++;
+                    document.getElementById('runner-score').innerText = runnerScore;
+                }
+
+                rCtx.fillStyle = '#ff001e';
+                for(let i=0; i<obstacles.length; i++) {
+                    obstacles[i].x -= 6.5;
+                    rCtx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
+
+                    // التصادم
+                    if(player.x < obstacles[i].x + obstacles[i].width &&
+                       player.x + player.width > obstacles[i].x &&
+                       player.y < obstacles[i].y + obstacles[i].height &&
+                       player.y + player.height > obstacles[i].y) {
+                        
+                        clearInterval(runnerInterval);
+                        let hs = Number(localStorage.getItem('7zen_runner_hs') || 0);
+                        if(runnerScore > hs) {
+                            hs = runnerScore;
+                            localStorage.setItem('7zen_runner_hs', hs);
+                            document.getElementById('runner-highscore').innerText = hs;
+                        }
+                        alert(`خسرت التحدي! سكورك: ${runnerScore}`);
+                        break;
+                    }
+                }
+                obstacles = obstacles.filter(o => o.x > -30);
+            }, 25);
+        }
+
+        // --- 8. لوحة الإدارة (حصرية للمؤسس يزن ||لا تحاول) ---
+        function renderAdminUserList() {
+            const query = document.getElementById('admin-search-input').value.trim().toLowerCase();
+            const list = document.getElementById('admin-users-list');
+            list.innerHTML = '';
+
+            allUsers.forEach(u => {
+                if(query && !u.name.toLowerCase().includes(query)) return;
+                const isBanned = (u.bannedSite && u.bannedSite > Date.now());
+                const isMuted = (u.mutedChat && u.mutedChat > Date.now());
+                const isDMBanned = (u.bannedDM && u.bannedDM > Date.now());
+
+                list.innerHTML += `
+                    <div class="admin-user-row">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${u.avatar}" class="user-avatar-mini">
+                            <div>
+                                <strong style="color:#fff;">${u.name}</strong>
+                                <span style="font-size:0.75rem; color:#aaa; display:block;">كلمة المرور: ${u.pass}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            ${isBanned ? `<span class="badge-banned">باند موقع</span>` : ''}
+                            ${isMuted ? `<span class="badge-banned" style="background:#ffae00;color:#000;">ميوت شات</span>` : ''}
+                            ${isDMBanned ? `<span class="badge-banned" style="background:var(--neon-blue);color:#000;">باند خاص</span>` : ''}
+                            <button class="login-btn" style="padding:6px 12px; font-size:0.85rem;" onclick="openAdminModalFor('${u.name}')">⚙️ إدارة</button>
+                        </div>
+                    </div>
                 `;
             });
         }
 
-        function updateScoreInDB(points) {
-            if(!loggedUser) return;
-            let found = leaderboardData.find(u => u.name === loggedUser.name);
-            if(found) {
-                if(points > found.score) found.score = points;
-            } else {
-                leaderboardData.push({
-                    name: loggedUser.name,
-                    role: loggedUser.isAdmin ? "الإدارة العليا" : "عضو بالكلان",
-                    score: points
-                });
-            }
-            localStorage.setItem('7zen_leaderboard', JSON.stringify(leaderboardData));
-            renderLeaderboard();
+        function openAdminModalFor(name) {
+            if(name === ADMIN_NAME) return alert("👑 لا يمكنك تنفيذ عقوبات على حساب المؤسس الأعلى!");
+            adminSelectedTarget = name;
+            document.getElementById('admin-target-name').innerText = `🛡️ التحكم بالعضو: ${name}`;
+            document.getElementById('admin-action-modal').classList.add('active');
         }
 
-        // --- 7. الألعاب المصغرة وحفظ النقاط ---
-        let clickScore = 0, clickerActive = false;
-        function startClicker() {
-            if(!loggedUser) return alert("سجل دخولك أولاً لحفظ نقاطك في لوحة الصدارة!");
-            if(clickerActive) {
-                clickScore++;
-                document.getElementById('score-display').innerText = clickScore;
-                return;
-            }
-            clickerActive = true;
-            clickScore = 1;
-            document.getElementById('score-display').innerText = clickScore;
-            let time = 10;
-            let timer = setInterval(() => {
-                time--;
-                document.getElementById('timer-display').innerText = `الوقت: ${time} ثوانٍ`;
-                if(time <= 0) {
-                    clearInterval(timer);
-                    clickerActive = false;
-                    document.getElementById('timer-display').innerText = `انتهى الوقت! نتيجتك: ${clickScore}`;
-                    updateScoreInDB(clickScore * 10); // تحويل النقاط للوحة الصدارة
-                    alert(`عاش! تم حفظ رقمك في لوحة صدارة 7ZEN (${clickScore * 10} نقطة)`);
-                }
-            }, 1000);
+        function adminBanSite(dur) {
+            const u = getUserObj(adminSelectedTarget);
+            if(!u) return;
+            if(dur === 'day') u.bannedSite = Date.now() + 86400000;
+            if(dur === 'week') u.bannedSite = Date.now() + (86400000 * 7);
+            if(dur === 'perm') u.bannedSite = Date.now() + 315360000000; // 10 سنوات
+            if(dur === 'remove') u.bannedSite = 0;
+            saveAllUsers();
+            alert(`تم تطبيق أمر باند الموقع على [${u.name}] بنجاح.`);
+            renderAdminUserList();
         }
 
-        let dodgeRunning = false;
-        function startDodgeGame() {
-            if(dodgeRunning) return;
-            dodgeRunning = true;
-            const dCanvas = document.getElementById('dodgeCanvas');
-            const dCtx = dCanvas.getContext('2d');
-            let playerX = dCanvas.width/2, enemies = [], score = 0, frame = 0;
+        function adminMuteChat(dur) {
+            const u = getUserObj(adminSelectedTarget);
+            if(!u) return;
+            if(dur === '1h') u.mutedChat = Date.now() + 3600000;
+            if(dur === 'day') u.mutedChat = Date.now() + 86400000;
+            if(dur === 'remove') u.mutedChat = 0;
+            saveAllUsers();
+            alert(`تم تطبيق أمر ميوت الشات على [${u.name}] بنجاح.`);
+            renderAdminUserList();
+        }
 
-            dCanvas.addEventListener('mousemove', e => {
-                const rect = dCanvas.getBoundingClientRect();
-                playerX = e.clientX - rect.left;
-            });
-
-            function loop() {
-                if(!document.getElementById('games-page').classList.contains('active')) {
-                    dodgeRunning = false; return;
-                }
-                dCtx.clearRect(0,0,dCanvas.width,dCanvas.height);
-                dCtx.fillStyle = '#fff';
-                dCtx.fillRect(playerX-15, dCanvas.height-18, 30, 8);
-
-                frame++;
-                if(frame % 25 === 0) {
-                    enemies.push({ x: Math.random()*(dCanvas.width-20)+10, y: 0 });
-                    score++;
-                    document.getElementById('dodge-score').innerText = `النقاط: ${score}`;
-                }
-
-                for(let i=0; i<enemies.length; i++) {
-                    enemies[i].y += 3.5;
-                    dCtx.fillStyle = '#ff001e';
-                    dCtx.beginPath(); dCtx.arc(enemies[i].x, enemies[i].y, 6, 0, Math.PI*2); dCtx.fill();
-
-                    if(enemies[i].y > dCanvas.height-22 && Math.abs(enemies[i].x - playerX) < 18) {
-                        alert(`خسرت! تم تسجيل (${score * 15} نقطة) في لوحة الصدارة`);
-                        updateScoreInDB(score * 15);
-                        enemies = []; score = 0;
-                        document.getElementById('dodge-score').innerText = `النقاط: 0`;
-                        break;
-                    }
-                }
-                enemies = enemies.filter(e => e.y < dCanvas.height);
-                requestAnimationFrame(loop);
-            }
-            loop();
+        function adminBanDM(dur) {
+            const u = getUserObj(adminSelectedTarget);
+            if(!u) return;
+            if(dur === 'day') u.bannedDM = Date.now() + 86400000;
+            if(dur === '2days') u.bannedDM = Date.now() + (86400000 * 2);
+            if(dur === 'week') u.bannedDM = Date.now() + (86400000 * 7);
+            if(dur === 'remove') u.bannedDM = 0;
+            saveAllUsers();
+            alert(`تم تطبيق أمر حظر الخاص (DM Ban) على [${u.name}] بنجاح.`);
+            renderAdminUserList();
         }
     </script>
 </body>
