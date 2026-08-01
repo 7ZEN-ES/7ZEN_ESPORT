@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7ZEN CLAN | الموقع الرسمي</title>
+    <title>7ZEN CLAN | الموقع الرسمي المعتمد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,25 +11,22 @@
             --neon-red: #ff1a35;
             --dark-red: #66000c;
             --bg-black: #08080a;
-            --card-bg: rgba(16, 16, 20, 0.88);
-            --border-color: rgba(255, 0, 30, 0.35);
+            --card-bg: rgba(16, 16, 20, 0.92);
+            --border-color: rgba(255, 0, 30, 0.4);
         }
 
-        /* قفل تحديد النصوص وإلغاء مؤشر الماوس الافتراضي */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
             user-select: none;
-            -webkit-user-select: none;
             cursor: none !important;
         }
 
-        /* السماح بالكتابة وتحديد النص داخل مربعات الإدخال فقط */
-        input, textarea {
+        /* السماح بالكتابة والتحديد بحرية تامة داخل المدخلات */
+        input, textarea, .selectable-text {
             user-select: text !important;
-            -webkit-user-select: text !important;
             cursor: text !important;
         }
 
@@ -41,40 +38,23 @@
             position: relative;
         }
 
-        /* --- مؤشر الماوس المخصص (رقم 7 كرتوني متوهج) --- */
+        /* --- مؤشر رقم 7 --- */
         #custom-cursor {
             position: fixed;
             top: 0;
             left: 0;
             pointer-events: none;
-            z-index: 10000;
+            z-index: 100000;
             transform: translate(-20%, -20%);
-            transition: transform 0.08s ease-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-
         #custom-cursor .cursor-text {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 900;
             color: #ff001e;
-            text-shadow: 0 0 10px #ff001e, 0 0 20px #ff001e, 2px 2px 0px #000;
+            text-shadow: 0 0 12px #ff001e, 2px 2px 0px #000;
             font-style: italic;
-            line-height: 1;
         }
 
-        #cursor-glow {
-            position: fixed;
-            width: 140px;
-            height: 140px;
-            background: radial-gradient(circle, rgba(255, 0, 30, 0.25) 0%, rgba(0,0,0,0) 70%);
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-        }
-
-        /* خلفية الجزيئات والكلمات المتحركة */
         #canvas-bg {
             position: fixed;
             top: 0;
@@ -84,11 +64,11 @@
             z-index: -1;
         }
 
-        /* --- القائمة العلوية الرسمية --- */
+        /* --- الهيدر العسكري المعتمد --- */
         header {
-            background: rgba(10, 10, 14, 0.95);
+            background: rgba(10, 10, 14, 0.96);
             border-bottom: 2px solid var(--primary-red);
-            padding: 15px 40px;
+            padding: 15px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -104,25 +84,22 @@
             align-items: center;
             gap: 15px;
         }
-
         .logo-box img {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             object-fit: contain;
             filter: drop-shadow(0 0 10px var(--primary-red));
         }
-
         .logo-box h1 {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             font-weight: 900;
             letter-spacing: 2px;
-            color: #fff;
-            text-shadow: 0 0 12px var(--primary-red);
+            text-shadow: 0 0 10px var(--primary-red);
         }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
@@ -130,13 +107,12 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             color: #fff;
-            padding: 10px 22px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
-
         .nav-btn:hover, .nav-btn.active {
             background: var(--primary-red);
             border-color: var(--neon-red);
@@ -144,946 +120,691 @@
             transform: translateY(-2px);
         }
 
-        /* زر تسجيل الدخول */
         .login-btn {
-            background: linear-gradient(45deg, #2b0005, var(--primary-red));
+            background: linear-gradient(45deg, #3a0007, var(--primary-red));
             border: 1px solid var(--neon-red);
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 22px;
             border-radius: 8px;
             font-weight: 900;
             box-shadow: 0 0 15px rgba(255, 0, 30, 0.4);
             transition: 0.3s;
         }
-
         .login-btn:hover {
             filter: brightness(1.2);
             box-shadow: 0 0 25px var(--neon-red);
         }
 
-        /* --- حاوية الصفحات الكاملة --- */
+        /* --- حاوية الصفحات --- */
         .page-container {
-            width: 100%;
-            min-height: calc(100vh - 90px);
-            padding: 40px 5%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            min-height: calc(100vh - 120px);
         }
-
         .page {
             display: none;
-            animation: pageFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeIn 0.4s ease forwards;
         }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes pageFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .section-title {
             color: var(--neon-red);
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 900;
             border-bottom: 2px solid var(--primary-red);
-            padding-bottom: 12px;
-            margin-bottom: 30px;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
             text-shadow: 0 0 15px rgba(255, 0, 30, 0.5);
         }
 
-        /* --- صفحة التعريف --- */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
-        .clan-logo-card {
-            background: var(--card-bg);
-            border: 2px solid var(--primary-red);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 0 35px rgba(255, 0, 30, 0.25);
-        }
-
-        .clan-logo-card img {
-            width: 100%;
-            max-width: 260px;
-            height: auto;
-            object-fit: contain;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(255, 0, 30, 0.7));
-        }
-
-        .clan-info-card {
+        /* --- الكروت الرسمية --- */
+        .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-        }
-
-        .info-row {
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
             margin-bottom: 25px;
         }
 
-        .info-label {
-            color: #aaa;
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-
-        .info-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .members-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .member-badge {
-            background: rgba(255, 0, 30, 0.15);
-            border: 1px solid var(--primary-red);
-            padding: 10px 22px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 0 10px rgba(255,0,30,0.2);
-        }
-
-        .discord-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #5865F2;
-            color: white;
-            text-decoration: none;
-            padding: 14px 30px;
-            border-radius: 10px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            margin-top: 15px;
-            transition: 0.3s ease;
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4);
-        }
-
-        .discord-btn:hover {
-            background: #4752c4;
-            box-shadow: 0 0 30px #5865F2;
-            transform: scale(1.03);
-        }
-
-        /* --- صفحة لوحة الصدارة (Leaderboard) --- */
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .leaderboard-table th, .leaderboard-table td {
-            padding: 18px 25px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .leaderboard-table th {
-            background: rgba(255, 0, 30, 0.2);
-            color: var(--neon-red);
-            font-weight: 900;
-            font-size: 1.2rem;
-        }
-
-        .leaderboard-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .rank-badge {
-            background: var(--primary-red);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 900;
-            display: inline-block;
-        }
-
-        /* --- صفحة شات 7ZEN الرسمي --- */
-        .chat-container {
-            background: var(--card-bg);
-            border: 2px solid var(--primary-red);
-            border-radius: 20px;
-            height: 650px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(255, 0, 30, 0.25);
-        }
-
-        .chat-header {
-            background: rgba(255, 0, 30, 0.2);
-            padding: 18px 25px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 25px;
+        /* --- شات 7ZEN --- */
+        .chat-box {
+            height: 480px;
             overflow-y: auto;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            margin-bottom: 15px;
         }
-
-        .msg-box {
-            background: rgba(255, 255, 255, 0.04);
+        .msg {
+            background: rgba(255,255,255,0.04);
             border-left: 3px solid var(--primary-red);
-            padding: 12px 18px;
+            padding: 12px;
             border-radius: 8px;
             max-width: 80%;
         }
-
-        .msg-box.admin-msg {
+        .msg.admin {
             border-color: #00ff66;
-            background: rgba(0, 255, 102, 0.05);
+            background: rgba(0, 255, 102, 0.08);
         }
-
         .msg-sender {
             font-weight: 900;
             color: var(--neon-red);
             margin-bottom: 5px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .msg img {
+            max-width: 250px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid var(--primary-red);
+            display: block;
         }
 
-        .admin-tag {
-            background: #00ff66;
-            color: #000;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 900;
-        }
-
-        .chat-input-area {
+        /* --- ذكاء 7ZEN الاصطناعي --- */
+        .ai-chat-box {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(10,0,0,0.6);
+            border: 2px solid var(--primary-red);
+            border-radius: 12px;
             padding: 20px;
-            background: rgba(10, 10, 14, 0.9);
-            border-top: 1px solid var(--border-color);
             display: flex;
+            flex-direction: column;
             gap: 15px;
+            margin-bottom: 15px;
+        }
+        .ai-msg {
+            background: rgba(255,0,30,0.1);
+            border-right: 3px solid var(--primary-red);
+            padding: 12px;
+            border-radius: 8px;
+            align-self: flex-start;
+            max-width: 80%;
+        }
+        .user-msg {
+            background: rgba(255,255,255,0.08);
+            border-left: 3px solid #fff;
+            padding: 12px;
+            border-radius: 8px;
+            align-self: flex-end;
+            max-width: 80%;
         }
 
-        .chat-input-area input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
+        /* --- الجداول --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0,0,0,0.5);
             border-radius: 10px;
-            padding: 14px 20px;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
+            overflow: hidden;
         }
-
-        .chat-input-area input:focus {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 10px rgba(255, 0, 30, 0.3);
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
-        .chat-send-btn {
-            background: var(--primary-red);
-            color: white;
-            border: none;
-            padding: 0 30px;
-            border-radius: 10px;
+        th {
+            background: rgba(255,0,30,0.2);
+            color: var(--neon-red);
             font-weight: 900;
-            font-size: 1.1rem;
-            transition: 0.3s;
         }
 
-        .chat-send-btn:hover {
-            background: var(--neon-red);
-            box-shadow: 0 0 15px var(--primary-red);
-        }
-
-        /* --- النوافذ المنبثقة (شروط الشات + تسجيل الدخول) --- */
+        /* --- النوافذ المنبثقة --- */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(8px);
             z-index: 5000;
             display: none;
             align-items: center;
             justify-content: center;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+        .modal-overlay.active { display: flex; }
         .modal-box {
             background: #111116;
             border: 2px solid var(--primary-red);
-            border-radius: 20px;
-            padding: 35px;
-            max-width: 500px;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 450px;
             width: 90%;
-            box-shadow: 0 0 40px rgba(255, 0, 30, 0.4);
+            box-shadow: 0 0 30px rgba(255,0,30,0.4);
         }
 
-        .modal-box h3 {
-            color: var(--neon-red);
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .quiz-question {
-            margin-bottom: 15px;
-            background: rgba(255,255,255,0.03);
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .quiz-question p {
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .quiz-options {
-            display: flex;
-            gap: 15px;
-        }
-
-        .quiz-options label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-        }
-
-        /* --- توقيع المطور المتوهج --- */
+        /* توقيع ||لا تحاول */
         .dev-footer {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(10, 10, 14, 0.9);
-            padding: 12px 25px;
-            border-radius: 12px;
+            bottom: 20px; right: 20px;
+            background: rgba(10,10,14,0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
-            font-size: 1rem;
+            font-size: 0.95rem;
             z-index: 2000;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
-
         .glow-dev {
             font-weight: 900;
-            font-size: 1.2rem;
-            display: inline-block;
-            animation: devGlow 2s infinite alternate ease-in-out;
+            color: #ff001e;
+            animation: devGlow 2s infinite alternate;
         }
-
         @keyframes devGlow {
-            0% {
-                color: #ff001e;
-                text-shadow: 0 0 10px #ff001e, 0 0 25px #ff001e, 0 0 40px #ff001e;
-            }
-            50% {
-                color: #0d0002;
-                text-shadow: 0 0 2px #000;
-            }
-            100% {
-                color: #ff1a35;
-                text-shadow: 0 0 10px #ff1a35, 0 0 25px #ff1a35, 0 0 40px #ff1a35;
-            }
+            0% { color: #ff001e; text-shadow: 0 0 10px #ff001e, 0 0 25px #ff001e; }
+            100% { color: #300005; text-shadow: 0 0 2px #000; }
         }
 
-        @media (max-width: 900px) {
-            .about-grid { grid-template-columns: 1fr; }
+        @media(max-width: 800px) {
             header { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- مؤشر الماوس رقم 7 -->
+    <!-- مؤشر الماوس -->
     <div id="custom-cursor"><span class="cursor-text">7</span></div>
-    <div id="cursor-glow"></div>
-
-    <!-- خلفية الجزيئات والكلمات المتحركة -->
     <canvas id="canvas-bg"></canvas>
 
-    <!-- الهيدر العلوي الرسمي -->
+    <!-- القائمة العلوية -->
     <header>
         <div class="logo-box">
-            <img src="7zen.png" alt="7ZEN Logo" onerror="this.src='https://via.placeholder.com/150/ff001e/ffffff?text=7ZEN'">
-            <h1>7ZEN CLAN</h1>
+            <img src="7zen.png" alt="7ZEN Logo" onerror="this.src='https://via.placeholder.com/100/ff001e/ffffff?text=7ZEN'">
+            <h1>7ZEN ESPORTS</h1>
         </div>
         <div class="nav-links">
-            <button class="nav-btn active" onclick="openPage('about-page', this)">📄 التعريف الرسمي</button>
+            <button class="nav-btn active" onclick="openPage('about-page', this)">📄 التعريف المعتمد</button>
             <button class="nav-btn" onclick="openPage('chat-page', this)">💬 شات 7ZEN</button>
+            <button class="nav-btn" onclick="openPage('ai-page', this)">🤖 ذكاء 7ZEN</button>
             <button class="nav-btn" onclick="openPage('leaderboard-page', this)">🏆 لوحة الصدارة</button>
-            <button class="nav-btn" onclick="openPage('games-page', this)">🎮 الألعاب المصغرة</button>
+            <button class="nav-btn" onclick="openPage('games-page', this)">🎮 الألعاب</button>
         </div>
         <div>
-            <button class="login-btn" onclick="openLoginModal()" id="login-status-btn">🔐 تسجيل الدخول</button>
+            <button class="login-btn" onclick="openLoginModal()" id="user-status-btn">🔐 تسجيل الدخول</button>
         </div>
     </header>
 
-    <!-- حاوية الصفحات الكاملة -->
     <div class="page-container">
         
-        <!-- ================== الصفحة 1: التعريف الرسمي ================== -->
+        <!-- ================== 1: التعريف المعتمد ================== -->
         <div id="about-page" class="page active">
-            <div class="about-grid">
-                <div class="clan-logo-card">
-                    <img src="7zen.png" alt="7ZEN Clan Logo" onerror="this.src='https://via.placeholder.com/250/ff001e/ffffff?text=7ZEN+CLAN'">
-                    <h2 style="color: var(--neon-red); font-weight: 900;">7ZEN ESPORTS</h2>
-                    <p style="color: #bbb; margin-top: 8px;">القوة، الاحترافية، والاحترام</p>
-                    <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                        <span style="color: #ff001e; font-weight: bold;">الحالة:</span> نشط رسمياً
-                    </div>
+            <div class="card">
+                <h2 class="section-title">منظمة 7ZEN الرسمية للرياضات الإلكترونية</h2>
+                <p class="selectable-text" style="color: #ccc; font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                    تأسس كلان <strong style="color:var(--primary-red);">7ZEN</strong> عام <strong>Jul 2026</strong> بقيادة المؤسس والرئيس <strong style="color:var(--primary-red);">يزن هزازي</strong>، ليكون منظمة احترافية تجمع النخبة في مجالات الألعاب والمنافسات.
+                </p>
+                
+                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🛡️ أعضاء الكلان الرسميون:</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 25px;">
+                    <span class="login-btn">مهند هزازي</span>
+                    <span class="login-btn">خالد قحطاني</span>
+                    <span class="login-btn">خالد مطيري</span>
+                    <span class="login-btn">الوليد هزازي</span>
                 </div>
 
-                <div class="clan-info-card">
-                    <h2 class="section-title">معلومات الكلان الرسمية</h2>
-                    
-                    <div class="info-row">
-                        <div class="info-label">تاريخ التأسيس</div>
-                        <div class="info-value" style="color: var(--primary-red);">Jul 2026</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">مؤسس الكلان والرئيس</div>
-                        <div class="info-value">يزن هزازي</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">أعضاء الكلان الرسميين</div>
-                        <div class="members-grid">
-                            <span class="member-badge">مهند هزازي</span>
-                            <span class="member-badge">خالد قحطاني</span>
-                            <span class="member-badge">خالد مطيري</span>
-                            <span class="member-badge">الوليد هزازي</span>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">المجالات والألعاب التي ننافس فيها</div>
-                        <div class="members-grid">
-                            <span class="member-badge" style="border-color: #00e5ff;">🚀 روكت ليق (Rocket League)</span>
-                            <span class="member-badge" style="border-color: #00ff66;">⛏️ ماين كرافت (Minecraft)</span>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">شروط الانضمام الأساسية</div>
-                        <p style="color: #eee; font-size: 1.1rem; line-height: 1.6;">
-                            يستوفي جميع أعضاء الكلان شروطاً محددة، وأهمها: <span style="color: var(--primary-red); font-weight: bold;">العمر المناسب</span> و<span style="color: var(--primary-red); font-weight: bold;">احترام الآخرين</span> والالتزام بالروح الرياضية.
-                        </p>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">سيرفر الديسكورد الرسمي</div>
-                        <a href="https://discord.gg/MceTtAHZYh" target="_blank" class="discord-btn">انضم إلى سيرفر الديسكورد الآن</a>
-                    </div>
+                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">🎮 مجالات الكلان:</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 25px;">
+                    <span class="nav-btn" style="border-color:#00e5ff;">🚀 روكت ليق (Rocket League)</span>
+                    <span class="nav-btn" style="border-color:#00ff66;">⛏️ ماين كرافت (Minecraft)</span>
                 </div>
+
+                <h3 style="color:var(--neon-red); margin: 20px 0 10px;">📜 الشروط والضوابط:</h3>
+                <p class="selectable-text" style="color:#eee;">جميع الأعضاء يستوفون شروطاً صارمة، وأهمها: <strong>العمر المناسب</strong> و<strong>احترام الآخرين</strong>.</p>
+                <br>
+                <a href="https://discord.gg/MceTtAHZYh" target="_blank" class="login-btn" style="display:inline-block; text-decoration:none; background:#5865F2; border-color:#5865F2;">انضم إلى سيرفر الديسكورد الرسمي</a>
             </div>
         </div>
 
-        <!-- ================== الصفحة 2: شات 7ZEN الرسمي ================== -->
+        <!-- ================== 2: شات 7ZEN الرسمي ================== -->
         <div id="chat-page" class="page">
-            <h2 class="section-title">غرفة دردشة 7ZEN العامة</h2>
-            <div class="chat-container">
-                <div class="chat-header">
-                    <span style="font-weight: 900;">💬 الدردشة العامة (محفوظة للجميع)</span>
-                    <span id="chat-status-badge" style="background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; font-size: 0.9rem;">
-                        🔒 وضع المشاهدة (لم تجتز التحقق بعد)
-                    </span>
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2 class="section-title" style="margin:0;">💬 غرفة 7ZEN (محفوظة بيانيا)</h2>
+                    <span id="chat-lock-status" style="color:#ff001e; font-weight:bold;">🔒 يجب تسجيل الدخول والتحقق للكتابة</span>
                 </div>
 
-                <div class="chat-messages" id="chat-box">
-                    <!-- رسائل ترحيبية وتجريبية في الشات -->
-                    <div class="msg-box admin-msg">
-                        <div class="msg-sender">يزن هزازي <span class="admin-tag">رئيس الكلان</span></div>
-                        <div>يا هلا والله بالجميع في شات 7ZEN الرسمي! يرجى الالتزام بالاحترام المتبادل.</div>
-                    </div>
-                    <div class="msg-box">
-                        <div class="msg-sender">مهند هزازي</div>
-                        <div>منورين الشباب، جاهزين لبطولة روكت ليق الليلة؟ 🔥</div>
-                    </div>
-                </div>
+                <div class="chat-box" id="chat-messages-area"></div>
 
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="يجب اجتياز شروط الدردشة أولاً للكتابة..." disabled>
-                    <button class="chat-send-btn" id="chat-send-btn" onclick="sendChatMessage()" disabled>إرسال</button>
+                <!-- أدوات الإرسال -->
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="chat-input" class="selectable-text" placeholder="سجل دخولك أولاً لتتمكن من الكتابة..." disabled style="flex:1; padding:14px; border-radius:8px; background:#0a0a0e; border:1px solid var(--border-color); color:#fff;">
+                    
+                    <!-- زر إرسال الصورة: حصري فقط للمطور / الإدارة ||لا تحاول -->
+                    <label id="admin-upload-label" style="display:none; background:#333; padding:10px 15px; border-radius:8px; cursor:pointer; border:1px solid #666; font-weight:bold;">
+                        📷 صورة
+                        <input type="file" id="admin-image-input" accept="image/*" style="display:none;" onchange="sendAdminImage(this)">
+                    </label>
+
+                    <button class="login-btn" id="chat-send-btn" onclick="sendTextMsg()" disabled>إرسال</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================== الصفحة 3: لوحة الصدارة ================== -->
+        <!-- ================== 3: ذكاء 7ZEN الاصطناعي ================== -->
+        <div id="ai-page" class="page">
+            <div class="card">
+                <h2 class="section-title">🤖 ذكاء 7ZEN الاصطناعي (7ZEN AI)</h2>
+                <p style="color:#aaa; margin-bottom:15px;">الذكاء الاصطناعي الخاص بكلان 7ZEN، اسأله عن الكلان، الشروط، الألعاب، أو الأعضاء!</p>
+                
+                <div class="ai-chat-box" id="ai-messages-area">
+                    <div class="ai-msg">
+                        <strong style="color:var(--neon-red);">7ZEN AI:</strong><br>
+                        أهلاً بك في النظام الذكي الرسمي لكلان 7ZEN! كيف أقدر أساعدك اليوم؟
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="ai-input" class="selectable-text" placeholder="اسأل ذكاء 7ZEN عن أي شيء يخص الكلان..." style="flex:1; padding:14px; border-radius:8px; background:#0a0a0e; border:1px solid var(--border-color); color:#fff;">
+                    <button class="login-btn" onclick="ask7ZenAI()">إرسال السؤال</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================== 4: لوحة الصدارة الحقيقية ================== -->
         <div id="leaderboard-page" class="page">
-            <h2 class="section-title">🏆 لوحة صدارة أعضاء 7ZEN</h2>
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>المركز</th>
-                        <th>اسم العضو</th>
-                        <th>الرتبة في الكلان</th>
-                        <th>الألعاب الرئيسية</th>
-                        <th>النقاط / التقييم</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="rank-badge" style="background: gold; color: #000;">#1</span></td>
-                        <td style="font-weight: 900; color: var(--primary-red);">يزن هزازي</td>
-                        <td>مؤسس ورئيس الكلان</td>
-                        <td>Rocket League / Minecraft</td>
-                        <td>9,999+</td>
-                    </tr>
-                    <tr>
-                        <td><span class="rank-badge" style="background: silver; color: #000;">#2</span></td>
-                        <td style="font-weight: 900;">مهند هزازي</td>
-                        <td>عضو أساسي</td>
-                        <td>Rocket League</td>
-                        <td>8,450</td>
-                    </tr>
-                    <tr>
-                        <td><span class="rank-badge" style="background: #cd7f32; color: #fff;">#3</span></td>
-                        <td style="font-weight: 900;">خالد قحطاني</td>
-                        <td>عضو أساسي</td>
-                        <td>Minecraft</td>
-                        <td>7,800</td>
-                    </tr>
-                    <tr>
-                        <td><span class="rank-badge" style="background: #333;">#4</span></td>
-                        <td style="font-weight: 900;">خالد مطيري</td>
-                        <td>عضو أساسي</td>
-                        <td>Rocket League</td>
-                        <td>7,200</td>
-                    </tr>
-                    <tr>
-                        <td><span class="rank-badge" style="background: #333;">#5</span></td>
-                        <td style="font-weight: 900;">الوليد هزازي</td>
-                        <td>عضو أساسي</td>
-                        <td>Minecraft</td>
-                        <td>6,950</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="card">
+                <h2 class="section-title">🏆 لوحة صدارة 7ZEN (ديناميكية وحقيقية)</h2>
+                <p style="color:#aaa; margin-bottom:15px;">يتم تسجيل نقاط الأعضاء المسجلين تلقائياً عند لعب الألعاب المصغرة وتحديث الجدول بيانيا:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المركز</th>
+                            <th>اسم العضو</th>
+                            <th>الرتبة</th>
+                            <th>أعلى نقاط مسجلة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody">
+                        <!-- يتم تعبئتها برمجياً من LocalStorage -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- ================== الصفحة 4: الألعاب المصغرة ================== -->
+        <!-- ================== 5: الألعاب المصغرة ================== -->
         <div id="games-page" class="page">
-            <h2 class="section-title">🎮 ألعاب 7ZEN المصغرة</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
-                <!-- لعبة النقر -->
-                <div class="clan-info-card" style="text-align: center;">
-                    <h3 style="color: var(--neon-red); margin-bottom: 10px;">🎯 لعبة النقر السريع</h3>
-                    <p style="color: #aaa; margin-bottom: 20px;">كم مرة تقدر تضغط خلال 10 ثوانٍ؟</p>
-                    <h2 id="score-display" style="font-size: 3.5rem; color: var(--primary-red); margin: 15px 0;">0</h2>
-                    <p id="timer-display" style="margin-bottom: 20px;">الوقت: 10 ثوانٍ</p>
-                    <button class="login-btn" style="width: 100%;" onclick="registerClick()">اضغط هنا بأسرع ما عندك!</button>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                <div class="card" style="text-align:center;">
+                    <h3 style="color:var(--neon-red);">🎯 لعبة النقر السريع</h3>
+                    <p style="color:#aaa; margin:10px 0;">العب وسجل نقاطك في لوحة الصدارة!</p>
+                    <h1 id="score-display" style="font-size:3.5rem; color:var(--primary-red); margin:15px 0;">0</h1>
+                    <p id="timer-display" style="margin-bottom:15px;">الوقت: 10 ثوانٍ</p>
+                    <button class="login-btn" style="width:100%;" onclick="startClicker()">ابدأ النقر الآن!</button>
                 </div>
 
-                <!-- لعبة التفادي -->
-                <div class="clan-info-card" style="text-align: center;">
-                    <h3 style="color: var(--neon-red); margin-bottom: 10px;">🚀 تفادي العقبات</h3>
-                    <p style="color: #aaa; margin-bottom: 15px;">حرك الماوس يميناً ويساراً داخل المربع لتفادي الكرات</p>
-                    <canvas id="dodgeCanvas" width="400" height="250" style="background:#000; border:2px solid var(--primary-red); border-radius:10px; max-width:100%;"></canvas>
-                    <p id="dodge-score" style="margin-top: 10px; font-weight: bold; color: var(--primary-red);">النقاط: 0</p>
+                <div class="card" style="text-align:center;">
+                    <h3 style="color:var(--neon-red);">🚀 تفادي العقبات</h3>
+                    <p style="color:#aaa; margin:10px 0;">حرك الماوس لتفادي الكرات الحمراء</p>
+                    <canvas id="dodgeCanvas" width="400" height="230" style="background:#000; border:2px solid var(--primary-red); border-radius:10px; max-width:100%;"></canvas>
+                    <p id="dodge-score" style="margin-top:10px; font-weight:bold; color:var(--primary-red);">النقاط: 0</p>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- === نافذة شروط الشات الإجبارية === -->
-    <div class="modal-overlay" id="chat-quiz-modal">
+    <!-- === نافذة شروط الشات (تظهر عند فتح الشات لأول مرة بعد الدخول) === -->
+    <div class="modal-overlay" id="quiz-modal">
         <div class="modal-box">
-            <h3>🛡️ تحقق شروط الانضمام لشات 7ZEN</h3>
-            <p style="color: #ccc; margin-bottom: 20px; font-size: 0.95rem;">
-                للحفاظ على بيئة احترافية، يجب الإجابة بالموافقة على الشروط التالية قبل تفعيل الكتابة:
-            </p>
-
-            <div class="quiz-question">
+            <h3 style="color:var(--neon-red); margin-bottom:15px;">🛡️ تحقق شروط 7ZEN</h3>
+            <p style="color:#ccc; margin-bottom:15px; font-size:0.95rem;">يجب الموافقة على الشروط لتفعيل الكتابة في الدردشة:</p>
+            
+            <div style="margin-bottom:15px;">
                 <p>1. هل عمرك فوق 15 سنة؟</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q1" value="yes"> نعم</label>
-                    <label><input type="radio" name="q1" value="no"> لا</label>
-                </div>
+                <label><input type="radio" name="q1" value="yes"> نعم</label>
+                <label style="margin-right:15px;"><input type="radio" name="q1" value="no"> لا</label>
+            </div>
+            <div style="margin-bottom:20px;">
+                <p>2. هل تتعهد بالاحترام التام لجميع الأعضاء؟</p>
+                <label><input type="radio" name="q2" value="yes"> نعم، أتعهد</label>
+                <label style="margin-right:15px;"><input type="radio" name="q2" value="no"> لا</label>
             </div>
 
-            <div class="quiz-question">
-                <p>2. هل تتعهد باحترام جميع الأعضاء وعدم التلفظ بأي إساءة؟</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q2" value="yes"> نعم، أتعهد</label>
-                    <label><input type="radio" name="q2" value="no"> لا</label>
-                </div>
-            </div>
-
-            <div class="quiz-question">
-                <p>3. هل تلتزم بقوانين كلان 7ZEN في الألعاب وسيرفر الديسكورد؟</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q3" value="yes"> نعم</label>
-                    <label><input type="radio" name="q3" value="no"> لا</label>
-                </div>
-            </div>
-
-            <div class="quiz-question">
-                <p>4. هل تتحلى بالروح الرياضية وتتقبل الخسارة بصدر رحب؟</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q4" value="yes"> نعم</label>
-                    <label><input type="radio" name="q4" value="no"> لا</label>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 25px;">
-                <button class="login-btn" style="flex: 1;" onclick="submitChatQuiz()">تأكيد والدخول للشات</button>
-                <button class="nav-btn" onclick="closeQuizModal(false)">إلغاء (مشاهدة فقط)</button>
-            </div>
+            <button class="login-btn" style="width:100%;" onclick="submitQuiz()">تأكيد والدخول للشات</button>
         </div>
     </div>
 
-    <!-- === نافذة تسجيل الدخول (مع صلاحيات الرئيس والإدارة) === -->
+    <!-- === نافذة تسجيل الدخول (مع حماية الإدارة ||لا تحاول) === -->
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
-            <h3>🔐 تسجيل الدخول للموقع</h3>
-            <p style="color: #aaa; margin-bottom: 20px;">اختر طريقة الدخول للتحكم بصلاحيات الشات والأوامر:</p>
+            <h3 style="color:var(--neon-red); margin-bottom:15px;">🔐 تسجيل الدخول للموقع</h3>
+            <p style="color:#aaa; margin-bottom:15px; font-size:0.9rem;">أدخل اسمك للدخول. (الإدارة مخصصة للمؤسس فقط بكلمة مرور سرية):</p>
             
-            <div style="margin-bottom: 20px;">
-                <label style="display:block; margin-bottom: 8px;">اسم المستخدم:</label>
-                <input type="text" id="username-input" placeholder="اكتب اسمك هنا..." style="width:100%; padding:12px; border-radius:8px; background:#1e1e24; border:1px solid #444; color:#fff;">
-            </div>
+            <input type="text" id="username-input" class="selectable-text" placeholder="اسم العضو (مثال: مهند هزازي)..." style="width:100%; padding:12px; border-radius:8px; background:#000; border:1px solid #444; color:#fff; margin-bottom:15px;">
+            
+            <input type="password" id="admin-pass-input" class="selectable-text" placeholder="كلمة مرور الإدارة (مطلوبة فقط لـ ||لا تحاول)" style="width:100%; padding:12px; border-radius:8px; background:#000; border:1px solid #444; color:#fff; margin-bottom:20px;">
 
-            <div style="margin-bottom: 25px;">
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                    <input type="checkbox" id="admin-checkbox">
-                    <span style="color: var(--neon-red); font-weight: bold;">دخول بصلاحية الرئيس / الإدارة (تفعيل أوامر MUTE, BAN, KICK)</span>
-                </label>
-            </div>
-
-            <div style="display: flex; gap: 10px;">
-                <button class="login-btn" style="flex: 1;" onclick="confirmLogin()">دخول</button>
+            <div style="display:flex; gap:10px;">
+                <button class="login-btn" style="flex:1;" onclick="processLogin()">تسجيل الدخول</button>
                 <button class="nav-btn" onclick="document.getElementById('login-modal').classList.remove('active')">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- توقيع المطور المتوهج أسفل اليمين -->
+    <!-- توقيع الموقع المعتمد -->
     <div class="dev-footer">
         المطور: <span class="glow-dev">||لا تحاول</span>
     </div>
 
     <script>
-        // --- 1. مؤشر الماوس المخصص ---
+        // --- 0. قاعدة البيانات المحلية (LocalStorage) ---
+        let loggedUser = JSON.parse(localStorage.getItem('7zen_user')) || null;
+        let chatMessages = JSON.parse(localStorage.getItem('7zen_messages')) || [
+            { sender: "نظام 7ZEN", text: "تم إنشاء غرفة الدردشة الرسمية والمشفرة بيانيا.", isAdmin: true, img: null }
+        ];
+        let leaderboardData = JSON.parse(localStorage.getItem('7zen_leaderboard')) || [
+            { name: "يزن هزازي", role: "مؤسس ورئيس الكلان", score: 500 }
+        ];
+
+        // --- 1. مؤشر الماوس والخلفية ---
         const customCursor = document.getElementById('custom-cursor');
-        const cursorGlow = document.getElementById('cursor-glow');
-        window.addEventListener('mousemove', (e) => {
+        window.addEventListener('mousemove', e => {
             customCursor.style.left = e.clientX + 'px';
             customCursor.style.top = e.clientY + 'px';
-            cursorGlow.style.left = e.clientX + 'px';
-            cursorGlow.style.top = e.clientY + 'px';
         });
 
-        // --- 2. خلفية الجزيئات والكلمات المتحركة في الخلفية ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let floatingTexts = [];
-        const clanWords = ["7ZEN", "7ZEN CLAN", "ESPORTS", "VICTORY", "ROYALTY", "ROCKET LEAGUE"];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 1;
-                this.speedX = Math.random() * 1.2 - 0.6;
-                this.speedY = Math.random() * 1.2 - 0.6;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.fillStyle = '#ff001e';
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#ff001e';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
+        for(let i=0; i<60; i++) particles.push({
+            x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+            size: Math.random()*2+1, sx: Math.random()-0.5, sy: Math.random()-0.5
+        });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = '#ff001e';
+            particles.forEach(p => {
+                p.x += p.sx; p.y += p.sy;
+                if(p.x<0||p.x>canvas.width) p.sx *= -1;
+                if(p.y<0||p.y>canvas.height) p.sy *= -1;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(animate);
         }
+        animate();
 
-        class FloatingText {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.text = clanWords[Math.floor(Math.random() * clanWords.length)];
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.floor(Math.random() * 25) + 16;
-                this.speedY = -(Math.random() * 0.4 + 0.2);
-                this.opacity = 0;
-                this.maxOpacity = Math.random() * 0.15 + 0.05;
-                this.fadeIn = true;
-            }
-            update() {
-                this.y += this.speedY;
-                if (this.fadeIn) {
-                    this.opacity += 0.002;
-                    if (this.opacity >= this.maxOpacity) this.fadeIn = false;
-                } else {
-                    this.opacity -= 0.0015;
-                    if (this.opacity <= 0) this.reset();
-                }
-            }
-            draw() {
-                ctx.save();
-                ctx.font = `900 ${this.size}px Cairo`;
-                ctx.fillStyle = `rgba(255, 0, 30, ${this.opacity})`;
-                ctx.fillText(this.text, this.x, this.y);
-                ctx.restore();
-            }
-        }
-
-        for (let i = 0; i < 65; i++) particles.push(new Particle());
-        for (let i = 0; i < 12; i++) floatingTexts.push(new FloatingText());
-
-        function animateBg() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            floatingTexts.forEach(t => { t.update(); t.draw(); });
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateBg);
-        }
-        animateBg();
-
-        // --- 3. نظام التنقل بين الصفحات ---
-        let hasPassedQuiz = false;
-        function openPage(pageId, btnElement) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
+        // --- 2. إدارة التنقل بين الصفحات ---
+        function openPage(pageId, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            btnElement.classList.add('active');
+            btn.classList.add('active');
 
-            // إذا فتح صفحة الشات ولم يجتز الشروط بعد -> أظهر نافذة التحقق
-            if (pageId === 'chat-page' && !hasPassedQuiz) {
-                document.getElementById('chat-quiz-modal').classList.add('active');
-            }
-            if (pageId === 'games-page') {
-                startDodgeGame();
-            }
+            if(pageId === 'chat-page') checkChatPermissions();
+            if(pageId === 'leaderboard-page') renderLeaderboard();
+            if(pageId === 'games-page') startDodgeGame();
         }
 
-        // --- 4. شروط الشات الإجبارية ---
-        function submitChatQuiz() {
-            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
-            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
-            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
-            const q4 = document.querySelector('input[name="q4"]:checked')?.value;
-
-            if (q1 === 'yes' && q2 === 'yes' && q3 === 'yes' && q4 === 'yes') {
-                hasPassedQuiz = true;
-                document.getElementById('chat-quiz-modal').classList.remove('active');
-                document.getElementById('chat-input').disabled = false;
-                document.getElementById('chat-send-btn').disabled = false;
-                document.getElementById('chat-input').placeholder = "اكتب رسالتك هنا في شات 7ZEN...";
-                const badge = document.getElementById('chat-status-badge');
-                badge.innerText = "🟢 متصل (تم التحقق)";
-                badge.style.background = "rgba(0, 255, 102, 0.2)";
-                badge.style.color = "#00ff66";
-            } else {
-                alert("تنبيه: يجب الإجابة بـ 'نعم' على جميع الشروط (العمر، الاحترام، الروح الرياضية) لتتمكن من الكتابة في الشات. تم تحويلك لوضع المشاهدة فقط.");
-                closeQuizModal(false);
-            }
-        }
-
-        function closeQuizModal(passed) {
-            document.getElementById('chat-quiz-modal').classList.remove('active');
-        }
-
-        // --- 5. نظام تسجيل الدخول وصلاحيات الإدارة ---
-        let currentUser = { name: "زائر", isAdmin: false };
-
+        // --- 3. نظام حماية الدخول (فقط ||لا تحاول يأخذ Admin) ---
         function openLoginModal() {
             document.getElementById('login-modal').classList.add('active');
         }
 
-        function confirmLogin() {
-            const nameInput = document.getElementById('username-input').value.trim();
-            const isAdminChecked = document.getElementById('admin-checkbox').checked;
+        function processLogin() {
+            const username = document.getElementById('username-input').value.trim();
+            const pass = document.getElementById('admin-pass-input').value.trim();
+            if(!username) return alert("الرجاء إدخال الاسم!");
 
-            if (!nameInput) {
-                alert("يرجى كتابة اسم المستخدم!");
-                return;
+            let isAdmin = false;
+            // التحقق من أن الاسم ||لا تحاول وكلمة المرور صحيحة
+            if(username === "||لا تحاول") {
+                if(pass === "7zen2026") {
+                    isAdmin = true;
+                } else {
+                    return alert("❌ كلمة مرور الإدارة لحساب [ ||لا تحاول ] غير صحيحة! (الباسورد: 7zen2026)");
+                }
             }
 
-            currentUser.name = nameInput;
-            currentUser.isAdmin = isAdminChecked;
-
-            const statusBtn = document.getElementById('login-status-btn');
-            statusBtn.innerText = `👤 ${currentUser.name} ${currentUser.isAdmin ? '[ADMIN]' : ''}`;
+            loggedUser = { name: username, isAdmin: isAdmin, passedQuiz: false };
+            localStorage.setItem('7zen_user', JSON.stringify(loggedUser));
             document.getElementById('login-modal').classList.remove('active');
-            alert(`تم تسجيل الدخول بنجاح كـ (${currentUser.name}) ${currentUser.isAdmin ? 'بصلاحيات الإدارة الكاملة 🔥' : ''}`);
+            updateUIState();
+            alert(`تم تسجيل الدخول بنجاح كـ (${username}) ${isAdmin ? '⚡ بصلاحية المطور والإدارة العليا ⚡' : ''}`);
         }
 
-        // --- 6. نظام الشات وأوامر الإدارة (MUTE, BAN, KICK) ---
-        function sendChatMessage() {
+        function updateUIState() {
+            const statusBtn = document.getElementById('user-status-btn');
+            if(loggedUser) {
+                statusBtn.innerText = `👤 ${loggedUser.name} ${loggedUser.isAdmin ? '[ADMIN]' : ''}`;
+                // إظهار زر الصورة في الشات فقط للمطوّر ||لا تحاول
+                if(loggedUser.isAdmin) {
+                    document.getElementById('admin-upload-label').style.display = 'inline-block';
+                } else {
+                    document.getElementById('admin-upload-label').style.display = 'none';
+                }
+            }
+        }
+        updateUIState();
+
+        // --- 4. شات 7ZEN والشروط والصور ---
+        function checkChatPermissions() {
+            renderChat();
+            if(!loggedUser) {
+                document.getElementById('chat-lock-status').innerText = "🔒 يجب تسجيل الدخول أولاً لتتمكن من الكتابة";
+                document.getElementById('chat-input').disabled = true;
+                document.getElementById('chat-send-btn').disabled = true;
+                return;
+            }
+            if(!loggedUser.passedQuiz) {
+                document.getElementById('quiz-modal').classList.add('active');
+            } else {
+                unlockChatInput();
+            }
+        }
+
+        function submitQuiz() {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            if(q1 === 'yes' && q2 === 'yes') {
+                loggedUser.passedQuiz = true;
+                localStorage.setItem('7zen_user', JSON.stringify(loggedUser));
+                document.getElementById('quiz-modal').classList.remove('active');
+                unlockChatInput();
+            } else {
+                alert("يجب الموافقة على جميع الشروط (العمر والاحترام) للانضمام للشات.");
+            }
+        }
+
+        function unlockChatInput() {
+            document.getElementById('chat-lock-status').innerText = "🟢 متصل بالشات المعتمد";
+            document.getElementById('chat-lock-status').style.color = "#00ff66";
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('chat-send-btn').disabled = false;
+            document.getElementById('chat-input').placeholder = "اكتب رسالتك في شات 7ZEN...";
+        }
+
+        function renderChat() {
+            const area = document.getElementById('chat-messages-area');
+            area.innerHTML = '';
+            chatMessages.forEach(m => {
+                const div = document.createElement('div');
+                div.className = m.isAdmin ? 'msg admin' : 'msg';
+                let imgHtml = m.img ? `<img src="${m.img}" alt="مرفق إداري">` : '';
+                div.innerHTML = `
+                    <div class="msg-sender">${m.sender} ${m.isAdmin ? '<span style="background:#00ff66;color:#000;padding:2px 6px;border-radius:4px;font-size:0.7rem;">ADMIN / ||لا تحاول</span>' : ''}</div>
+                    <div>${m.text}</div>
+                    ${imgHtml}
+                `;
+                area.appendChild(div);
+            });
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function sendTextMsg() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
-            if (!text) return;
+            if(!text) return;
 
-            const chatBox = document.getElementById('chat-box');
-
-            // فحص أوامر الإدارة الخاصة بالرئيس
-            if (text.startsWith('/')) {
-                if (!currentUser.isAdmin) {
-                    alert("❌ عذراً، الأوامر الإدارية (/mute, /ban, /kick) مخصصة لرئيس الكلان والإدارة فقط!");
-                    input.value = '';
-                    return;
-                }
-
-                const parts = text.split(' ');
-                const command = parts[0].toLowerCase();
-                const targetUser = parts.slice(1).join(' ') || "عضو مخالف";
-
-                let sysMsg = "";
-                if (command === '/mute') sysMsg = `🔇 [نظام الإدارة]: تم إعطاء MUTE (كتم صوت) للعضو [${targetUser}] بواسطة الإدارة.`;
-                else if (command === '/ban') sysMsg = `🚫 [نظام الإدارة]: تم حظر (BAN) العضو [${targetUser}] نهائياً من سيرفر وشات 7ZEN!`;
-                else if (command === '/kick') sysMsg = `⚠️ [نظام الإدارة]: تم طرد (KICK) العضو [${targetUser}] من الغرفة.`;
-                else sysMsg = `ℹ️ أمر غير معروف: ${command}`;
-
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'msg-box admin-msg';
-                msgDiv.innerHTML = `<div class="msg-sender" style="color:#00ff66;">⚡ نظام حماية 7ZEN</div><div>${sysMsg}</div>`;
-                chatBox.appendChild(msgDiv);
-                input.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-                return;
-            }
-
-            // إرسال رسالة عادية
-            const msgDiv = document.createElement('div');
-            msgDiv.className = currentUser.isAdmin ? 'msg-box admin-msg' : 'msg-box';
-            
-            const adminTagHtml = currentUser.isAdmin ? `<span class="admin-tag">الإدارة</span>` : '';
-            msgDiv.innerHTML = `
-                <div class="msg-sender">${currentUser.name} ${adminTagHtml}</div>
-                <div>${text}</div>
-            `;
-
-            chatBox.appendChild(msgDiv);
+            chatMessages.push({
+                sender: loggedUser.name,
+                text: text,
+                isAdmin: loggedUser.isAdmin,
+                img: null
+            });
+            localStorage.setItem('7zen_messages', JSON.stringify(chatMessages));
             input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+            renderChat();
         }
 
-        // إرسال بزر Enter
-        document.getElementById('chat-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
+        // إرسال صورة حصرياً للمطور ||لا تحاول
+        function sendAdminImage(fileInput) {
+            if(!loggedUser || !loggedUser.isAdmin) return alert("❌ غير مصرح لك! إرسال الصور حصري للمطور ||لا تحاول فقط.");
+            const file = fileInput.files[0];
+            if(!file) return;
 
-        // --- 7. الألعاب المصغرة ---
-        let clickScore = 0;
-        let timeLeft = 10;
-        let timerId = null;
-        let gameActive = false;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                chatMessages.push({
+                    sender: loggedUser.name,
+                    text: "[مرفق صورة رسمية من الإدارة]",
+                    isAdmin: true,
+                    img: e.target.result
+                });
+                localStorage.setItem('7zen_messages', JSON.stringify(chatMessages));
+                renderChat();
+            };
+            reader.readAsDataURL(file);
+        }
 
-        function registerClick() {
-            if (!gameActive && timeLeft === 10) {
-                gameActive = true;
-                timerId = setInterval(() => {
-                    timeLeft--;
-                    document.getElementById('timer-display').innerText = `الوقت المتبقي: ${timeLeft} ثوانٍ`;
-                    if (timeLeft <= 0) {
-                        clearInterval(timerId);
-                        gameActive = false;
-                        document.getElementById('timer-display').innerText = `انتهى الوقت! نتيجتك: ${clickScore}`;
-                    }
-                }, 1000);
+        // --- 5. ذكاء 7ZEN الاصطناعي (7ZEN AI) ---
+        function ask7ZenAI() {
+            const input = document.getElementById('ai-input');
+            const q = input.value.trim();
+            if(!q) return;
+
+            const area = document.getElementById('ai-messages-area');
+            // إضافة رسالة المستخدم
+            area.innerHTML += `<div class="user-msg">${q}</div>`;
+            input.value = '';
+
+            // تحليل السؤال والرد كـ 7ZEN AI فقط
+            setTimeout(() => {
+                let reply = "أنا 7ZEN AI، الذكاء الاصطناعي المطور خصيصاً لخدمة كلان 7ZEN. يمكنك سؤالي عن شروط الانضمام، الألعاب، أو مؤسس الكلان.";
+                if(q.includes("مؤسس") || q.includes("يزن") || q.includes("رئيس")) {
+                    reply = "مؤسس ورئيس كلان 7ZEN هو يزن هزازي، وقد أسس الكلان رسمياً في Jul 2026.";
+                } else if(q.includes("أعضاء") || q.includes("اعضاء") || q.includes("مين في")) {
+                    reply = "أعضاء الكلان الرسميون حالياً هم: مهند هزازي، خالد قحطاني، خالد مطيري، والوليد هزازي.";
+                } else if(q.includes("شروط") || q.includes("انضمام") || q.includes("ادخل")) {
+                    reply = "شروط الانضمام للكلان هي: العمر المناسب، احترام جميع الأعضاء، والالتزام بالروح الرياضية في الألعاب.";
+                } else if(q.includes("العاب") || q.includes("ألعاب") || q.includes("روكت") || q.includes("ماين")) {
+                    reply = "نحن ننافس حالياً وبقوة في لعبتين رئيسيتين: روكت ليق (Rocket League) وماين كرافت (Minecraft).";
+                } else if(q.includes("مين انت") || q.includes("جيميناي") || q.includes("شات جبتي")) {
+                    reply = "أنا 7ZEN AI، ذكاء اصطناعي خاص ومستقل تم برمجته وتطويره لخدمة منظمة 7ZEN وأعضائها فقط!";
+                }
+
+                area.innerHTML += `<div class="ai-msg"><strong style="color:var(--neon-red);">7ZEN AI:</strong><br>${reply}</div>`;
+                area.scrollTop = area.scrollHeight;
+            }, 500);
+        }
+
+        // --- 6. لوحة الصدارة الديناميكية ---
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+            // ترتيب الأعضاء حسب النقاط من الأعلى للأقل
+            leaderboardData.sort((a,b) => b.score - a.score);
+            leaderboardData.forEach((u, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span style="background:var(--primary-red);color:#fff;padding:3px 10px;border-radius:15px;font-weight:bold;">#${idx+1}</span></td>
+                        <td style="font-weight:bold; color:#fff;">${u.name}</td>
+                        <td>${u.role}</td>
+                        <td style="color:var(--primary-red); font-weight:900;">${u.score}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateScoreInDB(points) {
+            if(!loggedUser) return;
+            let found = leaderboardData.find(u => u.name === loggedUser.name);
+            if(found) {
+                if(points > found.score) found.score = points;
+            } else {
+                leaderboardData.push({
+                    name: loggedUser.name,
+                    role: loggedUser.isAdmin ? "الإدارة العليا" : "عضو بالكلان",
+                    score: points
+                });
             }
-            if (gameActive) {
+            localStorage.setItem('7zen_leaderboard', JSON.stringify(leaderboardData));
+            renderLeaderboard();
+        }
+
+        // --- 7. الألعاب المصغرة وحفظ النقاط ---
+        let clickScore = 0, clickerActive = false;
+        function startClicker() {
+            if(!loggedUser) return alert("سجل دخولك أولاً لحفظ نقاطك في لوحة الصدارة!");
+            if(clickerActive) {
                 clickScore++;
                 document.getElementById('score-display').innerText = clickScore;
+                return;
             }
+            clickerActive = true;
+            clickScore = 1;
+            document.getElementById('score-display').innerText = clickScore;
+            let time = 10;
+            let timer = setInterval(() => {
+                time--;
+                document.getElementById('timer-display').innerText = `الوقت: ${time} ثوانٍ`;
+                if(time <= 0) {
+                    clearInterval(timer);
+                    clickerActive = false;
+                    document.getElementById('timer-display').innerText = `انتهى الوقت! نتيجتك: ${clickScore}`;
+                    updateScoreInDB(clickScore * 10); // تحويل النقاط للوحة الصدارة
+                    alert(`عاش! تم حفظ رقمك في لوحة صدارة 7ZEN (${clickScore * 10} نقطة)`);
+                }
+            }, 1000);
         }
 
         let dodgeRunning = false;
         function startDodgeGame() {
-            if (dodgeRunning) return;
+            if(dodgeRunning) return;
             dodgeRunning = true;
             const dCanvas = document.getElementById('dodgeCanvas');
             const dCtx = dCanvas.getContext('2d');
-            let playerX = dCanvas.width / 2;
-            let enemies = [];
-            let score = 0;
-            let frame = 0;
+            let playerX = dCanvas.width/2, enemies = [], score = 0, frame = 0;
 
-            dCanvas.addEventListener('mousemove', (e) => {
+            dCanvas.addEventListener('mousemove', e => {
                 const rect = dCanvas.getBoundingClientRect();
                 playerX = e.clientX - rect.left;
             });
 
             function loop() {
-                if (!document.getElementById('games-page').classList.contains('active')) {
-                    dodgeRunning = false;
-                    return;
+                if(!document.getElementById('games-page').classList.contains('active')) {
+                    dodgeRunning = false; return;
                 }
-                dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-                
-                dCtx.fillStyle = '#ffffff';
-                dCtx.fillRect(playerX - 15, dCanvas.height - 20, 30, 10);
+                dCtx.clearRect(0,0,dCanvas.width,dCanvas.height);
+                dCtx.fillStyle = '#fff';
+                dCtx.fillRect(playerX-15, dCanvas.height-18, 30, 8);
 
                 frame++;
-                if (frame % 30 === 0) {
-                    enemies.push({ x: Math.random() * (dCanvas.width - 20) + 10, y: 0 });
+                if(frame % 25 === 0) {
+                    enemies.push({ x: Math.random()*(dCanvas.width-20)+10, y: 0 });
                     score++;
                     document.getElementById('dodge-score').innerText = `النقاط: ${score}`;
                 }
 
-                for (let i = 0; i < enemies.length; i++) {
-                    enemies[i].y += 3;
+                for(let i=0; i<enemies.length; i++) {
+                    enemies[i].y += 3.5;
                     dCtx.fillStyle = '#ff001e';
-                    dCtx.beginPath();
-                    dCtx.arc(enemies[i].x, enemies[i].y, 7, 0, Math.PI * 2);
-                    dCtx.fill();
+                    dCtx.beginPath(); dCtx.arc(enemies[i].x, enemies[i].y, 6, 0, Math.PI*2); dCtx.fill();
 
-                    if (enemies[i].y > dCanvas.height - 25 && Math.abs(enemies[i].x - playerX) < 20) {
-                        alert(`خسرت! نتيجتك هي: ${score}`);
-                        enemies = [];
-                        score = 0;
+                    if(enemies[i].y > dCanvas.height-22 && Math.abs(enemies[i].x - playerX) < 18) {
+                        alert(`خسرت! تم تسجيل (${score * 15} نقطة) في لوحة الصدارة`);
+                        updateScoreInDB(score * 15);
+                        enemies = []; score = 0;
                         document.getElementById('dodge-score').innerText = `النقاط: 0`;
                         break;
                     }
