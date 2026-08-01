@@ -530,56 +530,92 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
     <script>
+        // ============================================================
+        // 🔥 إعداد Firebase — عدّل هذي القيم بالكونفيج الخاص بمشروعك
+        // (من Firebase Console → Project settings → General → Your apps → Web app)
+        // بدون تعديل هذي القيم، الدردشة والخاص ما راح يشتغلون بين أجهزة مختلفة.
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "ضع-API-KEY-هنا",
+            authDomain: "ضع-PROJECT-ID.firebaseapp.com",
+            projectId: "ضع-PROJECT-ID-هنا",
+            storageBucket: "ضع-PROJECT-ID.appspot.com",
+            messagingSenderId: "ضع-SENDER-ID-هنا",
+            appId: "ضع-APP-ID-هنا"
+        };
+        const FIREBASE_CONFIGURED = !firebaseConfig.apiKey.includes('ضع-');
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        if(!FIREBASE_CONFIGURED) {
+            console.warn('⚠️ لم تحط Firebase config الحقيقي بعد بأعلى السكربت. الدردشة الأونلاين ما راح تشتغل بين الأجهزة حتى تعدلها.');
+        }
+
         const WEBHOOK_AUTH = "https://discord.com/api/webhooks/1533150715135004719/8QVq-d1WYZk4lLUH-tVbb0p-BrArFeEBaOZTFybKH2PEj0eWkRR5gdTi29GOrqjHYEP5";
         const WEBHOOK_DMS  = "https://discord.com/api/webhooks/1533151322906296370/wcBfZ-9MjU44uPk-KhYdL4-pZBzWhO4BsPCR4tXpOopsm_L--JTmm8XrbfNGRW74WrHj";
 
         const ADMIN_NAME = "||لا تحاول";
         const ADMIN_PASS = "7ZENPP1";
 
-        let allUsers = JSON.parse(localStorage.getItem('7zen_users_v1')) || [
-            { name: ADMIN_NAME, pass: ADMIN_PASS, avatar: "", isAdmin: true, bannedSite: 0, mutedChat: 0, bannedDM: 0, friends: [] }
-        ];
+        let allUsers = [];
         let savedSessions = JSON.parse(localStorage.getItem('7zen_sessions')) || [];
         let currentUsername = localStorage.getItem('7zen_current_user') || null;
 
-        let globalMessages = JSON.parse(localStorage.getItem('7zen_global_msg')) || [
-            { sender: "نظام 7ZEN", text: "تم تفعيل نظام المزامنة الفورية والذكاء الاصطناعي بنجاح.", time: "الآن" }
-        ];
-        let dmMessages = JSON.parse(localStorage.getItem('7zen_dm_msg')) || {};
+        let globalMessages = [];
+        let dmMessages = {};
+        let dmUnsubscribe = null;
 
         let activeDMFriend = null;
         let adminSelectedTarget = null;
 
-        // نظام مزامنة بين نوافذ/تبويبات نفس الجهاز (localStorage لا يعمل بين أجهزة مختلفة إطلاقاً)
-        setInterval(() => {
-            try {
-                const storedUsers = JSON.parse(localStorage.getItem('7zen_users_v1') || '[]');
-                if (JSON.stringify(storedUsers) !== JSON.stringify(allUsers)) {
-                    allUsers = storedUsers;
-                    updateHeaderUI();
-                    if (document.getElementById('dm-page').classList.contains('active')) {
-                        renderFriendsList();
-                    }
-                }
+        // ---------- مزامنة الأعضاء لحظياً من Firestore (يشتغل بين كل الأجهزة) ----------
+        function syncUserToFirestore(user) {
+            return db.collection('users').doc(user.name).set(user).catch(err => console.error('خطأ حفظ العضو:', err));
+        }
 
-                const storedGlobal = JSON.parse(localStorage.getItem('7zen_global_msg') || '[]');
-                if (storedGlobal.length !== globalMessages.length) {
-                    globalMessages = storedGlobal;
-                    if (document.getElementById('chat-page').classList.contains('active')) {
-                        renderGlobalChat();
-                    }
-                }
+        db.collection('users').onSnapshot(snapshot => {
+            allUsers = snapshot.docs.map(doc => doc.data());
+            if(!allUsers.find(u => u.name === ADMIN_NAME)) {
+                syncUserToFirestore({
+                    name: ADMIN_NAME, pass: ADMIN_PASS, avatar: "", isAdmin: true,
+                    bannedSite: 0, mutedChat: 0, bannedDM: 0, friends: []
+                });
+            }
+            updateHeaderUI();
+            if (document.getElementById('dm-page').classList.contains('active')) renderFriendsList();
+            if (document.getElementById('admin-page').classList.contains('active')) renderAdminUserList();
+        }, err => console.error('خطأ مزامنة الأعضاء:', err));
 
-                const storedDM = JSON.parse(localStorage.getItem('7zen_dm_msg') || '{}');
-                if (JSON.stringify(storedDM) !== JSON.stringify(dmMessages)) {
-                    dmMessages = storedDM;
-                    if (document.getElementById('dm-page').classList.contains('active') && activeDMFriend) {
-                        renderDMMessages();
-                    }
-                }
-            } catch (err) {}
-        }, 400);
+        // ---------- مزامنة الشات العام لحظياً بين كل الأعضاء (آخر 200 رسالة) ----------
+        db.collection('globalChat').orderBy('createdAt', 'asc').limitToLast(200)
+          .onSnapshot(snapshot => {
+            globalMessages = snapshot.docs.map(doc => doc.data());
+            if (document.getElementById('chat-page').classList.contains('active')) renderGlobalChat();
+          }, err => console.error('خطأ مزامنة الشات العام:', err));
+
+        // ---------- نظام "متصل الآن" الحقيقي (يعتمد على نبضات كل 20 ثانية) ----------
+        let presenceId = currentUsername || ('زائر_' + Math.random().toString(36).slice(2, 8));
+        function touchPresence() {
+            db.collection('presence').doc(presenceId).set({
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(() => {});
+        }
+        touchPresence();
+        setInterval(touchPresence, 20000);
+        db.collection('presence').onSnapshot(snapshot => {
+            const now = Date.now();
+            let count = 0;
+            snapshot.forEach(doc => {
+                const t = doc.data().lastSeen;
+                if (t && (now - t.toMillis()) < 60000) count++;
+            });
+            const el = document.getElementById('online-users-count');
+            if (el) el.innerText = Math.max(1, count);
+        }, err => console.error('خطأ عداد المتصلين:', err));
 
         const badWords = [
             "كل زق", "كلزق", "قحبه", "قحبة", "خنيث", "منيوك", "متناك", "عاهر", "عاهرة",
@@ -648,19 +684,17 @@
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function getUserObj(name) { return allUsers.find(u => u.name === name); }
-        function saveAllUsers() { localStorage.setItem('7zen_users_v1', JSON.stringify(allUsers)); }
         function saveSessions() {
             localStorage.setItem('7zen_sessions', JSON.stringify(savedSessions));
             localStorage.setItem('7zen_current_user', currentUsername || "");
+            if (currentUsername) { presenceId = currentUsername; touchPresence(); }
             updateHeaderUI();
         }
 
         function updateHeaderUI() {
             const btn = document.getElementById('user-status-btn');
             const adminNav = document.getElementById('admin-nav-btn');
-
-            const onlineCounter = Math.max(3, savedSessions.length + 5);
-            document.getElementById('online-users-count').innerText = onlineCounter;
+            // عداد "متصل الآن" يتحدث تلقائياً من مستمع Firestore الخاص بـ presence (بالأعلى)
 
             if(!currentUsername) {
                 btn.innerHTML = `<span>🔐 تسجيل الدخول</span>`;
@@ -772,11 +806,10 @@
                         isAdmin: (username === ADMIN_NAME),
                         bannedSite: 0, mutedChat: 0, bannedDM: 0, friends: []
                     };
-                    allUsers.push(user);
-                    saveAllUsers();
+                    syncUserToFirestore(user);
                 } else {
                     if(user.pass !== pass) return alert("❌ كلمة المرور غير صحيحة لهذا الحساب!");
-                    if(avatarUrl) { user.avatar = avatarUrl; saveAllUsers(); }
+                    if(avatarUrl) { user.avatar = avatarUrl; syncUserToFirestore(user); }
                 }
 
                 if(!savedSessions.includes(username)) {
@@ -868,13 +901,12 @@
             }
 
             const cleanText = cleanProfanity(rawText);
-            globalMessages.push({
+            db.collection('globalChat').add({
                 sender: u.name, text: cleanText,
-                time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
-            });
-            localStorage.setItem('7zen_global_msg', JSON.stringify(globalMessages));
+                time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'}),
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => alert('تعذر إرسال الرسالة، تأكد من ضبط Firebase config: ' + err.message));
             input.value = '';
-            renderGlobalChat();
         }
 
         function sendGlobalImage(fileInput) {
@@ -885,13 +917,16 @@
 
             const reader = new FileReader();
             reader.onload = e => {
-                globalMessages.push({
+                const dataUrl = e.target.result;
+                if(dataUrl.length > 700000) {
+                    return alert("⚠️ الصورة كبيرة جداً على قاعدة البيانات، اختر صورة أصغر (أقل من ~500 كيلوبايت).");
+                }
+                db.collection('globalChat').add({
                     sender: u.name, text: "[مرفق صورة في الشات]",
-                    img: e.target.result,
-                    time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'})
-                });
-                localStorage.setItem('7zen_global_msg', JSON.stringify(globalMessages));
-                renderGlobalChat();
+                    img: dataUrl,
+                    time: new Date().toLocaleTimeString("ar-SA", {hour:'2-digit', minute:'2-digit'}),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => alert('تعذر إرسال الصورة: ' + err.message));
             };
             reader.readAsDataURL(file);
         }
@@ -932,7 +967,7 @@
 
             if(!u.friends.includes(targetObj.name)) {
                 u.friends.push(targetObj.name);
-                saveAllUsers();
+                syncUserToFirestore(u);
                 input.value = '';
                 renderFriendsList();
                 alert(`تمت إضافة [${targetObj.name}] لقائمة أصدقائك بنجاح!`);
@@ -948,7 +983,16 @@
             document.getElementById('dm-input').disabled = false;
             document.getElementById('dm-send-btn').disabled = false;
             document.getElementById('dm-img-label').style.display = 'inline-block';
-            renderDMMessages();
+
+            if(dmUnsubscribe) { dmUnsubscribe(); dmUnsubscribe = null; }
+
+            const key = getDMKey(currentUsername, fName);
+            dmUnsubscribe = db.collection('dms').doc(key).collection('messages')
+                .orderBy('createdAt', 'asc').limitToLast(300)
+                .onSnapshot(snapshot => {
+                    dmMessages[key] = snapshot.docs.map(doc => doc.data());
+                    if(activeDMFriend === fName) renderDMMessages();
+                }, err => console.error('خطأ مزامنة الخاص:', err));
         }
 
         function getDMKey(a, b) { return [a, b].sort().join("_"); }
@@ -1045,6 +1089,119 @@
             }).catch(() => {});
         }
 
+        // بنك ردود موسّع لذكاء 7ZEN، مقسّم لفئات + ذاكرة بسيطة لآخر فئة اتكلمنا فيها (عشان ما يكرر نفس الرد بالضبط)
+        const aiReplyBank = {
+            founder: [
+                "يزن هزازي (||لا تحاول) هو الزعيم ومؤسس الكلان، فخر 7ZEN وقائدنا الأبدي 🫡🔥",
+                "ما يحتاج تسأل عن الزعيم يزن، هو رأس الهرم ومؤسس الكلان اللي مافي مثله!",
+                "الزعيم يزن هو اللي بنى 7ZEN من الصفر وجمعنا كلنا تحت راية وحدة، نفتخر فيه.",
+                "لا تحاول تسبقه بالكلام 😂 يزن هو المؤسس ورمز الكلان بالكامل."
+            ],
+            greeting: [
+                "وعليكم السلام ورحمة الله وبركاته! يا هلا والله ومرحباً بالزعيم، سم وش بغيت؟",
+                "هلا بك زود! حي الله من يطارينا، تفضل سولف معي بالموضوع اللي براسك.",
+                "أهلين وسهلين! نورت شات 7ZEN AI، وش قصتك اليوم؟",
+                "هلا والله فيك يا نجم! جاهز أسولف معك بأي شي يخطر على بالك."
+            ],
+            howAreYou: [
+                "أنا بألف خير دام السوالف معك حلوة يا وحش، أنت كيف أمورك وطمنتي عنك؟",
+                "عايش جو السايبر ومبسوط معك، أنت كيف حالك وش مسوي باللعبة؟",
+                "تمام التمام، بس الشات ناقصه حضورك أكثر! وش أخبارك أنت؟",
+                "زين والحمدلله، جاهز أسولف وأساعدك بأي شي تحتاجه."
+            ],
+            games: [
+                "قسم بالله الألعاب عندنا حماس وتحديات ما تخلص، جرب لعبة 7ZEN Runner فوق وورني إبداعك!",
+                "ماين كرافت وروكت ليق هم أساس الحماس بالكلان، جاهز لتحدي جديد؟",
+                "لو تبي تتحدى نفسك، روح لصفحة 7ZEN Runner واكسر الرقم القياسي!",
+                "فرقنا بروكت ليق وماين كرافت قوية والله، انضم لأحد الفرق وشارك معنا."
+            ],
+            thanks: [
+                "العفو يا غالي، ذا أقل شي أسويه لك، دايم بالخدمة!",
+                "الله يعافيك، سولف براحتك متى ما تحتاجني.",
+                "تسلم، ودايماً حاضر أساعدك بأي وقت.",
+            ],
+            farewell: [
+                "مع السلامة يا بطل، بانتظارك ترجع بأي وقت!",
+                "الله معك، خلك قريب من الكلان ولا تطول علينا!",
+                "يعطيك العافية، نشوفك قريب إن شاء الله."
+            ],
+            compliment: [
+                "يا سلام عليك، كلامك ذوق! خلك دايم فينا كذا.",
+                "تسلم ذوقك، هذا اللي نبيه من أعضاء 7ZEN!",
+                "الله يبارك فيك، حماسك يزيدنا حماس أكثر."
+            ],
+            joke: [
+                "ليش الكمبيوتر راح للطبيب؟ عشان عنده فايروس! 😂 جرب ترسل وحدة أنت.",
+                "وحد سأل: ليش السيرفر تعبان؟ قالوا لأنه شايل كل ثقل الكلان عليه 😅",
+                "خخخ، ذوقك بالنكت حلو، جرب تسولف مع الأعضاء بالشات العام كمان."
+            ],
+            clanInfo: [
+                "الكلان فيه فرق روكت ليق وماين كرافت، وقيادته يزن هزازي مع نخبة من الأعضاء المعتمدين.",
+                "تقدر تشوف كل تفاصيل القيادة والفرق بصفحة 'الكلان المعتمد' فوق.",
+                "7ZEN كلان متكامل: شات عام، خاص، ألعاب، وذكاء اصطناعي كلها تحت سقف وحد."
+            ],
+            aiSelf: [
+                "أنا ذكاء 7ZEN الاصطناعي، مسولفك هنا بالموقع وجاهز أرد عليك بأي وقت.",
+                "اعتبرني رفيقك بالكلان اللي دايم حاضر يسولف معك ويجاوبك.",
+                "أنا بوت مبرمج خصيصاً لكلان 7ZEN عشان أخليك ما تمل وأنت بالموقع."
+            ],
+            default: [
+                "يا هلا والله! كلامك في الصميم، وش رأيك نكمل سوالف عن الألعاب والتحديات؟",
+                "أبد، اعتبرني معك على الخط بكل شي.. علمني وش جديدك اليوم في الكلان؟",
+                "والله نورت السشن يا غالي، ترا الكلان بدونك ناقص حماس فديتك!",
+                "صادق والله! منور الموقع يا بعدي، تدلل بس وامرني وش بخاطرك؟",
+                "حلوة سالفتك، كمل أخبرني وش بخاطرك بالضبط؟",
+                "تمام، فاهمك، وش رأيك نسولف عن شي ثاني بالكلان كمان؟"
+            ]
+        };
+
+        let lastAICategory = null;
+
+        function detect7ZenCategory(text) {
+            const t = text.toLowerCase();
+            if(/يزن|لا تحاول|مؤسس|زعيم/.test(t)) return 'founder';
+            if(/شكرا|تسلم|يعطيك العافي|thanks/.test(t)) return 'thanks';
+            if(/باي|مع السلامه|مع السلامة|سلام عليكم ومع|اشوفك/.test(t)) return 'farewell';
+            if(/حلو|رهيب|جامد|روعه|روعة|تجنن|خرافي/.test(t)) return 'compliment';
+            if(/نكته|نكتة|ضحك|فكهة/.test(t)) return 'joke';
+            if(/كلان|فريق|اعضاء|أعضاء|مين فيكم|قياده|قيادة/.test(t)) return 'clanInfo';
+            if(/انت مين|من انت|من أنت|ذكاء اصطناعي|روبوت|ai\b/.test(t)) return 'aiSelf';
+            if(/كيف|شلون|اخبارك|أخبارك|احوالك|أحوالك/.test(t)) return 'howAreYou';
+            if(/لعبة|لعبه|روكت|ماين|العاب|ألعاب|قيم|رنر|runner/.test(t)) return 'games';
+            if(/السلام عليكم|سلام|هلا|مرحبا|صباح الخير|مساء الخير/.test(t)) return 'greeting';
+            return 'default';
+        }
+
+        function generate7ZenAIReply(q) {
+            let category = detect7ZenCategory(q);
+            let pool = aiReplyBank[category] || aiReplyBank.default;
+
+            // لو نفس الفئة تكررت، جرب نتفادى نفس أول رد عشان يحس المحادثة متجددة
+            let choices = pool;
+            if(category === lastAICategory && pool.length > 1) {
+                choices = pool.filter((_, i) => i !== 0).concat(pool[0]);
+            }
+            lastAICategory = category;
+
+            let reply = choices[Math.floor(Math.random() * choices.length)];
+
+            // تخصيص بسيط باسم العضو المسجل دخوله لو متوفر
+            if(currentUsername && Math.random() < 0.35) {
+                reply = reply.replace(/يا وحش|يا غالي|يا بطل|يا نجم/, m => `يا ${currentUsername}`);
+            }
+            return reply;
+        }
+
+        function showAITypingIndicator(box) {
+            const div = document.createElement('div');
+            div.id = 'ai-typing-indicator';
+            div.className = 'msg';
+            div.style.borderColor = 'var(--neon-blue)';
+            div.innerHTML = `<div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div><div>يكتب الآن...</div>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
         function ask7ZenAI() {
             const input = document.getElementById('ai-input');
             const q = input.value.trim();
@@ -1059,48 +1216,21 @@
             `;
             input.value = '';
             box.scrollTop = box.scrollHeight;
+            showAITypingIndicator(box);
 
             setTimeout(() => {
-                const lowerQ = q.toLowerCase();
-                let replies = [
-                    "يا هلا والله! كلامك في الصميم، وش رأيك نكمل سوالف عن الألعاب والتحديات؟",
-                    "أبد، اعتبرني معك على الخط بكل شي.. علمني وش جديدك اليوم في الكلان؟",
-                    "والله نورت السشن يا غالي، ترا الكلان بدونك ناقص حماس فديتك!",
-                    "صادق والله! منور الموقع يا بعدي، تدلل بس وامرني وش بخاطرك؟"
-                ];
+                const indicator = document.getElementById('ai-typing-indicator');
+                if(indicator) indicator.remove();
 
-                if(lowerQ.includes("يزن") || lowerQ.includes("لا تحاول")) {
-                    replies = [
-                        "يزن هزازي (||لا تحاول) هو الزعيم ومؤسس الكلان، فخر 7ZEN وقائدنا الأبدي 🫡🔥",
-                        "ما يحتاج تسأل عن الزعيم يزن، هو رأس الهرم ومؤسس الكلان اللي مافي مثله!"
-                    ];
-                } else if(lowerQ.includes("كيف") || lowerQ.includes("شلون") || lowerQ.includes("اخبارك")) {
-                    replies = [
-                        "أنا بألف خير دام السوالف معك حلوة يا وحش، أنت كيف أمورك وطمنتي عنك؟",
-                        "عايش جو السايبر ومبسوط معك، أنت كيف حالك وش مسوي باللعبة؟"
-                    ];
-                } else if(lowerQ.includes("لعبة") || lowerQ.includes("روكت") || lowerQ.includes("ماين")) {
-                    replies = [
-                        "قسم بالله الألعاب عندنا حماس وتحديات ما تخلص، جرب لعبة 7ZEN Runner فوق وورني إبداعك!",
-                        "ماين كرافت وروكت ليق هم أساس الحماس بالكلان، جاهز لتحدي جديد؟"
-                    ];
-                } else if(lowerQ.includes("السلام") || lowerQ.includes("هلا") || lowerQ.includes("السلا عليكم")) {
-                    replies = [
-                        "وعليكم السلام ورحمة الله وبركاته! يا هلا والله ومرحباً بالزعيم، سم وش بغيت؟",
-                        "هلا بك زود! حي الله من يطارينا، تفضل سولف معي بالموضوع اللي براسك."
-                    ];
-                }
-
-                const randReply = replies[Math.floor(Math.random() * replies.length)];
-
+                const reply = generate7ZenAIReply(q);
                 box.innerHTML += `
                     <div class="msg" style="border-color:var(--neon-blue);">
                         <div class="msg-sender" style="color:var(--neon-blue);">🤖 7ZEN AI</div>
-                        <div>${randReply}</div>
+                        <div>${reply}</div>
                     </div>
                 `;
                 box.scrollTop = box.scrollHeight;
-            }, 500);
+            }, 550 + Math.random() * 450);
         }
 
         function sendAIImage(fileInput) {
