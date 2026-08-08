@@ -69,6 +69,12 @@
             z-index: 100;
         }
 
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
         .btn-discord-top {
             background-color: var(--discord);
             color: white;
@@ -85,20 +91,24 @@
             transform: scale(1.05);
         }
 
-        .btn-back {
+        .btn-header-side {
             background-color: rgba(255,255,255,0.1);
             color: white;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.2);
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
-            display: none;
             backdrop-filter: blur(5px);
         }
 
-        .btn-back:hover { background-color: rgba(255,255,255,0.2); }
+        .btn-header-side:hover { 
+            background-color: rgba(255,255,255,0.2); 
+            transform: translateY(-2px);
+        }
+
+        .btn-back { display: none; }
 
         /* --- نظام الصفحات --- */
         .page {
@@ -125,11 +135,115 @@
             font-size: 5.5rem;
             font-weight: 900;
             letter-spacing: 6px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-shadow: 0 0 30px rgba(163, 28, 28, 0.8);
             background: linear-gradient(to bottom, #fff, #a31c1c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* --- إحصائيات سيرفر ماين كرافت --- */
+        .mc-stats-card {
+            background: linear-gradient(135deg, rgba(20, 20, 24, 0.8), rgba(163, 28, 28, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: floatCard 4s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .mc-server-name {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(270deg, #ff0055, #ffaa00, #ff0055);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s ease infinite, pulseSize 2s infinite alternate;
+            margin-bottom: 0px;
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulseSize {
+            0% { transform: scale(1); text-shadow: 0 0 15px rgba(255,0,85,0.4); }
+            100% { transform: scale(1.05); text-shadow: 0 0 25px rgba(255,170,0,0.6); }
+        }
+
+        .mc-edition {
+            font-size: 0.9rem;
+            color: #ffaa00;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .mc-ip-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mc-ip-box:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .mc-status-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .mc-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background-color: #e74c3c;
+            box-shadow: 0 0 10px #e74c3c;
+            animation: pulseDot 1.5s infinite alternate;
+        }
+
+        @keyframes pulseDot {
+            0% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
         }
 
         .main-buttons {
@@ -160,7 +274,6 @@
             box-shadow: 0 10px 25px rgba(163, 28, 28, 0.4);
         }
 
-        /* زر التقديم الشامل الاحترافي بالأطراف المتحركة */
         .btn-vip {
             position: relative;
             background: linear-gradient(135deg, rgba(255, 0, 85, 0.15), rgba(20, 20, 24, 0.9));
@@ -189,10 +302,9 @@
         }
 
         .alert-box {
-            margin-top: auto;
-            padding-top: 40px;
+            margin-top: 30px;
             width: 100%;
-            max-width: 600px;
+            max-width: 450px;
             text-align: center;
         }
 
@@ -269,12 +381,6 @@
             background: rgba(0,0,0,0.8);
         }
 
-        .sub-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
         .img-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -329,26 +435,55 @@
     <div class="bg-glow"></div>
 
     <header>
-        <button class="btn-back" id="backBtn" onclick="openPage('home')">العودة للرئيسية</button>
+        <div class="header-right">
+            <button class="btn-header-side btn-back" id="backBtn" onclick="openPage('home')">العودة للرئيسية</button>
+            <button class="btn-header-side" id="aboutBtn" onclick="openPage('about')">تعريف الكلان</button>
+        </div>
         <a href="https://discord.gg/znurmVBkBr" target="_blank" class="btn-discord-top">سيرفر الديسكورد</a>
     </header>
 
     <!-- 1. الصفحة الرئيسية -->
     <div id="page-home" class="page active">
         <h1 class="title-7zen">7ZEN</h1>
+
+        <!-- قسم إحصائيات ماين كرافت -->
+        <div class="mc-stats-card">
+            <h3 class="mc-server-name">BUN</h3>
+            <div class="mc-edition">للبيدروك و الجافا (Java & Bedrock)</div>
+            <div class="mc-ip-box" onclick="copyIP()" title="اضغط لنسخ الأيبي">
+                bun-7zen.g4f.gg 📋
+            </div>
+            <div class="mc-status-container">
+                <div class="mc-status">
+                    <span class="status-dot" id="mc-dot"></span> 
+                    <span id="mc-state">جاري التحقق...</span>
+                </div>
+                <div class="mc-players">
+                    👥 اللاعبين: <span id="mc-players-count">0/0</span>
+                </div>
+            </div>
+        </div>
         
         <div class="main-buttons">
-            <button class="btn-menu" onclick="openPage('about')">تعريف الكلان</button>
-            <button class="btn-vip" onclick="openPage('full')">🔥 تقديم الكلان الشامل (VIP)</button>
-            <button class="btn-menu" onclick="openPage('map')">تقديم ماب</button>
-            <button class="btn-menu" onclick="openPage('discord')">تقديم ديسكورد</button>
+            <!-- الزر الواحد الذي يفتح قائمة التقديمات -->
+            <button class="btn-vip" onclick="openPage('apps-menu')">📋 قائمة التقديمات</button>
         </div>
 
         <div class="alert-box">
             <div class="alert-content">
                 <h4>⚠️ تنبيه هام قبل التقديم</h4>
-                <p>شروط التقديم وقبول الطلبات موضحة بالكامل في روم الإعلانات بسيرفرنا. يرجى قراءتها بعناية قبل إرسال طلبك.</p>
+                <p>شروط التقديم وقبول الطلبات موضحة بالكامل في روم الإعلانات بسيرفرنا.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- 1.5 صفحة قائمة التقديمات الفرعية -->
+    <div id="page-apps-menu" class="page">
+        <h2 class="page-title">قائمة التقديمات</h2>
+        <div class="main-buttons">
+            <button class="btn-vip" onclick="openPage('full')">🔥 تقديم الكلان الشامل (VIP)</button>
+            <button class="btn-menu" onclick="openPage('map')">تقديم ماب</button>
+            <button class="btn-menu" onclick="openPage('discord')">تقديم ديسكورد</button>
         </div>
     </div>
 
@@ -466,18 +601,64 @@
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1533808438709325926/vE8jSEOp61zjjvL4-59VBjojSnDitD0ro9XOU89SCb1EiHXbhwuubOwlWZOri85648C6";
 
         // ==========================================
-        // 🚫 قائمة الـ IP المحظورة (أضف الأيبيات هنا مستقبلاً)
+        // 🚫 قائمة الـ IP المحظورة 
         // ==========================================
-        const BANNED_IPS = [
-            // "123.456.78.90", هنا حط الايبي
-        ];
+        const BANNED_IPS = [];
 
         // دالة التنقل بين الصفحات
         function openPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
-            document.getElementById('backBtn').style.display = (pageId === 'home') ? 'none' : 'block';
+            
+            // التحكم بظهور أزرار الهيدر
+            if (pageId === 'home') {
+                document.getElementById('backBtn').style.display = 'none';
+                document.getElementById('aboutBtn').style.display = 'block';
+            } else if (pageId === 'about') {
+                document.getElementById('backBtn').style.display = 'block';
+                document.getElementById('aboutBtn').style.display = 'none';
+            } else {
+                document.getElementById('backBtn').style.display = 'block';
+                document.getElementById('aboutBtn').style.display = 'block';
+            }
         }
+
+        // نسخ الأيبي بضغطة زر
+        function copyIP() {
+            navigator.clipboard.writeText('bun-7zen.g4f.gg');
+            alert('✅ تم نسخ الأيبي: bun-7zen.g4f.gg');
+        }
+
+        // جلب حالة سيرفر ماين كرافت بشكل حي
+        async function fetchMCStats() {
+            try {
+                const res = await fetch('https://api.mcsrvstat.us/2/bun-7zen.g4f.gg');
+                const data = await res.json();
+                
+                const stateEl = document.getElementById('mc-state');
+                const dotEl = document.getElementById('mc-dot');
+                const playersEl = document.getElementById('mc-players-count');
+
+                if (data.online) {
+                    stateEl.innerText = "متصل (Online)";
+                    dotEl.style.backgroundColor = "#2ecc71";
+                    dotEl.style.boxShadow = "0 0 10px #2ecc71";
+                    playersEl.innerText = `${data.players.online}/${data.players.max}`;
+                } else {
+                    stateEl.innerText = "غير متصل (Offline)";
+                    dotEl.style.backgroundColor = "#e74c3c";
+                    dotEl.style.boxShadow = "0 0 10px #e74c3c";
+                    playersEl.innerText = "0/0";
+                }
+            } catch(e) {
+                document.getElementById('mc-state').innerText = "خطأ بالاتصال";
+                document.getElementById('mc-dot').style.backgroundColor = "#95a5a6";
+            }
+        }
+
+        // تشغيل دالة حالة السيرفر وتحديثها كل 30 ثانية
+        fetchMCStats();
+        setInterval(fetchMCStats, 30000);
 
         // دالة جلب IP المستخدم
         async function getUserIP() {
@@ -500,17 +681,15 @@
         async function handleFormSubmit(e, type) {
             e.preventDefault();
 
-            // 1. فحص الحظر بالـ IP
             const userIP = await getUserIP();
             if (BANNED_IPS.includes(userIP)) {
                 alert("❌ عذراً، تم حظرك من تقديم الطلبات.");
                 return;
             }
 
-            // 2. نظام Anti-Spam (10 دقائق)
             const lastSubmitTime = localStorage.getItem('7zen_last_submit');
             const now = Date.now();
-            const COOLDOWN_TIME = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
+            const COOLDOWN_TIME = 10 * 60 * 1000; 
 
             if (lastSubmitTime && (now - parseInt(lastSubmitTime)) < COOLDOWN_TIME) {
                 const remainingSeconds = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastSubmitTime))) / 1000);
@@ -520,27 +699,23 @@
                 return;
             }
 
-            // استخراج وتنسيق بيانات النماذج
             let prefix = type === 'شامل' ? 'full' : (type === 'ماب' ? 'map' : 'discord');
             let user = document.getElementById(`${prefix}_user`).value.trim();
             let skills = document.getElementById(`${prefix}_skills`).value.trim();
             let statusDiv = document.getElementById(`status-${prefix}`);
             let submitBtn = document.getElementById(`btn-${prefix}`);
 
-            // التحقق من الاسم الإنجليزي (حرفين على الأقل)
             const englishRegex = /^[a-zA-Z0-9_.\- ]{2,}$/;
             if (!englishRegex.test(user)) {
-                showMsg(statusDiv, "❌ يجب أن يكون الاسم باللغة الإنجليزية ومكون من حرفين على الأقل بدون رموز غريبة.", "error");
+                showMsg(statusDiv, "❌ يجب أن يكون الاسم باللغة الإنجليزية ومكون من حرفين على الأقل.", "error");
                 return;
             }
 
-            // التحقق من طول الإمكانيات والخبرات (15 حرف)
             if (skills.length < 15) {
                 showMsg(statusDiv, "❌ يجب كتابة 15 حرفًا على الأقل في قسم الإمكانيات والخبرات.", "error");
                 return;
             }
 
-            // فحص اسم الماب عند التقديم للماب
             let mapName = "";
             if (type === 'ماب') {
                 mapName = document.getElementById("map_name").value.trim();
@@ -550,24 +725,22 @@
                 }
             }
 
-            // جمع الصور والتحقق منها
             let images = [];
             for (let i = 1; i <= 5; i++) {
                 let imgVal = document.getElementById(`${prefix}_img${i}`).value.trim();
                 if (imgVal) {
                     if (!isValidImageUrl(imgVal)) {
-                        showMsg(statusDiv, `❌ رابط الصورة رقم ${i} غير صحيح، يجب أن يبدأ بـ http:// أو https://`, "error");
+                        showMsg(statusDiv, `❌ رابط الصورة رقم ${i} غير صحيح، يجب أن يبدأ بـ http أو https`, "error");
                         return;
                     }
                     images.push(imgVal);
                 }
             }
 
-            // تجهيز بطاقة الديسكورد (Embed)
             let isVIP = (type === 'شامل');
             const embed = {
                 title: isVIP ? "🔥 VIP ‖ طلب تقديم شامل للكلان - 7ZEN" : `📋 طلب تقديم (${type}) - 7ZEN`,
-                color: isVIP ? 16711765 : 10690332, // لون ذهبي/وردي للمميز وأحمر للعادي
+                color: isVIP ? 16711765 : 10690332,
                 fields: [
                     { name: "👤 مقدم الطلب", value: `\`${user}\``, inline: true },
                     { name: "📌 نوع التقديم", value: `**${type}**`, inline: true },
@@ -588,11 +761,9 @@
 
             embed.fields.push({ name: "⚡ الإمكانيات والخبرات", value: skills, inline: false });
 
-            // إضافة روابط أدلة الصور
             let imgText = images.map((img, idx) => `[دليل صورة ${idx + 1}](${img})`).join('\n');
-            embed.fields.push({ name: "🖼️ أدلة الصور", value: imgText, inline: false });
+            if(imgText) embed.fields.push({ name: "🖼️ أدلة الصور", value: imgText, inline: false });
 
-            // وضع أول صورة كمعاينة ببطاقة الديسكورد
             if (images.length > 0) {
                 embed.image = { url: images[0] };
             }
@@ -608,9 +779,7 @@
                 });
 
                 if (response.ok) {
-                    // حفظ وقت الإرسال لتفعيل حماية Anti-Spam
                     localStorage.setItem('7zen_last_submit', Date.now().toString());
-
                     showMsg(statusDiv, "✅ تم إرسال طلبك بنجاح! سيتم التقييم من قِبل الإدارة.", "success");
                     e.target.reset();
                     setTimeout(() => openPage('home'), 3000);
@@ -621,7 +790,7 @@
                 showMsg(statusDiv, "❌ حدث خطأ أثناء الإرسال. حاول لاحقاً.", "error");
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = "إرسال الطلب";
+                submitBtn.innerText = isVIP ? "إرسال الطلب الشامل 🔥" : "إرسال الطلب";
             }
         }
 
