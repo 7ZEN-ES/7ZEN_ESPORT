@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7ZEN CLAN | النخبة</title>
+    <title>7ZEN CLAN</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,23 +28,27 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- خلفية سينمائية --- */
+        /* منع السكرول نهائياً وجعل الموقع صفحة واحدة ثابتة */
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* إخفاء السكرول */
             position: relative;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(255, 0, 85, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 85% 30%, rgba(88, 101, 242, 0.08) 0%, transparent 50%);
-            background-attachment: fixed;
         }
 
-        /* شبكة خلفية خفيفة */
+        /* إخفاء شريط التمرير لأي عنصر داخلي */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         body::before {
             content: '';
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
                         linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
@@ -55,17 +59,16 @@
 
         /* --- الهيدر الزجاجي --- */
         header {
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; width: 100%;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: rgba(10, 10, 14, 0.7);
+            background: rgba(10, 10, 14, 0.4);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--card-border);
-            transition: all 0.3s ease;
         }
 
         .header-right { display: flex; gap: 12px; align-items: center; }
@@ -79,11 +82,14 @@
             font-weight: 700;
             font-size: 0.95rem;
             box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-discord-top:hover {
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 8px 25px rgba(88, 101, 242, 0.5);
         }
 
@@ -102,201 +108,134 @@
         .btn-header-side:hover { 
             background-color: rgba(255, 255, 255, 0.1); 
             border-color: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
         }
 
         .btn-back { display: none; }
 
-        /* --- نظام الصفحات (Animations) --- */
+        /* --- نظام الصفحات الثابتة --- */
         .page {
             display: none;
-            min-height: 100vh;
-            padding: 120px 20px 60px;
+            height: 100vh;
+            width: 100vw;
+            padding-top: 70px; /* لترك مساحة للهيدر */
             z-index: 10;
-            position: relative;
+            position: absolute;
+            top: 0; left: 0;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: translateY(20px) scale(0.98);
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: scale(0.98);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .page.active { 
             display: flex; 
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: scale(1);
         }
 
         /* --- الرئيسية --- */
-        .title-container {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
         .title-7zen {
-            font-size: 6rem;
+            font-size: 6.5rem;
             font-weight: 900;
             letter-spacing: 8px;
-            margin: 0;
+            margin: 0 0 30px 0;
             background: linear-gradient(180deg, #ffffff 0%, #a31c1c 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 30px rgba(255, 0, 85, 0.4));
         }
 
-        .title-sub {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            margin-top: -10px;
-        }
-
-        /* --- إحصائيات ماين كرافت الاحترافية --- */
+        /* --- إحصائيات ماين كرافت (مضغوطة لصفحة واحدة) --- */
         .mc-stats-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 0, 85, 0.15);
-            border-radius: 24px;
-            padding: 30px;
-            margin-bottom: 40px;
-            width: 100%;
-            max-width: 480px;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            width: 90%;
+            max-width: 450px;
             text-align: center;
             backdrop-filter: blur(20px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 0, 85, 0.05);
-            transition: transform 0.4s ease;
-        }
-
-        .mc-stats-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 0, 85, 0.3);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6), inset 0 0 30px rgba(255, 0, 85, 0.1);
-        }
-
-        .mc-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 5px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         .mc-server-name {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             background: linear-gradient(to right, #ff0055, #ffb703, #ff0055);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shineText 3s linear infinite;
-            margin: 0;
+            margin: 0 0 5px 0;
             line-height: 1;
         }
 
-        @keyframes shineText {
-            to { background-position: 200% center; }
-        }
-
-        .mc-edition {
-            font-size: 1rem;
-            color: var(--vip-gold);
-            font-weight: 700;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: rgba(255, 183, 3, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-block;
-        }
+        @keyframes shineText { to { background-position: 200% center; } }
 
         .mc-ip-box {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--card-border);
-            padding: 15px 20px;
-            border-radius: 14px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.3rem;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #fff;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .mc-ip-box:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
         }
-
-        .mc-ip-box .copy-icon {
-            font-size: 1.2rem;
-            opacity: 0.7;
-            transition: 0.3s;
-        }
-        .mc-ip-box:hover .copy-icon { opacity: 1; }
 
         .mc-status-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(0, 0, 0, 0.3);
-            padding: 15px 20px;
-            border-radius: 14px;
+            padding: 12px 15px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 1.05rem;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-
-        .mc-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 0.95rem;
         }
 
         .status-dot {
-            width: 12px; height: 12px;
+            width: 10px; height: 10px;
             border-radius: 50%;
             background-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent);
-            animation: pulseDot 2s infinite;
-        }
-
-        @keyframes pulseDot {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+            display: inline-block;
+            margin-left: 8px;
         }
 
         /* --- الأزرار --- */
         .main-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 480px;
+            gap: 12px;
+            width: 90%;
+            max-width: 450px;
         }
 
         .btn-menu {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
             color: white;
-            padding: 20px;
-            font-size: 1.15rem;
+            padding: 16px;
+            font-size: 1.1rem;
             font-weight: 700;
-            border-radius: 16px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -306,92 +245,47 @@
         .btn-menu:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .btn-vip {
-            position: relative;
             background: linear-gradient(135deg, rgba(255, 0, 85, 0.1), rgba(20, 20, 28, 0.8));
             border: 1px solid var(--accent);
-            border-radius: 16px;
-            padding: 22px;
-            font-size: 1.3rem;
+            border-radius: 14px;
+            padding: 18px;
+            font-size: 1.2rem;
             font-weight: 900;
             color: #fff;
             cursor: pointer;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* تأثير اللمعان يمر على الزر */
-        .btn-vip::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-            transform: skewX(-25deg);
-            animation: buttonShine 4s infinite;
-        }
-
-        @keyframes buttonShine {
-            0%, 20% { left: -100%; }
-            40%, 100% { left: 200%; }
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
         }
 
         .btn-vip:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 10px 30px var(--accent-glow);
+            box-shadow: 0 0 25px var(--accent-glow);
             border-color: var(--vip-gold);
         }
 
-        .alert-box {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-        }
-
-        .alert-content {
-            background: rgba(255, 183, 3, 0.05);
-            border: 1px solid rgba(255, 183, 3, 0.2);
-            padding: 15px;
-            border-radius: 14px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .alert-content span { color: var(--vip-gold); font-weight: 700; }
-
-        /* --- تصميم البطاقات والنماذج (الزجاجية) --- */
+        /* --- تصميم البطاقات والنماذج (مضغوطة للشاشة الواحدة) --- */
         .content-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             backdrop-filter: blur(25px);
-            padding: 40px;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 650px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            padding: 25px 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh; /* لضمان عدم خروجها عن الشاشة */
+            overflow-y: auto; /* سكرول داخلي مخفي إن لزم الأمر جداً للشاشات الصغيرة */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        .vip-card {
-            border: 1px solid rgba(255, 0, 85, 0.3);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6), inset 0 0 30px rgba(255,0,85,0.05);
-        }
+        .vip-card { border: 1px solid rgba(255, 0, 85, 0.3); }
 
         .page-title {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
             text-align: center;
             font-weight: 900;
-            color: #fff;
         }
 
         .vip-title {
@@ -400,180 +294,133 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* تنسيق الحقول احترافي */
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 12px;
             text-align: right;
             position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             color: #d1d1d1;
             font-weight: 700;
-            font-size: 0.95rem;
-            transition: color 0.3s;
+            font-size: 0.85rem;
         }
 
         input[type="text"], textarea, select {
             width: 100%;
-            padding: 16px;
+            padding: 12px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]::placeholder, textarea::placeholder {
-            color: rgba(255,255,255,0.3);
+            font-size: 0.95rem;
+            transition: all 0.3s;
         }
 
         input[type="text"]:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--accent);
             background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.15);
-        }
-
-        /* تغيير لون الـ Label عند التركيز على الحقل */
-        input:focus + label, textarea:focus + label, select:focus + label {
-            color: var(--accent);
         }
 
         .img-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.05);
             color: white;
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 14px;
-            font-size: 1.2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 900;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
+            margin-top: 10px;
         }
-
-        .btn-submit:hover { 
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-submit-vip {
             background: var(--accent);
             border: none;
-            box-shadow: 0 5px 20px var(--accent-glow);
-        }
-
-        .btn-submit-vip:hover {
-            background: #d60047;
-            box-shadow: 0 8px 25px rgba(255, 0, 85, 0.6);
         }
 
         .status-msg {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
             text-align: center;
             display: none;
             font-weight: 700;
-            animation: popIn 0.3s ease;
+            font-size: 0.9rem;
         }
-
-        @keyframes popIn {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         .success { background: rgba(0, 230, 118, 0.15); color: var(--success); border: 1px solid var(--success);}
         .error { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333;}
 
-        @media (min-width: 768px) {
-            .title-7zen { font-size: 7.5rem; }
-            .img-grid { grid-template-columns: 1fr 1fr; }
-            .mc-ip-box { font-size: 1.5rem; }
-        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="header-right">
-            <button class="btn-header-side btn-back" id="backBtn" onclick="openPage('home')">⬅ العودة للرئيسية</button>
+            <button class="btn-header-side btn-back" id="backBtn" onclick="openPage('home')">⬅ العودة</button>
             <button class="btn-header-side" id="aboutBtn" onclick="openPage('about')">📖 عن الكلان</button>
         </div>
-        <a href="https://discord.gg/znurmVBkBr" target="_blank" class="btn-discord-top">👾 ديسكورد</a>
+        <a href="https://discord.gg/VeSDuExa23" target="_blank" class="btn-discord-top">👾 سيرفر الكلان</a>
     </header>
 
     <!-- 1. الصفحة الرئيسية -->
     <div id="page-home" class="page active">
-        <div class="title-container">
-            <h1 class="title-7zen">7ZEN</h1>
-            <div class="title-sub">ELITE GAMING CLAN</div>
-        </div>
+        <h1 class="title-7zen">7ZEN</h1>
 
-        <!-- قسم إحصائيات ماين كرافت (Widget) -->
+        <!-- قسم ماين كرافت -->
         <div class="mc-stats-card">
-            <div class="mc-header">
-                <h3 class="mc-server-name">BUN</h3>
-            </div>
-            <div class="mc-edition">Java & Bedrock Edition</div>
+            <h3 class="mc-server-name">BUN</h3>
             
             <div class="mc-ip-box" onclick="copyIP()" id="ipBox" title="اضغط لنسخ الأيبي">
                 <span id="ipText">bun-7zen.g4f.gg</span>
-                <span class="copy-icon" id="copyIcon">📋</span>
+                <span id="copyIcon">📋</span>
             </div>
 
             <div class="mc-status-container">
-                <div class="mc-status">
+                <div>
                     <span class="status-dot" id="mc-dot"></span> 
                     <span id="mc-state">جاري التحقق...</span>
                 </div>
-                <div class="mc-players">
-                    👥 متصل: <span id="mc-players-count" style="color: #fff;">0/0</span>
+                <div>
+                    👥 <span id="mc-players-count">0/0</span>
                 </div>
             </div>
         </div>
         
         <div class="main-buttons">
-            <button class="btn-vip" onclick="openPage('apps-menu')">⚡ قائمة التقديمات (Applications)</button>
+            <button class="btn-vip" onclick="openPage('apps-menu')">⚡ قائمة التقديمات</button>
         </div>
+    </div>
 
-        <div class="alert-box">
-            <div class="alert-content">
-                <span>تنويه هام:</span> يرجى قراءة شروط التقديم في روم الإعلانات بسيرفر الديسكورد قبل إرسال طلبك.
+    <!-- 1.5 قائمة التقديمات -->
+    <div id="page-apps-menu" class="page">
+        <div class="content-card" style="text-align: center; background: transparent; border: none; box-shadow: none;">
+            <h2 class="page-title">اختر نوع التقديم</h2>
+            <div class="main-buttons" style="margin: 0 auto;">
+                <button class="btn-vip" onclick="openPage('full')">🔥 تقديم شامل (VIP)</button>
+                <button class="btn-menu" onclick="openPage('map')">🎮 تقديم لعبة / ماب</button>
+                <button class="btn-menu" onclick="openPage('discord')">🛡️ تقديم ديسكورد</button>
             </div>
         </div>
     </div>
 
-    <!-- 1.5 قائمة التقديمات الفرعية -->
-    <div id="page-apps-menu" class="page">
-        <h2 class="page-title">اختر نوع التقديم</h2>
-        <div class="main-buttons">
-            <button class="btn-vip" onclick="openPage('full')">🔥 تقديم شامل (VIP)</button>
-            <button class="btn-menu" onclick="openPage('map')">🗺️ تقديم ماب (Map)</button>
-            <button class="btn-menu" onclick="openPage('discord')">🛡️ تقديم ديسكورد (Discord)</button>
-        </div>
-    </div>
-
-    <!-- 2. صفحة تعريف الكلان -->
+    <!-- 2. عن الكلان -->
     <div id="page-about" class="page">
         <div class="content-card">
             <h2 class="page-title vip-title">نخبة 7ZEN</h2>
-            <p style="text-align: center; line-height: 2; color: #ccc; font-size: 1.15rem;">
-                نحن مجتمع <strong>احترافي</strong> يجمع صفوة المبدعين، الإداريين، واللاعبين التنافسيين في مكان واحد.<br>
-                نسعى دائماً لبناء بيئة لعب نظيفة، متكاملة، وقوية تسيطر على الساحة.<br><br>
+            <p style="text-align: center; line-height: 2; color: #ccc; font-size: 1.1rem;">
+                نحن مجتمع احترافي يجمع صفوة المبدعين، الإداريين، واللاعبين التنافسيين في مكان واحد.<br>
+                نسعى دائماً لبناء بيئة لعب متكاملة وقوية تسيطر على الساحة.<br><br>
                 <span style="color: var(--vip-gold); font-weight: 700;">"الانضباط، المهارة، والقمة"</span>
             </p>
         </div>
@@ -582,7 +429,7 @@
     <!-- 3. التقديم الشامل -->
     <div id="page-full" class="page">
         <div class="content-card vip-card">
-            <h2 class="page-title vip-title">🔥 التقديم الشامل للكلان</h2>
+            <h2 class="page-title vip-title">🔥 التقديم الشامل</h2>
             <form onsubmit="handleFormSubmit(event, 'شامل')">
                 <div class="form-group">
                     <input type="text" id="full_user" placeholder="e.g. John_7zen" required>
@@ -590,56 +437,52 @@
                 </div>
                 <div class="form-group">
                     <select id="full_role" required>
-                        <option value="لاعب">لاعب محترف (Player)</option>
-                        <option value="صانع محتوى">صانع محتوى (Content Creator)</option>
-                        <option value="إداري">إداري (Staff)</option>
+                        <option value="لاعب">لاعب محترف</option>
+                        <option value="صانع محتوى">صانع محتوى</option>
+                        <option value="مطور/إداري">مطور / إداري</option>
                     </select>
                     <label>رغبة الانضمام</label>
                 </div>
                 <div class="form-group">
-                    <textarea id="full_skills" rows="3" placeholder="تحدث عن إنجازاتك وخبراتك هنا..." required></textarea>
-                    <label>الإمكانيات والخبرات (15 حرف كحد أدنى)</label>
+                    <textarea id="full_skills" rows="2" placeholder="تحدث عن إنجازاتك وخبراتك..." required></textarea>
+                    <label>الخبرات (15 حرف كحد أدنى)</label>
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="full_img1" placeholder="رابط الصورة 1 (إجباري)" required>
-                        <input type="text" id="full_img2" placeholder="رابط الصورة 2 (اختياري)">
-                        <input type="text" id="full_img3" placeholder="رابط الصورة 3 (اختياري)">
-                        <input type="text" id="full_img4" placeholder="رابط الصورة 4 (اختياري)">
+                        <input type="text" id="full_img1" placeholder="رابط صورة 1 (إجباري)" required>
+                        <input type="text" id="full_img2" placeholder="رابط صورة 2 (اختياري)">
                     </div>
-                    <label style="margin-top: 10px;">روابط الأدلة (صور فقط)</label>
+                    <label style="margin-top: 5px;">روابط الأدلة (صور فقط)</label>
                 </div>
-                <button type="submit" class="btn-submit btn-submit-vip" id="btn-full">إرسال الطلب (VIP)</button>
+                <button type="submit" class="btn-submit btn-submit-vip" id="btn-full">إرسال الطلب</button>
                 <div id="status-full" class="status-msg"></div>
             </form>
         </div>
     </div>
 
-    <!-- 4. تقديم ماب -->
+    <!-- 4. تقديم لعبة / ماب -->
     <div id="page-map" class="page">
         <div class="content-card">
-            <h2 class="page-title">🗺️ تقديم ماب</h2>
-            <form onsubmit="handleFormSubmit(event, 'ماب')">
+            <h2 class="page-title">🎮 تقديم لعبة / ماب</h2>
+            <form onsubmit="handleFormSubmit(event, 'لعبة')">
                 <div class="form-group">
                     <input type="text" id="map_user" placeholder="e.g. Alex" required>
                     <label>يوزرك بالديسكورد</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="map_name" placeholder="اسم الماب..." required>
-                    <label>اسم الماب</label>
+                    <input type="text" id="map_name" placeholder="اسم اللعبة أو الماب..." required>
+                    <label>اسم اللعبة / الماب</label>
                 </div>
                 <div class="form-group">
-                    <textarea id="map_skills" rows="3" placeholder="اشرح فكرة الماب ومميزاته..." required></textarea>
-                    <label>التفاصيل والإمكانيات</label>
+                    <textarea id="map_skills" rows="2" placeholder="اشرح فكرة اللعبة ومميزاتها البرمجية أو التصميمية..." required></textarea>
+                    <label>تفاصيل اللعبة</label>
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="map_img1" placeholder="رابط الصورة 1 (إجباري)" required>
-                        <input type="text" id="map_img2" placeholder="رابط الصورة 2 (اختياري)">
-                        <input type="text" id="map_img3" placeholder="رابط الصورة 3 (اختياري)">
-                        <input type="text" id="map_img4" placeholder="رابط الصورة 4 (اختياري)">
+                        <input type="text" id="map_img1" placeholder="رابط صورة 1 (إجباري)" required>
+                        <input type="text" id="map_img2" placeholder="رابط صورة 2 (اختياري)">
                     </div>
-                    <label style="margin-top: 10px;">صور الماب</label>
+                    <label style="margin-top: 5px;">صور اللعبة / الماب</label>
                 </div>
                 <button type="submit" class="btn-submit" id="btn-map">إرسال الطلب</button>
                 <div id="status-map" class="status-msg"></div>
@@ -657,17 +500,15 @@
                     <label>يوزرك بالديسكورد</label>
                 </div>
                 <div class="form-group">
-                    <textarea id="discord_skills" rows="3" placeholder="خبرتك في إدارة السيرفرات والبوتات..." required></textarea>
-                    <label>الخبرات الإدارية / التقنية</label>
+                    <textarea id="discord_skills" rows="2" placeholder="خبرتك في إدارة السيرفرات والبوتات..." required></textarea>
+                    <label>الخبرات التقنية / الإدارية</label>
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="discord_img1" placeholder="رابط الصورة 1 (إجباري)" required>
-                        <input type="text" id="discord_img2" placeholder="رابط الصورة 2 (اختياري)">
-                        <input type="text" id="discord_img3" placeholder="رابط الصورة 3 (اختياري)">
-                        <input type="text" id="discord_img4" placeholder="رابط الصورة 4 (اختياري)">
+                        <input type="text" id="discord_img1" placeholder="رابط صورة 1 (إجباري)" required>
+                        <input type="text" id="discord_img2" placeholder="رابط صورة 2 (اختياري)">
                     </div>
-                    <label style="margin-top: 10px;">أدلة الخبرة (صور)</label>
+                    <label style="margin-top: 5px;">أدلة الخبرة</label>
                 </div>
                 <button type="submit" class="btn-submit" id="btn-discord">إرسال الطلب</button>
                 <div id="status-discord" class="status-msg"></div>
@@ -677,17 +518,11 @@
 
     <script>
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1533808438709325926/vE8jSEOp61zjjvL4-59VBjojSnDitD0ro9XOU89SCb1EiHXbhwuubOwlWZOri85648C6";
-        const BANNED_IPS = [];
 
-        // تنقل الصفحات بـ Animation ناعم
         function openPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            setTimeout(() => { document.getElementById('page-' + pageId).classList.add('active'); }, 50);
             
-            setTimeout(() => {
-                document.getElementById('page-' + pageId).classList.add('active');
-            }, 50); // تأخير بسيط لضمان تشغيل الأنيميشن
-            
-            // أزرار الهيدر
             const backBtn = document.getElementById('backBtn');
             const aboutBtn = document.getElementById('aboutBtn');
 
@@ -701,54 +536,43 @@
                 backBtn.style.display = 'block';
                 aboutBtn.style.display = 'block';
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // نسخ ذكي للأيبي مع تفاعل بصري
         function copyIP() {
             navigator.clipboard.writeText('bun-7zen.g4f.gg');
-            
             const ipBox = document.getElementById('ipBox');
             const copyIcon = document.getElementById('copyIcon');
             
             ipBox.style.borderColor = "var(--success)";
-            ipBox.style.background = "rgba(0, 230, 118, 0.1)";
             copyIcon.innerText = "✅";
             
             setTimeout(() => {
                 ipBox.style.borderColor = "var(--card-border)";
-                ipBox.style.background = "rgba(0, 0, 0, 0.4)";
                 copyIcon.innerText = "📋";
             }, 2000);
         }
 
-        // جلب حالة السيرفر
         async function fetchMCStats() {
             try {
                 const res = await fetch('https://api.mcsrvstat.us/2/bun-7zen.g4f.gg');
                 const data = await res.json();
-                
                 const stateEl = document.getElementById('mc-state');
                 const dotEl = document.getElementById('mc-dot');
                 const playersEl = document.getElementById('mc-players-count');
 
                 if (data.online) {
-                    stateEl.innerText = "سيرفر نشط (Online)";
+                    stateEl.innerText = "متصل";
                     stateEl.style.color = "var(--success)";
                     dotEl.style.backgroundColor = "var(--success)";
-                    dotEl.style.animation = "none";
-                    dotEl.style.boxShadow = "0 0 15px var(--success)";
                     playersEl.innerText = `${data.players.online}/${data.players.max}`;
                 } else {
-                    stateEl.innerText = "غير متصل (Offline)";
+                    stateEl.innerText = "مغلق";
                     stateEl.style.color = "#ff3333";
                     dotEl.style.backgroundColor = "#ff3333";
-                    dotEl.style.animation = "none";
-                    dotEl.style.boxShadow = "0 0 10px #ff3333";
                     playersEl.innerText = "0/0";
                 }
             } catch(e) {
-                document.getElementById('mc-state').innerText = "خطأ بالاتصال";
+                document.getElementById('mc-state').innerText = "خطأ";
             }
         }
 
@@ -760,9 +584,7 @@
                 const res = await fetch('https://api.ipify.org?format=json');
                 const data = await res.json();
                 return data.ip;
-            } catch (e) {
-                return 'غير معروف';
-            }
+            } catch (e) { return 'مخفي'; }
         }
 
         function isValidImageUrl(url) {
@@ -773,23 +595,7 @@
         async function handleFormSubmit(e, type) {
             e.preventDefault();
 
-            const userIP = await getUserIP();
-            if (BANNED_IPS.includes(userIP)) {
-                alert("❌ عذراً، تم حظرك من التقديم.");
-                return;
-            }
-
-            const lastSubmitTime = localStorage.getItem('7zen_last_submit');
-            const now = Date.now();
-            const COOLDOWN_TIME = 10 * 60 * 1000; 
-
-            if (lastSubmitTime && (now - parseInt(lastSubmitTime)) < COOLDOWN_TIME) {
-                const remaining = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastSubmitTime))) / 1000);
-                alert(`⏳ نرجو الانتظار ${Math.floor(remaining / 60)} دقيقة و ${remaining % 60} ثانية قبل الإرسال مجدداً.`);
-                return;
-            }
-
-            let prefix = type === 'شامل' ? 'full' : (type === 'ماب' ? 'map' : 'discord');
+            let prefix = type === 'شامل' ? 'full' : (type === 'لعبة' ? 'map' : 'discord');
             let user = document.getElementById(`${prefix}_user`).value.trim();
             let skills = document.getElementById(`${prefix}_skills`).value.trim();
             let statusDiv = document.getElementById(`status-${prefix}`);
@@ -797,57 +603,58 @@
 
             const englishRegex = /^[a-zA-Z0-9_.\- ]{2,}$/;
             if (!englishRegex.test(user)) {
-                showMsg(statusDiv, "❌ يوزرك يجب أن يكون باللغة الإنجليزية وحرفين على الأقل.", "error");
+                showMsg(statusDiv, "❌ يوزرك يجب أن يكون بالإنجليزي.", "error");
                 return;
             }
 
             if (skills.length < 15) {
-                showMsg(statusDiv, "❌ تفاصيل الخبرة يجب أن لا تقل عن 15 حرف.", "error");
+                showMsg(statusDiv, "❌ التفاصيل قصيرة جداً.", "error");
                 return;
             }
 
             let mapName = "";
-            if (type === 'ماب') {
+            if (type === 'لعبة') {
                 mapName = document.getElementById("map_name").value.trim();
                 if (mapName.length < 3) {
-                    showMsg(statusDiv, "❌ اسم الماب 3 أحرف على الأقل.", "error");
+                    showMsg(statusDiv, "❌ اسم اللعبة قصير جداً.", "error");
                     return;
                 }
             }
 
             let images = [];
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 2; i++) {
                 let imgVal = document.getElementById(`${prefix}_img${i}`)?.value.trim();
                 if (imgVal) {
                     if (!isValidImageUrl(imgVal)) {
-                        showMsg(statusDiv, `❌ رابط الصورة ${i} غير صحيح (يجب أن يبدأ بـ http).`, "error");
+                        showMsg(statusDiv, `❌ رابط الصورة ${i} غير صحيح.`, "error");
                         return;
                     }
                     images.push(imgVal);
                 }
             }
 
+            const userIP = await getUserIP();
             let isVIP = (type === 'شامل');
+            
             const embed = {
-                title: isVIP ? "🔥 VIP ‖ طلب تقديم شامل" : `📋 طلب تقديم (${type})`,
+                title: isVIP ? "🔥 طلب تقديم شامل" : `🎮 طلب تقديم (${type})`,
                 color: isVIP ? 16711765 : 16758531,
                 fields: [
                     { name: "👤 العضو", value: `\`${user}\``, inline: true },
                     { name: "📌 النوع", value: `**${type}**`, inline: true },
-                    { name: "🌐 IP Address", value: `||${userIP}||`, inline: true }
+                    { name: "🌐 IP", value: `||${userIP}||`, inline: true }
                 ],
-                footer: { text: "7ZEN CLAN SYSTEM" },
+                footer: { text: "7ZEN CLAN" },
                 timestamp: new Date().toISOString()
             };
 
             if (isVIP) embed.fields.push({ name: "🎯 الرغبة", value: `**${document.getElementById("full_role").value}**`, inline: false });
-            if (type === 'ماب') embed.fields.push({ name: "🗺️ اسم الماب", value: mapName, inline: false });
+            if (type === 'لعبة') embed.fields.push({ name: "🎮 اسم اللعبة/الماب", value: mapName, inline: false });
 
-            embed.fields.push({ name: "⚡ التفاصيل والخبرات", value: skills, inline: false });
+            embed.fields.push({ name: "⚡ التفاصيل", value: skills, inline: false });
 
             let imgText = images.map((img, idx) => `[صورة ${idx + 1}](${img})`).join(' | ');
             if(imgText) embed.fields.push({ name: "🖼️ الأدلة", value: imgText, inline: false });
-
             if (images.length > 0) embed.image = { url: images[0] };
 
             submitBtn.disabled = true;
@@ -861,16 +668,15 @@
                 });
 
                 if (response.ok) {
-                    localStorage.setItem('7zen_last_submit', Date.now().toString());
-                    showMsg(statusDiv, "✅ تم الإرسال بنجاح! سيتم التقييم من الإدارة.", "success");
+                    showMsg(statusDiv, "✅ تم الإرسال بنجاح!", "success");
                     e.target.reset();
-                    setTimeout(() => openPage('home'), 2500);
+                    setTimeout(() => openPage('home'), 2000);
                 } else throw new Error("Failed");
             } catch (err) {
                 showMsg(statusDiv, "❌ حدث خطأ، يرجى المحاولة لاحقاً.", "error");
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = isVIP ? "إرسال الطلب (VIP)" : "إرسال الطلب";
+                submitBtn.innerText = "إرسال الطلب";
             }
         }
 
@@ -878,7 +684,7 @@
             element.innerText = text;
             element.className = `status-msg ${type}`;
             element.style.display = "block";
-            setTimeout(() => { element.style.display = "none"; }, 5000);
+            setTimeout(() => { element.style.display = "none"; }, 4000);
         }
     </script>
 </body>
