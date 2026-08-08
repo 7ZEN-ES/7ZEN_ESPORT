@@ -28,23 +28,24 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* منع السكرول نهائياً وجعل الموقع صفحة واحدة ثابتة */
+        /* --- صفحة واحدة ثابتة بدون سكرول --- */
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* إخفاء السكرول */
+            overflow: hidden; 
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(255, 0, 85, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 85% 30%, rgba(88, 101, 242, 0.08) 0%, transparent 50%);
         }
 
         /* إخفاء شريط التمرير لأي عنصر داخلي */
-        ::-webkit-scrollbar {
-            display: none;
-        }
+        ::-webkit-scrollbar { display: none; }
 
         body::before {
             content: '';
@@ -83,9 +84,6 @@
             font-size: 0.95rem;
             box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .btn-discord-top:hover {
@@ -112,82 +110,101 @@
 
         .btn-back { display: none; }
 
-        /* --- نظام الصفحات الثابتة --- */
+        /* --- نظام الصفحات (Animations) --- */
         .page {
             display: none;
-            height: 100vh;
-            width: 100vw;
+            width: 100%;
+            height: 100%;
             padding-top: 70px; /* لترك مساحة للهيدر */
-            z-index: 10;
             position: absolute;
             top: 0; left: 0;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: scale(0.98);
+            transform: scale(0.98) translateY(10px);
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .page.active { 
             display: flex; 
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
+        }
+
+        /* --- الأنيميشنات المسترجعة --- */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes shineText { 
+            to { background-position: 200% center; } 
+        }
+
+        @keyframes pulseDot {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+        }
+
+        @keyframes buttonShine {
+            0%, 20% { left: -100%; }
+            40%, 100% { left: 200%; }
         }
 
         /* --- الرئيسية --- */
         .title-7zen {
-            font-size: 6.5rem;
+            font-size: 5.5rem;
             font-weight: 900;
             letter-spacing: 8px;
-            margin: 0 0 30px 0;
+            margin: 0 0 20px 0;
             background: linear-gradient(180deg, #ffffff 0%, #a31c1c 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px rgba(255, 0, 85, 0.4));
+            filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.4));
         }
 
-        /* --- إحصائيات ماين كرافت (مضغوطة لصفحة واحدة) --- */
+        /* --- إحصائيات ماين كرافت --- */
         .mc-stats-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 0, 85, 0.15);
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px 25px;
             margin-bottom: 25px;
             width: 90%;
-            max-width: 450px;
+            max-width: 420px;
             text-align: center;
             backdrop-filter: blur(20px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: floatCard 4s ease-in-out infinite; /* أنيميشن الطفو */
         }
 
         .mc-server-name {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
             letter-spacing: 3px;
             background: linear-gradient(to right, #ff0055, #ffb703, #ff0055);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shineText 3s linear infinite;
-            margin: 0 0 5px 0;
+            animation: shineText 3s linear infinite; /* أنيميشن لمعان الاسم */
+            margin: 0 0 10px 0;
             line-height: 1;
         }
-
-        @keyframes shineText { to { background-position: 200% center; } }
 
         .mc-ip-box {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--card-border);
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 12px;
             font-family: monospace;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #fff;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -196,6 +213,7 @@
         .mc-ip-box:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
         }
 
         .mc-status-container {
@@ -203,7 +221,7 @@
             justify-content: space-between;
             align-items: center;
             background: rgba(0, 0, 0, 0.3);
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-radius: 10px;
             font-weight: 700;
             font-size: 0.95rem;
@@ -212,7 +230,7 @@
         .status-dot {
             width: 10px; height: 10px;
             border-radius: 50%;
-            background-color: var(--accent);
+            background-color: var(--text-muted);
             display: inline-block;
             margin-left: 8px;
         }
@@ -223,7 +241,7 @@
             flex-direction: column;
             gap: 12px;
             width: 90%;
-            max-width: 450px;
+            max-width: 420px;
         }
 
         .btn-menu {
@@ -236,36 +254,46 @@
             border-radius: 14px;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
         }
 
         .btn-menu:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .btn-vip {
+            position: relative;
             background: linear-gradient(135deg, rgba(255, 0, 85, 0.1), rgba(20, 20, 28, 0.8));
             border: 1px solid var(--accent);
             border-radius: 14px;
             padding: 18px;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: #fff;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+            overflow: hidden;
+        }
+
+        /* أنيميشن لمعان زر الـ VIP */
+        .btn-vip::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-25deg);
+            animation: buttonShine 3.5s infinite;
         }
 
         .btn-vip:hover {
             box-shadow: 0 0 25px var(--accent-glow);
             border-color: var(--vip-gold);
+            transform: scale(1.02);
         }
 
-        /* --- تصميم البطاقات والنماذج (مضغوطة للشاشة الواحدة) --- */
+        /* --- تصميم البطاقات والنماذج --- */
         .content-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -273,10 +301,11 @@
             padding: 25px 30px;
             border-radius: 20px;
             width: 90%;
-            max-width: 550px;
-            max-height: 85vh; /* لضمان عدم خروجها عن الشاشة */
-            overflow-y: auto; /* سكرول داخلي مخفي إن لزم الأمر جداً للشاشات الصغيرة */
+            max-width: 500px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            /* لضمان بقائها داخل الشاشة */
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
         .vip-card { border: 1px solid rgba(255, 0, 85, 0.3); }
@@ -297,12 +326,11 @@
         .form-group {
             margin-bottom: 12px;
             text-align: right;
-            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             color: #d1d1d1;
             font-weight: 700;
             font-size: 0.85rem;
@@ -344,10 +372,7 @@
             margin-top: 10px;
         }
 
-        .btn-submit-vip {
-            background: var(--accent);
-            border: none;
-        }
+        .btn-submit-vip { background: var(--accent); border: none; }
 
         .status-msg {
             margin-top: 10px;
@@ -360,7 +385,6 @@
         }
         .success { background: rgba(0, 230, 118, 0.15); color: var(--success); border: 1px solid var(--success);}
         .error { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333;}
-
     </style>
 </head>
 <body>
@@ -474,7 +498,7 @@
                     <label>اسم اللعبة / الماب</label>
                 </div>
                 <div class="form-group">
-                    <textarea id="map_skills" rows="2" placeholder="اشرح فكرة اللعبة ومميزاتها البرمجية أو التصميمية..." required></textarea>
+                    <textarea id="map_skills" rows="2" placeholder="اشرح فكرة اللعبة ومميزاتها البرمجية..." required></textarea>
                     <label>تفاصيل اللعبة</label>
                 </div>
                 <div class="form-group">
@@ -552,27 +576,45 @@
             }, 2000);
         }
 
+        // --- نظام الفحص المزدوج للسيرفر (جافا ثم بيدروك) ---
         async function fetchMCStats() {
+            const stateEl = document.getElementById('mc-state');
+            const dotEl = document.getElementById('mc-dot');
+            const playersEl = document.getElementById('mc-players-count');
+            
             try {
-                const res = await fetch('https://api.mcsrvstat.us/2/bun-7zen.g4f.gg');
-                const data = await res.json();
-                const stateEl = document.getElementById('mc-state');
-                const dotEl = document.getElementById('mc-dot');
-                const playersEl = document.getElementById('mc-players-count');
+                // المحاولة الأولى: فحص سيرفر الجافا (الافتراضي)
+                let res = await fetch('https://api.mcsrvstat.us/3/bun-7zen.g4f.gg');
+                let data = await res.json();
 
+                // إذا كان الجافا طافي، نفحص البيدروك فوراً
+                if (!data.online) {
+                    let bedrockRes = await fetch('https://api.mcsrvstat.us/bedrock/3/bun-7zen.g4f.gg');
+                    let bedrockData = await bedrockRes.json();
+                    
+                    if(bedrockData.online) {
+                        data = bedrockData; // تحديث البيانات لو كان شغال على البيدروك
+                    }
+                }
+
+                // عرض النتيجة النهائية
                 if (data.online) {
                     stateEl.innerText = "متصل";
                     stateEl.style.color = "var(--success)";
                     dotEl.style.backgroundColor = "var(--success)";
+                    dotEl.style.animation = "pulseDot 2s infinite"; // تشغيل نبض الاتصال
                     playersEl.innerText = `${data.players.online}/${data.players.max}`;
                 } else {
                     stateEl.innerText = "مغلق";
                     stateEl.style.color = "#ff3333";
                     dotEl.style.backgroundColor = "#ff3333";
+                    dotEl.style.animation = "none";
                     playersEl.innerText = "0/0";
                 }
             } catch(e) {
-                document.getElementById('mc-state').innerText = "خطأ";
+                stateEl.innerText = "خطأ بالاتصال";
+                dotEl.style.backgroundColor = "var(--text-muted)";
+                dotEl.style.animation = "none";
             }
         }
 
@@ -649,7 +691,7 @@
             };
 
             if (isVIP) embed.fields.push({ name: "🎯 الرغبة", value: `**${document.getElementById("full_role").value}**`, inline: false });
-            if (type === 'لعبة') embed.fields.push({ name: "🎮 اسم اللعبة/الماب", value: mapName, inline: false });
+            if (type === 'لعبة') embed.fields.push({ name: "🎮 اسم اللعبة", value: mapName, inline: false });
 
             embed.fields.push({ name: "⚡ التفاصيل", value: skills, inline: false });
 
