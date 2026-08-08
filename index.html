@@ -115,7 +115,7 @@
             display: none;
             width: 100%;
             height: 100%;
-            padding-top: 70px; /* لترك مساحة للهيدر */
+            padding-top: 70px;
             position: absolute;
             top: 0; left: 0;
             flex-direction: column;
@@ -132,7 +132,7 @@
             transform: scale(1) translateY(0);
         }
 
-        /* --- الأنيميشنات المسترجعة --- */
+        /* --- الأنيميشنات --- */
         @keyframes floatCard {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
@@ -177,7 +177,7 @@
             text-align: center;
             backdrop-filter: blur(20px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            animation: floatCard 4s ease-in-out infinite; /* أنيميشن الطفو */
+            animation: floatCard 4s ease-in-out infinite;
         }
 
         .mc-server-name {
@@ -188,7 +188,7 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shineText 3s linear infinite; /* أنيميشن لمعان الاسم */
+            animation: shineText 3s linear infinite;
             margin: 0 0 10px 0;
             line-height: 1;
         }
@@ -277,7 +277,6 @@
             overflow: hidden;
         }
 
-        /* أنيميشن لمعان زر الـ VIP */
         .btn-vip::before {
             content: '';
             position: absolute;
@@ -298,12 +297,11 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             backdrop-filter: blur(25px);
-            padding: 25px 30px;
+            padding: 22px 28px;
             border-radius: 20px;
             width: 90%;
             max-width: 500px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            /* لضمان بقائها داخل الشاشة */
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -311,8 +309,8 @@
         .vip-card { border: 1px solid rgba(255, 0, 85, 0.3); }
 
         .page-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 1.7rem;
+            margin-bottom: 15px;
             text-align: center;
             font-weight: 900;
         }
@@ -338,7 +336,7 @@
 
         input[type="text"], textarea, select {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -353,35 +351,81 @@
             background: rgba(0, 0, 0, 0.5);
         }
 
+        /* --- تصميم صناديق رفع الملفات الاحترافية --- */
         .img-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .file-upload-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--accent);
+            background: rgba(255, 0, 85, 0.05);
+        }
+
+        .file-upload-box .file-title {
+            font-size: 0.8rem;
+            color: #ccc;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 5px;
+            width: 45px;
+            height: 35px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             background: rgba(255, 255, 255, 0.05);
             color: white;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 900;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255,255,255,0.4);
         }
 
         .btn-submit-vip { background: var(--accent); border: none; }
+        .btn-submit-vip:hover { background: #e0004a; }
 
         .status-msg {
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 8px;
+            padding: 8px;
             border-radius: 8px;
             text-align: center;
             display: none;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .success { background: rgba(0, 230, 118, 0.15); color: var(--success); border: 1px solid var(--success);}
         .error { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333;}
@@ -401,7 +445,7 @@
     <div id="page-home" class="page active">
         <h1 class="title-7zen">7ZEN</h1>
 
-        <!-- قسم ماين كرافت -->
+        <!-- إحصائيات ماين كرافت -->
         <div class="mc-stats-card">
             <h3 class="mc-server-name">BUN</h3>
             
@@ -442,7 +486,7 @@
     <div id="page-about" class="page">
         <div class="content-card">
             <h2 class="page-title vip-title">نخبة 7ZEN</h2>
-            <p style="text-align: center; line-height: 2; color: #ccc; font-size: 1.1rem;">
+            <p style="text-align: center; line-height: 2; color: #ccc; font-size: 1.05rem;">
                 نحن مجتمع احترافي يجمع صفوة المبدعين، الإداريين، واللاعبين التنافسيين في مكان واحد.<br>
                 نسعى دائماً لبناء بيئة لعب متكاملة وقوية تسيطر على الساحة.<br><br>
                 <span style="color: var(--vip-gold); font-weight: 700;">"الانضباط، المهارة، والقمة"</span>
@@ -473,10 +517,18 @@
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="full_img1" placeholder="رابط صورة 1 (إجباري)" required>
-                        <input type="text" id="full_img2" placeholder="رابط صورة 2 (اختياري)">
+                        <div class="file-upload-box" onclick="document.getElementById('full_file1').click()">
+                            <input type="file" id="full_file1" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'full_lbl1', 'full_prev1')">
+                            <span class="file-title" id="full_lbl1">📁 صورة رئيسية (إجباري)</span>
+                            <img id="full_prev1" class="file-preview" alt="معاينة">
+                        </div>
+                        <div class="file-upload-box" onclick="document.getElementById('full_file2').click()">
+                            <input type="file" id="full_file2" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'full_lbl2', 'full_prev2')">
+                            <span class="file-title" id="full_lbl2">📁 صورة إضافية (اختياري)</span>
+                            <img id="full_prev2" class="file-preview" alt="معاينة">
+                        </div>
                     </div>
-                    <label style="margin-top: 5px;">روابط الأدلة (صور فقط)</label>
+                    <label style="margin-top: 5px;">إرفاق الأدلة والصور</label>
                 </div>
                 <button type="submit" class="btn-submit btn-submit-vip" id="btn-full">إرسال الطلب</button>
                 <div id="status-full" class="status-msg"></div>
@@ -503,10 +555,18 @@
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="map_img1" placeholder="رابط صورة 1 (إجباري)" required>
-                        <input type="text" id="map_img2" placeholder="رابط صورة 2 (اختياري)">
+                        <div class="file-upload-box" onclick="document.getElementById('map_file1').click()">
+                            <input type="file" id="map_file1" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'map_lbl1', 'map_prev1')">
+                            <span class="file-title" id="map_lbl1">📁 صورة رئيسية (إجباري)</span>
+                            <img id="map_prev1" class="file-preview" alt="معاينة">
+                        </div>
+                        <div class="file-upload-box" onclick="document.getElementById('map_file2').click()">
+                            <input type="file" id="map_file2" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'map_lbl2', 'map_prev2')">
+                            <span class="file-title" id="map_lbl2">📁 صورة إضافية (اختياري)</span>
+                            <img id="map_prev2" class="file-preview" alt="معاينة">
+                        </div>
                     </div>
-                    <label style="margin-top: 5px;">صور اللعبة / الماب</label>
+                    <label style="margin-top: 5px;">إرفاق صور اللعبة</label>
                 </div>
                 <button type="submit" class="btn-submit" id="btn-map">إرسال الطلب</button>
                 <div id="status-map" class="status-msg"></div>
@@ -529,10 +589,18 @@
                 </div>
                 <div class="form-group">
                     <div class="img-grid">
-                        <input type="text" id="discord_img1" placeholder="رابط صورة 1 (إجباري)" required>
-                        <input type="text" id="discord_img2" placeholder="رابط صورة 2 (اختياري)">
+                        <div class="file-upload-box" onclick="document.getElementById('discord_file1').click()">
+                            <input type="file" id="discord_file1" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'discord_lbl1', 'discord_prev1')">
+                            <span class="file-title" id="discord_lbl1">📁 صورة رئيسية (إجباري)</span>
+                            <img id="discord_prev1" class="file-preview" alt="معاينة">
+                        </div>
+                        <div class="file-upload-box" onclick="document.getElementById('discord_file2').click()">
+                            <input type="file" id="discord_file2" accept="image/*" style="display:none" onchange="handleFileSelect(this, 'discord_lbl2', 'discord_prev2')">
+                            <span class="file-title" id="discord_lbl2">📁 صورة إضافية (اختياري)</span>
+                            <img id="discord_prev2" class="file-preview" alt="معاينة">
+                        </div>
                     </div>
-                    <label style="margin-top: 5px;">أدلة الخبرة</label>
+                    <label style="margin-top: 5px;">إرفاق أدلة الخبرة</label>
                 </div>
                 <button type="submit" class="btn-submit" id="btn-discord">إرسال الطلب</button>
                 <div id="status-discord" class="status-msg"></div>
@@ -576,33 +644,49 @@
             }, 2000);
         }
 
-        // --- نظام الفحص المزدوج للسيرفر (جافا ثم بيدروك) ---
+        // --- معاينة الملفات المرفوعة محلياً ---
+        function handleFileSelect(input, labelId, previewId) {
+            const file = input.files[0];
+            const label = document.getElementById(labelId);
+            const preview = document.getElementById(previewId);
+
+            if (file) {
+                // إظهار اسم الملف المختصر
+                let fileName = file.name;
+                if (fileName.length > 12) fileName = fileName.substring(0, 9) + '...';
+                label.innerText = "📎 " + fileName;
+
+                // عرض معاينة الصورة
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline-block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- إحصائيات ماين كرافت (جافا ثم بيدروك) ---
         async function fetchMCStats() {
             const stateEl = document.getElementById('mc-state');
             const dotEl = document.getElementById('mc-dot');
             const playersEl = document.getElementById('mc-players-count');
             
             try {
-                // المحاولة الأولى: فحص سيرفر الجافا (الافتراضي)
                 let res = await fetch('https://api.mcsrvstat.us/3/bun-7zen.g4f.gg');
                 let data = await res.json();
 
-                // إذا كان الجافا طافي، نفحص البيدروك فوراً
                 if (!data.online) {
                     let bedrockRes = await fetch('https://api.mcsrvstat.us/bedrock/3/bun-7zen.g4f.gg');
                     let bedrockData = await bedrockRes.json();
-                    
-                    if(bedrockData.online) {
-                        data = bedrockData; // تحديث البيانات لو كان شغال على البيدروك
-                    }
+                    if(bedrockData.online) data = bedrockData;
                 }
 
-                // عرض النتيجة النهائية
                 if (data.online) {
                     stateEl.innerText = "متصل";
                     stateEl.style.color = "var(--success)";
                     dotEl.style.backgroundColor = "var(--success)";
-                    dotEl.style.animation = "pulseDot 2s infinite"; // تشغيل نبض الاتصال
+                    dotEl.style.animation = "pulseDot 2s infinite";
                     playersEl.innerText = `${data.players.online}/${data.players.max}`;
                 } else {
                     stateEl.innerText = "مغلق";
@@ -629,11 +713,7 @@
             } catch (e) { return 'مخفي'; }
         }
 
-        function isValidImageUrl(url) {
-            if (!url) return true;
-            return (url.startsWith('http://') || url.startsWith('https://'));
-        }
-
+        // --- إرسال الطلب مع الملفات عبر FormData إلى ديسكورد ---
         async function handleFormSubmit(e, type) {
             e.preventDefault();
 
@@ -663,16 +743,12 @@
                 }
             }
 
-            let images = [];
-            for (let i = 1; i <= 2; i++) {
-                let imgVal = document.getElementById(`${prefix}_img${i}`)?.value.trim();
-                if (imgVal) {
-                    if (!isValidImageUrl(imgVal)) {
-                        showMsg(statusDiv, `❌ رابط الصورة ${i} غير صحيح.`, "error");
-                        return;
-                    }
-                    images.push(imgVal);
-                }
+            let file1 = document.getElementById(`${prefix}_file1`).files[0];
+            let file2 = document.getElementById(`${prefix}_file2`).files[0];
+
+            if (!file1) {
+                showMsg(statusDiv, "❌ يرجى إرفاق الصورة الرئيسية كحد أدنى.", "error");
+                return;
             }
 
             const userIP = await getUserIP();
@@ -695,27 +771,39 @@
 
             embed.fields.push({ name: "⚡ التفاصيل", value: skills, inline: false });
 
-            let imgText = images.map((img, idx) => `[صورة ${idx + 1}](${img})`).join(' | ');
-            if(imgText) embed.fields.push({ name: "🖼️ الأدلة", value: imgText, inline: false });
-            if (images.length > 0) embed.image = { url: images[0] };
+            // إعداد الملفات المرفقة في ديسكورد
+            const formData = new FormData();
+            formData.append('files[0]', file1, file1.name);
+            embed.image = { url: `attachment://${file1.name}` };
+
+            if (file2) {
+                formData.append('files[1]', file2, file2.name);
+                embed.fields.push({ name: "🖼️ صورة إضافية", value: `[${file2.name}](attachment://${file2.name})`, inline: false });
+            }
+
+            formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "جاري الإرسال ⏳...";
+            submitBtn.innerText = "جاري رفع الملفات وإرسال الطلب ⏳...";
 
             try {
                 const response = await fetch(WEBHOOK_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ embeds: [embed] })
+                    body: formData
                 });
 
                 if (response.ok) {
-                    showMsg(statusDiv, "✅ تم الإرسال بنجاح!", "success");
+                    showMsg(statusDiv, "✅ تم إرسال الطلب والملفات بنجاح!", "success");
                     e.target.reset();
+                    // إعادة تعيين معاينات الصور
+                    document.querySelectorAll('.file-preview').forEach(p => p.style.display = 'none');
+                    document.querySelectorAll('.file-title').forEach((lbl, idx) => {
+                        lbl.innerText = idx % 2 === 0 ? "📁 صورة رئيسية (إجباري)" : "📁 صورة إضافية (اختياري)";
+                    });
                     setTimeout(() => openPage('home'), 2000);
                 } else throw new Error("Failed");
             } catch (err) {
-                showMsg(statusDiv, "❌ حدث خطأ، يرجى المحاولة لاحقاً.", "error");
+                showMsg(statusDiv, "❌ حدث خطأ أثناء الرفع، يرجى المحاولة لاحقاً.", "error");
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = "إرسال الطلب";
