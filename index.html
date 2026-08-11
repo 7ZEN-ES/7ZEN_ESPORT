@@ -7,16 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #050507;
-            --card-bg: rgba(18, 16, 20, 0.68);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent: #ff1155;
-            --accent-2: #ff5b1c;
-            --accent-glow: rgba(255, 17, 85, 0.45);
-            --vip-gold: #ffb703;
-            --discord: #5865F2;
+            --bg-base: #000000;
+            --card-bg: rgba(10, 8, 10, 0.72);
+            --card-border: rgba(255, 0, 40, 0.18);
+            --accent: #ff0033;
+            --accent-dim: #7a0018;
+            --accent-glow: rgba(255, 0, 51, 0.5);
             --text-main: #ffffff;
-            --text-muted: #9a9aa8;
+            --text-muted: #8a8a92;
             --success: #00e676;
         }
 
@@ -38,88 +36,165 @@
             position: relative;
             display: flex;
             justify-content: center;
-            align-items: center;
-            background-image:
-                radial-gradient(circle at 12% 55%, rgba(255, 17, 85, 0.16) 0%, transparent 52%),
-                radial-gradient(circle at 88% 25%, rgba(88, 101, 242, 0.10) 0%, transparent 50%),
-                radial-gradient(circle at 50% 100%, rgba(255, 91, 28, 0.13) 0%, transparent 55%);
+            align-items: flex-end;
         }
 
         ::-webkit-scrollbar { display: none; }
 
-        #emberCanvas {
+        /* ================= المشهد الخلفي: عاصفة ليلية ================= */
+        .scene {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
+            z-index: -5;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #000000 0%, #060206 38%, #170307 68%, #000000 100%);
+        }
+
+        .clouds { position: absolute; inset: 0; z-index: -4; }
+        .cloud {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(20,10,14,0.9) 0%, rgba(20,10,14,0) 70%);
+            filter: blur(6px);
+            opacity: 0.7;
+        }
+        .cloud.c1 { width: 480px; height: 160px; top: 4%; left: -20%; animation: driftCloud1 75s linear infinite; }
+        .cloud.c2 { width: 620px; height: 200px; top: 12%; left: -30%; animation: driftCloud2 110s linear infinite; opacity: 0.5; }
+        .cloud.c3 { width: 380px; height: 130px; top: 2%; left: -15%; animation: driftCloud3 95s linear infinite; opacity: 0.6; }
+        @keyframes driftCloud1 { from { transform: translateX(0); } to { transform: translateX(160vw); } }
+        @keyframes driftCloud2 { from { transform: translateX(0); } to { transform: translateX(150vw); } }
+        @keyframes driftCloud3 { from { transform: translateX(0); } to { transform: translateX(170vw); } }
+
+        .sky-word {
+            position: absolute;
+            top: 16%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 900;
+            letter-spacing: 10px;
+            color: #ff0033;
+            text-shadow:
+                0 0 20px rgba(255,0,51,0.85),
+                0 0 60px rgba(255,0,51,0.5),
+                0 0 120px rgba(255,0,51,0.25);
+            z-index: -3;
+            animation: skyFloat 6s ease-in-out infinite, skyFlicker 7s ease-in-out infinite;
+            white-space: nowrap;
+        }
+        @keyframes skyFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-14px); }
+        }
+        @keyframes skyFlicker {
+            0%, 92%, 100% { opacity: 1; }
+            93% { opacity: 0.55; }
+            94% { opacity: 1; }
+            96% { opacity: 0.7; }
+            97% { opacity: 1; }
+        }
+
+        .sea {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 34%;
+            z-index: -3;
+            background: linear-gradient(to bottom, #000000 0%, #0a0206 40%, #000000 100%);
+        }
+        .sea::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255,0,51,0.05) 0px,
+                transparent 3px,
+                transparent 14px
+            );
+            animation: seaShimmer 5s ease-in-out infinite;
+        }
+        @keyframes seaShimmer {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+        .horizon-glow {
+            position: absolute;
+            left: 0; right: 0;
+            bottom: 34%;
+            height: 1px;
+            box-shadow: 0 0 40px 8px rgba(255,0,51,0.3);
+            z-index: -3;
+        }
+
+        .silhouette-wrap {
+            position: absolute;
+            bottom: 0;
+            right: 6%;
+            width: min(38vw, 340px);
+            z-index: -2;
+            filter: drop-shadow(0 0 25px rgba(255,0,51,0.12));
+        }
+        .head-group {
+            transform-box: fill-box;
+            transform-origin: 50% 100%;
+            animation: headSway 4.5s ease-in-out infinite;
+        }
+        @keyframes headSway {
+            0%, 100% { transform: rotate(-2.2deg); }
+            50% { transform: rotate(2.6deg); }
+        }
+
+        /* المطر */
+        #rainCanvas {
+            position: fixed;
+            inset: 0;
             z-index: -1;
             pointer-events: none;
         }
 
         #flashOverlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 45%, rgba(255,255,255,0.95), rgba(255,17,85,0.5) 40%, transparent 75%);
-            z-index: 999;
+            inset: 0;
+            background: radial-gradient(circle at 50% 20%, rgba(230,235,255,0.9), rgba(180,190,255,0.25) 45%, transparent 75%);
+            z-index: 997;
             pointer-events: none;
             opacity: 0;
         }
-        #flashOverlay.impact { animation: impactFlash 0.7s ease-out forwards; }
-        @keyframes impactFlash {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
+        #flashOverlay.impact { animation: impactFlash 0.5s ease-out forwards; }
+        @keyframes impactFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
 
         .lightning-streak {
             position: fixed;
             top: -10%;
             width: 2px;
             height: 130%;
-            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), rgba(255,17,85,0.7), transparent);
-            z-index: 998;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.95), rgba(190,200,255,0.7), transparent);
+            z-index: 996;
             pointer-events: none;
             opacity: 0;
-            filter: blur(0.5px);
         }
-        .lightning-streak.strike { animation: strikeAnim 0.5s ease-out forwards; }
+        .lightning-streak.strike { animation: strikeAnim 0.45s ease-out forwards; }
         @keyframes strikeAnim {
-            0% { opacity: 0; }
-            8% { opacity: 1; }
-            15% { opacity: 0.2; }
-            22% { opacity: 0.9; }
-            35% { opacity: 0; }
-            100% { opacity: 0; }
+            0% { opacity: 0; } 8% { opacity: 1; } 15% { opacity: 0.15; }
+            22% { opacity: 0.85; } 35% { opacity: 0; } 100% { opacity: 0; }
         }
+        .thunder-dim { position: fixed; inset: 0; background: #000; opacity: 0; z-index: 995; pointer-events: none; }
+        .thunder-dim.hit { animation: dimPulse 0.5s ease-out forwards; }
+        @keyframes dimPulse { 0% { opacity: 0; } 10% { opacity: 0.35; } 100% { opacity: 0; } }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-            background-size: 34px 34px;
-            z-index: -1;
-            pointer-events: none;
-            animation: gridDrift 40s linear infinite;
-        }
-
-        @keyframes gridDrift {
-            0% { background-position: 0 0, 0 0; }
-            100% { background-position: 68px 68px, 68px 68px; }
-        }
-
+        /* ================= الهيدر ================= */
         header {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; width: 100%;
             padding: 16px 34px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: rgba(5, 5, 7, 0.45);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--card-border);
         }
-
         .header-right { display: flex; gap: 12px; align-items: center; }
 
         .btn-discord-top {
@@ -133,14 +208,10 @@
             box-shadow: 0 4px 18px rgba(88, 101, 242, 0.35);
             transition: all 0.3s ease;
         }
-
-        .btn-discord-top:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 10px 28px rgba(88, 101, 242, 0.55);
-        }
+        .btn-discord-top:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 10px 28px rgba(88, 101, 242, 0.55); }
 
         .btn-header-side {
-            background-color: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 0, 51, 0.08);
             color: var(--text-main);
             border: 1px solid var(--card-border);
             padding: 11px 22px;
@@ -150,14 +221,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .btn-header-side:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255,255,255,0.2);
-        }
-
+        .btn-header-side:hover { background: rgba(255, 0, 51, 0.18); border-color: rgba(255,0,51,0.5); }
         .btn-back { display: none; }
 
+        /* ================= الصفحات ================= */
         .page {
             display: none;
             width: 100%;
@@ -167,90 +234,26 @@
             top: 0; left: 0;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
+            padding-bottom: 6vh;
             opacity: 0;
             transform: scale(0.98) translateY(10px);
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
+        .page.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
 
-        .page.active {
-            display: flex;
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        @keyframes floatCard {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes shineText {
-            to { background-position: 200% center; }
-        }
-
+        @keyframes floatCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         @keyframes pulseDot {
             0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
             70% { box-shadow: 0 0 0 9px rgba(0, 230, 118, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
         }
-
+        @keyframes redPulseBorder {
+            0%, 100% { border-color: rgba(255,0,51,0.3); box-shadow: 0 0 14px rgba(255,0,51,0.15); }
+            50% { border-color: rgba(255,0,51,0.8); box-shadow: 0 0 26px rgba(255,0,51,0.4); }
+        }
         @keyframes buttonShine {
-            0%, 20% { left: -100%; }
-            40%, 100% { left: 200%; }
-        }
-
-        /* --- الشعار (الشِّعار) --- */
-        .crest-wrap {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .crest-aura {
-            position: absolute;
-            width: 220px; height: 220px;
-            background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--vip-gold), var(--accent));
-            filter: blur(28px);
-            opacity: 0.45;
-            border-radius: 50%;
-            animation: rotateAura 6s linear infinite;
-        }
-        @keyframes rotateAura {
-            to { transform: rotate(360deg); }
-        }
-        .crest-svg {
-            position: relative;
-            z-index: 2;
-            filter: drop-shadow(0 0 18px rgba(255, 17, 85, 0.6));
-        }
-
-        @keyframes titleImpact {
-            0% { transform: scale(2.6); opacity: 0; letter-spacing: 40px; filter: blur(8px); }
-            55% { transform: scale(0.94); opacity: 1; letter-spacing: 8px; filter: blur(0); }
-            72% { transform: scale(1.05); letter-spacing: 13px; }
-            100% { transform: scale(1); letter-spacing: 12px; }
-        }
-
-        @keyframes titleGlowPulse {
-            0%, 100% { filter: drop-shadow(0 0 26px rgba(255, 17, 85, 0.5)) drop-shadow(0 0 64px rgba(255, 91, 28, 0.18)); }
-            50% { filter: drop-shadow(0 0 46px rgba(255, 17, 85, 0.75)) drop-shadow(0 0 100px rgba(255, 91, 28, 0.32)); }
-        }
-
-        .title-7zen {
-            font-family: 'Tajawal', sans-serif;
-            font-size: clamp(5rem, 13vw, 9.5rem);
-            font-weight: 900;
-            letter-spacing: 12px;
-            margin: 4px 0 22px 0;
-            background: linear-gradient(180deg, #ffffff 0%, #ffdd88 22%, #ff1155 58%, #6e0a24 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 0.95;
-            animation: titleImpact 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards,
-                       titleGlowPulse 5s ease-in-out 0.9s infinite;
+            0%, 20% { left: -100%; } 40%, 100% { left: 200%; }
         }
 
         @keyframes cardImpact {
@@ -259,54 +262,53 @@
         }
 
         .mc-stats-card {
-            position: relative;
             background: var(--card-bg);
-            border: 1px solid rgba(255, 17, 85, 0.25);
+            border: 1px solid var(--card-border);
             border-radius: 24px;
             padding: 26px 30px;
-            margin-bottom: 30px;
+            margin-bottom: 22px;
             width: 92%;
             max-width: 480px;
             text-align: center;
-            backdrop-filter: blur(22px);
-            box-shadow: 0 16px 50px rgba(0,0,0,0.55);
-            animation: cardImpact 0.7s cubic-bezier(0.2,0.8,0.3,1.1) 0.5s backwards,
-                       floatCard 4.5s ease-in-out 1.2s infinite;
-            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            animation: cardImpact 0.7s cubic-bezier(0.2,0.8,0.3,1.1) 0.3s backwards,
+                       floatCard 4.5s ease-in-out 1s infinite,
+                       redPulseBorder 4s ease-in-out infinite;
         }
-
-        .mc-stats-card::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 26px;
-            padding: 2px;
-            background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--vip-gold), transparent 30%, transparent 70%, var(--accent));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: rotateAura 5s linear infinite;
-            opacity: 0.8;
-            z-index: 0;
-        }
-
-        .mc-stats-card > * { position: relative; z-index: 1; }
 
         .mc-server-name {
-            font-size: 3.6rem;
+            font-size: 3.4rem;
             font-weight: 900;
             letter-spacing: 4px;
-            background: linear-gradient(to right, #ff1155, #ffb703, #ff5b1c, #ff1155);
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shineText 4s linear infinite;
+            color: var(--accent);
+            text-shadow: 0 0 24px rgba(255,0,51,0.6);
             margin: 0 0 12px 0;
             line-height: 1;
         }
 
+        .mc-support-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            background: rgba(255,0,51,0.08);
+            border: 1px solid rgba(255,0,51,0.3);
+            color: #ffb3c0;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            animation: redPulseBorder 3.5s ease-in-out infinite;
+        }
+        .tag:nth-child(2) { animation-delay: 1s; }
+        .tag:nth-child(3) { animation-delay: 2s; }
+
         .mc-ip-box {
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--card-border);
             padding: 12px 18px;
             border-radius: 14px;
@@ -321,239 +323,142 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .mc-ip-box:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.22);
-            transform: scale(1.02);
-        }
+        .mc-ip-box:hover { background: rgba(255, 0, 51, 0.08); border-color: rgba(255, 0, 51, 0.4); transform: scale(1.02); }
 
         .mc-status-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.4);
             padding: 12px 18px;
             border-radius: 12px;
             font-weight: 700;
             font-size: 1.02rem;
         }
+        .status-dot { width: 11px; height: 11px; border-radius: 50%; background-color: var(--text-muted); display: inline-block; margin-left: 9px; }
 
-        .status-dot {
-            width: 11px; height: 11px;
-            border-radius: 50%;
-            background-color: var(--text-muted);
-            display: inline-block;
-            margin-left: 9px;
-        }
+        .main-buttons { display: flex; flex-direction: column; gap: 14px; width: 92%; max-width: 480px; }
 
-        .main-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 92%;
-            max-width: 480px;
-        }
-
-        .btn-menu {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: white;
-            padding: 18px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-menu:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-vip {
+        .btn-menu, .btn-vip {
             position: relative;
-            background: linear-gradient(135deg, rgba(255, 17, 85, 0.14), rgba(18, 16, 20, 0.85));
+            background: linear-gradient(135deg, rgba(255,0,51,0.10), rgba(0,0,0,0.85));
             border: 1px solid var(--accent);
+            color: white;
             border-radius: 16px;
-            padding: 21px;
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: #fff;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 17, 85, 0.25);
             overflow: hidden;
-            animation: cardImpact 0.7s cubic-bezier(0.2,0.8,0.3,1.1) 0.9s backwards;
+            transition: all 0.3s;
+            animation: redPulseBorder 3.5s ease-in-out infinite, cardImpact 0.7s cubic-bezier(0.2,0.8,0.3,1.1) backwards;
         }
+        .btn-menu { padding: 18px; font-size: 1.15rem; font-weight: 700; animation-delay: 0.6s, 0.6s; }
+        .btn-vip { padding: 21px; font-size: 1.3rem; font-weight: 900; animation-delay: 0.4s, 0.4s; box-shadow: 0 0 20px rgba(255,0,51,0.3); }
 
-        .btn-vip::before {
+        .btn-menu::before, .btn-vip::before {
             content: '';
             position: absolute;
             top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
             transform: skewX(-25deg);
             animation: buttonShine 3.5s infinite;
         }
-
-        .btn-vip:hover {
+        .btn-menu:hover, .btn-vip:hover {
             box-shadow: 0 0 32px var(--accent-glow);
-            border-color: var(--vip-gold);
             transform: scale(1.02);
         }
 
         .content-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(26px);
+            backdrop-filter: blur(24px);
             padding: 26px 32px;
             border-radius: 22px;
             width: 92%;
             max-width: 560px;
-            box-shadow: 0 24px 50px rgba(0,0,0,0.55);
-            max-height: 85vh;
+            box-shadow: 0 24px 50px rgba(0,0,0,0.7);
+            max-height: 78vh;
             overflow-y: auto;
         }
+        .vip-card { border: 1px solid rgba(255,0,51,0.4); }
+        .page-title { font-size: 1.9rem; margin-bottom: 16px; text-align: center; font-weight: 900; color: var(--accent); text-shadow: 0 0 18px rgba(255,0,51,0.5); }
 
-        .vip-card { border: 1px solid rgba(255, 17, 85, 0.32); }
-
-        .page-title {
-            font-size: 1.9rem;
-            margin-bottom: 16px;
-            text-align: center;
-            font-weight: 900;
-        }
-
-        .vip-title {
-            background: linear-gradient(45deg, #ff1155, #ffb703);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .form-group {
-            margin-bottom: 13px;
-            text-align: right;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #d1d1d1;
-            font-weight: 700;
-            font-size: 0.87rem;
-        }
+        .form-group { margin-bottom: 13px; text-align: right; }
+        label { display: block; margin-bottom: 5px; color: #d1d1d1; font-weight: 700; font-size: 0.87rem; }
 
         input[type="text"], textarea, select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.32);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 11px;
-            color: white;
-            font-size: 0.97rem;
-            transition: all 0.3s;
+            width: 100%; padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 0, 51, 0.2);
+            border-radius: 11px; color: white; font-size: 0.97rem; transition: all 0.3s;
         }
-
         input[type="text"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: rgba(0, 0, 0, 0.5);
+            outline: none; border-color: var(--accent); background: rgba(0, 0, 0, 0.6);
         }
 
-        .img-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
+        .img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .file-upload-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 11px;
-            padding: 11px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            min-height: 72px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            border: 2px dashed rgba(255, 0, 51, 0.25);
+            border-radius: 11px; padding: 11px; text-align: center; cursor: pointer;
+            transition: all 0.3s; min-height: 72px; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-
-        .file-upload-box:hover {
-            border-color: var(--accent);
-            background: rgba(255, 17, 85, 0.06);
-        }
-
-        .file-upload-box .file-title {
-            font-size: 0.82rem;
-            color: #ccc;
-            font-weight: 700;
-            pointer-events: none;
-        }
-
-        .file-preview {
-            display: none;
-            margin-top: 5px;
-            width: 46px;
-            height: 36px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+        .file-upload-box:hover { border-color: var(--accent); background: rgba(255, 0, 51, 0.08); }
+        .file-upload-box .file-title { font-size: 0.82rem; color: #ccc; font-weight: 700; pointer-events: none; }
+        .file-preview { display: none; margin-top: 5px; width: 46px; height: 36px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
 
         .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 11px;
-            font-size: 1.08rem;
-            font-weight: 900;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.3s;
+            width: 100%; padding: 14px;
+            background: rgba(255, 0, 51, 0.08);
+            color: white; border: 1px solid rgba(255,0,51,0.35);
+            border-radius: 11px; font-size: 1.08rem; font-weight: 900; cursor: pointer; margin-top: 8px; transition: all 0.3s;
         }
-
-        .btn-submit:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255,255,255,0.4);
-        }
-
+        .btn-submit:hover { background: rgba(255, 0, 51, 0.18); border-color: var(--accent); }
         .btn-submit-vip { background: var(--accent); border: none; }
-        .btn-submit-vip:hover { background: #d10047; }
+        .btn-submit-vip:hover { background: #d1002b; }
 
-        .status-msg {
-            margin-top: 8px;
-            padding: 9px;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-            font-weight: 700;
-            font-size: 0.87rem;
-        }
-        .success { background: rgba(0, 230, 118, 0.15); color: var(--success); border: 1px solid var(--success);}
-        .error { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333;}
+        .status-msg { margin-top: 8px; padding: 9px; border-radius: 8px; text-align: center; display: none; font-weight: 700; font-size: 0.87rem; }
+        .success { background: rgba(0, 230, 118, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .error { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333; }
 
         @media (prefers-reduced-motion: reduce) {
-            .title-7zen, .mc-server-name, .mc-stats-card, .btn-vip::before, body::before,
-            .crest-aura, .mc-stats-card::before, #flashOverlay, .lightning-streak {
+            .cloud, .sky-word, .sea::before, .head-group, .mc-stats-card, .tag, .btn-menu, .btn-vip,
+            #flashOverlay, .lightning-streak, .thunder-dim, .btn-menu::before, .btn-vip::before {
                 animation: none !important;
             }
-            .title-7zen { opacity: 1; transform: none; letter-spacing: 12px; }
-            .mc-stats-card, .btn-vip { opacity: 1; transform: none; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="emberCanvas"></canvas>
+    <!-- المشهد -->
+    <div class="scene">
+        <div class="clouds">
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+        </div>
+        <div class="sky-word">7ZEN</div>
+        <div class="horizon-glow"></div>
+        <div class="sea"></div>
+
+        <div class="silhouette-wrap">
+            <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- البيت -->
+                <polygon points="10,120 70,70 130,120" fill="#000000"/>
+                <rect x="20" y="120" width="100" height="90" fill="#000000"/>
+                <!-- الشخص جالس مستند على الحائط -->
+                <g>
+                    <path d="M120 210 C118 175 122 150 140 140 C150 136 160 140 163 150 C170 148 178 155 176 166 C186 168 190 180 182 188 C186 196 180 208 168 208 Z" fill="#000000"/>
+                    <g class="head-group">
+                        <circle cx="150" cy="128" r="16" fill="#000000"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <canvas id="rainCanvas"></canvas>
     <div id="flashOverlay"></div>
+    <div class="thunder-dim" id="thunderDim"></div>
 
     <header>
         <div class="header-right">
@@ -565,26 +470,14 @@
 
     <!-- 1. الصفحة الرئيسية -->
     <div id="page-home" class="page active">
-
-        <div class="crest-wrap">
-            <div class="crest-aura"></div>
-            <svg class="crest-svg" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50 4 L92 20 V50 C92 74 74 90 50 96 C26 90 8 74 8 50 V20 Z" fill="url(#crestGrad)" stroke="#ffdd88" stroke-width="1.5"/>
-                <text x="50" y="66" text-anchor="middle" font-size="42" font-weight="900" fill="#ffffff" font-family="Tajawal, sans-serif">7</text>
-                <defs>
-                    <linearGradient id="crestGrad" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-                        <stop offset="0" stop-color="#2a0510"/>
-                        <stop offset="0.5" stop-color="#6e0a24"/>
-                        <stop offset="1" stop-color="#ff1155"/>
-                    </linearGradient>
-                </defs>
-            </svg>
-        </div>
-
-        <h1 class="title-7zen">7ZEN</h1>
-
         <div class="mc-stats-card">
             <h3 class="mc-server-name">BUN</h3>
+
+            <div class="mc-support-tags">
+                <span class="tag">☕ Java (كل الإصدارات)</span>
+                <span class="tag">🎮 Bedrock</span>
+                <span class="tag">🔀 كروس بلاي</span>
+            </div>
 
             <div class="mc-ip-box" onclick="copyIP()" id="ipBox" title="اضغط لنسخ الأيبي">
                 <span id="ipText">bun-7zen.g4f.gg</span>
@@ -622,11 +515,11 @@
     <!-- 2. عن الكلان -->
     <div id="page-about" class="page">
         <div class="content-card">
-            <h2 class="page-title vip-title">نخبة 7ZEN</h2>
+            <h2 class="page-title">نخبة 7ZEN</h2>
             <p style="text-align: center; line-height: 2; color: #ccc; font-size: 1.08rem;">
                 نحن مجتمع احترافي يجمع صفوة المبدعين، الإداريين، واللاعبين التنافسيين في مكان واحد.<br>
                 نسعى دائماً لبناء بيئة لعب متكاملة وقوية تسيطر على الساحة.<br><br>
-                <span style="color: var(--vip-gold); font-weight: 700;">"الانضباط، المهارة، والقمة"</span>
+                <span style="color: var(--accent); font-weight: 700;">"الانضباط، المهارة، والقمة"</span>
             </p>
         </div>
     </div>
@@ -634,7 +527,7 @@
     <!-- 3. التقديم الشامل -->
     <div id="page-full" class="page">
         <div class="content-card vip-card">
-            <h2 class="page-title vip-title">🔥 التقديم الشامل</h2>
+            <h2 class="page-title">🔥 التقديم الشامل</h2>
             <form onsubmit="handleFormSubmit(event, 'شامل')">
                 <div class="form-group">
                     <input type="text" id="full_user" placeholder="e.g. John_7zen" required>
@@ -771,10 +664,8 @@
             navigator.clipboard.writeText('bun-7zen.g4f.gg');
             const ipBox = document.getElementById('ipBox');
             const copyIcon = document.getElementById('copyIcon');
-
             ipBox.style.borderColor = "var(--success)";
             copyIcon.innerText = "✅";
-
             setTimeout(() => {
                 ipBox.style.borderColor = "var(--card-border)";
                 copyIcon.innerText = "📋";
@@ -785,12 +676,10 @@
             const file = input.files[0];
             const label = document.getElementById(labelId);
             const preview = document.getElementById(previewId);
-
             if (file) {
                 let fileName = file.name;
                 if (fileName.length > 12) fileName = fileName.substring(0, 9) + '...';
                 label.innerText = "📎 " + fileName;
-
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
@@ -804,17 +693,14 @@
             const stateEl = document.getElementById('mc-state');
             const dotEl = document.getElementById('mc-dot');
             const playersEl = document.getElementById('mc-players-count');
-
             try {
                 let res = await fetch('https://api.mcsrvstat.us/3/bun-7zen.g4f.gg');
                 let data = await res.json();
-
                 if (!data.online) {
                     let bedrockRes = await fetch('https://api.mcsrvstat.us/bedrock/3/bun-7zen.g4f.gg');
                     let bedrockData = await bedrockRes.json();
                     if(bedrockData.online) data = bedrockData;
                 }
-
                 if (data.online) {
                     stateEl.innerText = "متصل";
                     stateEl.style.color = "var(--success)";
@@ -834,7 +720,6 @@
                 dotEl.style.animation = "none";
             }
         }
-
         fetchMCStats();
         setInterval(fetchMCStats, 30000);
 
@@ -848,7 +733,6 @@
 
         async function handleFormSubmit(e, type) {
             e.preventDefault();
-
             let prefix = type === 'شامل' ? 'full' : (type === 'لعبة' ? 'map' : 'discord');
             let user = document.getElementById(`${prefix}_user`).value.trim();
             let skills = document.getElementById(`${prefix}_skills`).value.trim();
@@ -856,32 +740,18 @@
             let submitBtn = document.getElementById(`btn-${prefix}`);
 
             const englishRegex = /^[a-zA-Z0-9_.\- ]{2,}$/;
-            if (!englishRegex.test(user)) {
-                showMsg(statusDiv, "❌ يوزرك يجب أن يكون بالإنجليزي.", "error");
-                return;
-            }
-
-            if (skills.length < 15) {
-                showMsg(statusDiv, "❌ التفاصيل قصيرة جداً.", "error");
-                return;
-            }
+            if (!englishRegex.test(user)) { showMsg(statusDiv, "❌ يوزرك يجب أن يكون بالإنجليزي.", "error"); return; }
+            if (skills.length < 15) { showMsg(statusDiv, "❌ التفاصيل قصيرة جداً.", "error"); return; }
 
             let mapName = "";
             if (type === 'لعبة') {
                 mapName = document.getElementById("map_name").value.trim();
-                if (mapName.length < 3) {
-                    showMsg(statusDiv, "❌ اسم اللعبة قصير جداً.", "error");
-                    return;
-                }
+                if (mapName.length < 3) { showMsg(statusDiv, "❌ اسم اللعبة قصير جداً.", "error"); return; }
             }
 
             let file1 = document.getElementById(`${prefix}_file1`).files[0];
             let file2 = document.getElementById(`${prefix}_file2`).files[0];
-
-            if (!file1) {
-                showMsg(statusDiv, "❌ يرجى إرفاق الصورة الرئيسية كحد أدنى.", "error");
-                return;
-            }
+            if (!file1) { showMsg(statusDiv, "❌ يرجى إرفاق الصورة الرئيسية كحد أدنى.", "error"); return; }
 
             const userIP = await getUserIP();
             let isVIP = (type === 'شامل');
@@ -900,29 +770,21 @@
 
             if (isVIP) embed.fields.push({ name: "🎯 الرغبة", value: `**${document.getElementById("full_role").value}**`, inline: false });
             if (type === 'لعبة') embed.fields.push({ name: "🎮 اسم اللعبة", value: mapName, inline: false });
-
             embed.fields.push({ name: "⚡ التفاصيل", value: skills, inline: false });
 
             const formData = new FormData();
             formData.append('files[0]', file1, file1.name);
             embed.image = { url: `attachment://${file1.name}` };
-
             if (file2) {
                 formData.append('files[1]', file2, file2.name);
                 embed.fields.push({ name: "🖼️ صورة إضافية", value: `[${file2.name}](attachment://${file2.name})`, inline: false });
             }
-
             formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
 
             submitBtn.disabled = true;
             submitBtn.innerText = "جاري رفع الملفات وإرسال الطلب ⏳...";
-
             try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: "POST",
-                    body: formData
-                });
-
+                const response = await fetch(WEBHOOK_URL, { method: "POST", body: formData });
                 if (response.ok) {
                     showMsg(statusDiv, "✅ تم إرسال الطلب والملفات بنجاح!", "success");
                     e.target.reset();
@@ -947,109 +809,83 @@
             setTimeout(() => { element.style.display = "none"; }, 4000);
         }
 
-        /* --- ومضة الدخول الدرامية --- */
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /* ---- ومضة دخول ---- */
         if (!reduceMotion) {
-            const flash = document.getElementById('flashOverlay');
-            requestAnimationFrame(() => flash.classList.add('impact'));
+            requestAnimationFrame(() => document.getElementById('flashOverlay').classList.add('impact'));
         }
 
-        /* --- وميض برق عشوائي نادر (كل 9-16 ثانية) --- */
-        function triggerLightning() {
+        /* ---- رعد وبرق عشوائي (كل 7-15 ثانية) ---- */
+        function triggerThunder() {
             if (reduceMotion) return;
             const bolt = document.createElement('div');
             bolt.className = 'lightning-streak strike';
             bolt.style.left = (10 + Math.random() * 80) + '%';
             bolt.style.transform = `rotate(${(Math.random() * 10 - 5)}deg)`;
             document.body.appendChild(bolt);
-            setTimeout(() => bolt.remove(), 600);
+            setTimeout(() => bolt.remove(), 550);
 
-            // أحياناً ومضة ثانية قريبة عشان تحس فيها "صعقة" حقيقية
-            if (Math.random() > 0.5) {
+            const dim = document.getElementById('thunderDim');
+            dim.classList.remove('hit'); void dim.offsetWidth; dim.classList.add('hit');
+
+            if (Math.random() > 0.45) {
                 setTimeout(() => {
                     const bolt2 = document.createElement('div');
                     bolt2.className = 'lightning-streak strike';
                     bolt2.style.left = (10 + Math.random() * 80) + '%';
                     bolt2.style.transform = `rotate(${(Math.random() * 10 - 5)}deg)`;
                     document.body.appendChild(bolt2);
-                    setTimeout(() => bolt2.remove(), 600);
-                }, 120);
+                    setTimeout(() => bolt2.remove(), 550);
+                }, 110);
             }
         }
-        function scheduleLightning() {
-            const delay = 9000 + Math.random() * 7000;
-            setTimeout(() => { triggerLightning(); scheduleLightning(); }, delay);
+        function scheduleThunder() {
+            const delay = 7000 + Math.random() * 8000;
+            setTimeout(() => { triggerThunder(); scheduleThunder(); }, delay);
         }
-        scheduleLightning();
+        scheduleThunder();
 
-        /* --- خلفية الجمرات المتحركة (كثيفة، بدون تكرار مزعج) --- */
-        (function emberBackground() {
-            const canvas = document.getElementById('emberCanvas');
+        /* ---- المطر ---- */
+        (function rain() {
+            const canvas = document.getElementById('rainCanvas');
             const ctx = canvas.getContext('2d');
+            let w, h, drops = [];
+            const COUNT = 160;
 
-            let w, h, embers = [];
-            const COUNT = 85;
-            const COLORS = ['255,17,85', '255,91,28', '255,183,3'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
+            function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
             window.addEventListener('resize', resize);
             resize();
 
-            function makeEmber(initial) {
-                const big = Math.random() > 0.88;
+            function makeDrop(initial) {
                 return {
-                    x: Math.random() * w,
-                    y: initial ? Math.random() * h : h + Math.random() * 60,
-                    r: big ? 2.6 + Math.random() * 3 : 0.6 + Math.random() * 2,
-                    speedY: (big ? 0.3 : 0.15) + Math.random() * 0.45,
-                    driftX: (Math.random() - 0.5) * 0.35,
-                    driftSeed: Math.random() * 1000,
-                    driftAmp: 8 + Math.random() * 22,
-                    baseAlpha: (big ? 0.35 : 0.15) + Math.random() * 0.45,
-                    flickerSeed: Math.random() * 1000,
-                    color: COLORS[Math.floor(Math.random() * COLORS.length)]
+                    x: Math.random() * (w + 200) - 100,
+                    y: initial ? Math.random() * h : -20,
+                    len: 10 + Math.random() * 18,
+                    speed: 6 + Math.random() * 7,
+                    drift: 1.4 + Math.random() * 0.6,
+                    alpha: 0.08 + Math.random() * 0.22
                 };
             }
+            for (let i = 0; i < COUNT; i++) drops.push(makeDrop(true));
 
-            for (let i = 0; i < COUNT; i++) embers.push(makeEmber(true));
-
-            let t = 0;
             function draw() {
-                t += 1;
                 ctx.clearRect(0, 0, w, h);
-
-                for (const e of embers) {
-                    e.y -= e.speedY;
-                    const sway = Math.sin((t + e.driftSeed) * 0.01) * e.driftAmp * 0.02;
-                    e.x += e.driftX + sway * 0.05;
-
-                    const flicker = 0.65 + 0.35 * Math.sin((t + e.flickerSeed) * 0.03);
-                    const alpha = e.baseAlpha * flicker;
-
+                ctx.strokeStyle = 'rgba(200,210,230,0.5)';
+                ctx.lineWidth = 1;
+                for (const d of drops) {
+                    d.x += d.drift;
+                    d.y += d.speed;
                     ctx.beginPath();
-                    const grad = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 5);
-                    grad.addColorStop(0, `rgba(${e.color}, ${alpha})`);
-                    grad.addColorStop(1, `rgba(${e.color}, 0)`);
-                    ctx.fillStyle = grad;
-                    ctx.arc(e.x, e.y, e.r * 5, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    if (e.y < -20 || e.x < -20 || e.x > w + 20) {
-                        Object.assign(e, makeEmber(false));
-                    }
+                    ctx.moveTo(d.x, d.y);
+                    ctx.lineTo(d.x - d.drift * 2.2, d.y + d.len);
+                    ctx.strokeStyle = `rgba(190,200,225,${d.alpha})`;
+                    ctx.stroke();
+                    if (d.y > h + 20) Object.assign(d, makeDrop(false));
                 }
-
                 if (!reduceMotion) requestAnimationFrame(draw);
             }
-
-            if (!reduceMotion) {
-                requestAnimationFrame(draw);
-            } else {
-                ctx.clearRect(0, 0, w, h);
-            }
+            if (!reduceMotion) requestAnimationFrame(draw); else ctx.clearRect(0,0,w,h);
         })();
     </script>
 </body>
